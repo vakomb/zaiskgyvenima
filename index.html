@@ -1680,7 +1680,7 @@
           <div class="field"><label>Po kiek dienų skambinti</label><input class="input" id="leadFollowDays" type="number" min="0" step="1" value="2" /></div>
         </div>
         <div class="field"><label>Defektai ir pastabos</label><textarea class="input" id="leadNotes" rows="4" placeholder="Variklis, kėbulas, derybų stadija, ką sakė, kada skambinti..."></textarea></div>
-        <div class="field"><label>Nuotraukos</label><input class="input" id="leadPhotos" type="file" accept="image/*" multiple /></div>
+        <div class="field"><label>Nuotraukos</label><input class="input" id="leadPhotos" type="file" accept="image/*" multiple /><div class="subtle" style="margin-top:6px">Gali pasirinkti kiek nori nuotraukų. Jos saugomos atskiroje įrenginio saugykloje.</div></div>
         <button class="btn" id="addGarageLeadBtn" style="width:100%">Įkelti variantą</button>
       </div>
     </div>
@@ -2181,38 +2181,112 @@ function addDaysISO(baseISO, days){
     return {make, model, year, fuel, phone, city, initialPrice, targetPrice, followDays, notes, files};
   }
 
-  function leadPhotosToDataUrls(files){
-    const list = Array.from(files || []).filter(Boolean).slice(0, 8);
-    return Promise.all(list.map(file => new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onerror = () => resolve('');
-      reader.onload = () => {
-        const raw = reader.result;
-        if(typeof raw !== 'string' || !raw.startsWith('data:image/')){
-          resolve(raw || '');
-          return;
-        }
-        const img = new Image();
-        img.onload = () => {
-          try{
-            const maxSide = 1280;
-            const scale = Math.min(1, maxSide / Math.max(img.width || maxSide, img.height || maxSide));
-            const canvas = document.createElement('canvas');
-            canvas.width = Math.max(1, Math.round((img.width || maxSide) * scale));
-            canvas.height = Math.max(1, Math.round((img.height || maxSide) * scale));
-            const ctx = canvas.getContext('2d');
-            if(!ctx){ resolve(raw); return; }
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL('image/jpeg', 0.82));
-          }catch(err){
-            resolve(raw);
-          }
-        };
-        img.onerror = () => resolve(raw);
-        img.src = raw;
+  /* Persistent photo storage: keep images out of localStorage. */
+  const PHOTO_DB_NAME = 'zaisk-gyvenima-photo-store-v1';
+  const PHOTO_DB_VERSION = 1;
+  const PHOTO_STORE_NAME = 'photos';
+  const photoUrlCache = Object.create(null);
+  let photoDbPromise = null;
+  let photoHydrated = false;
+
+  function openPhotoDB(){
+    if(photoDbPromise)return photoDbPromise;
+    photoDbPromise=new Promise((resolve,reject)=>{
+      if(!window.indexedDB){reject(new Error('IndexedDB nepalaikomas'));return;}
+      const req=indexedDB.open(PHOTO_DB_NAME,PHOTO_DB_VERSION);
+      req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(PHOTO_STORE_NAME))db.createObjectStore(PHOTO_STORE_NAME);};
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error||new Error('Nuotraukų saugyklos klaida'));
+    });
+    return photoDbPromise;
+  }
+  function photoPut(blob){
+    return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
+      const key='photo_'+uid();
+      const tx=db.transaction(PHOTO_STORE_NAME,'readwrite');
+      tx.objectStore(PHOTO_STORE_NAME).put(blob,key);
+      tx.oncomplete=()=>resolve(key);
+      tx.onerror=()=>reject(tx.error||new Error('Nuotraukos saugojimo klaida'));
+    }));
+  }
+  function photoGet(key){
+    if(!key)return Promise.resolve('');
+    if(photoUrlCache[key])return Promise.resolve(photoUrlCache[key]);
+    return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
+      const req=db.transaction(PHOTO_STORE_NAME,'readonly').objectStore(PHOTO_STORE_NAME).get(key);
+      req.onsuccess=()=>{
+        if(!req.result){resolve('');return;}
+        const url=URL.createObjectURL(req.result); photoUrlCache[key]=url; resolve(url);
       };
-      reader.readAsDataURL(file);
-    }))).then(arr => arr.filter(Boolean));
+      req.onerror=()=>reject(req.error);
+    }));
+  }
+  async function dataUrlToPhotoKey(dataUrl){
+    try{return await photoPut(await fetch(dataUrl).then(r=>r.blob()));}catch(e){return dataUrl;}
+  }
+  async function hydrateLeadPhotos(){
+    if(photoHydrated)return;
+    const leads=Array.isArray(state.leadVariants)?state.leadVariants:[];
+    let changed=false;
+    try{
+      await openPhotoDB();
+      for(const lead of leads){
+        if(!Array.isArray(lead.photos))lead.photos=[];
+        const next=[];
+        for(const ref of lead.photos){
+          if(typeof ref!=='string'||!ref)continue;
+          if(ref.startsWith('data:image/')){
+            const key=await dataUrlToPhotoKey(ref); next.push(key); if(key!==ref)changed=true;
+          }else next.push(ref);
+        }
+        lead.photos=next;
+      }
+      if(changed)saveState();
+      for(const lead of leads)for(const ref of lead.photos)if(ref.startsWith('photo_'))try{await photoGet(ref)}catch(e){}
+      photoHydrated=true;
+    }catch(e){console.warn('IndexedDB photo storage unavailable',e);photoHydrated=true;}
+  }
+  async function photoRefsToUrls(refs){
+    return Promise.all((refs||[]).map(async ref=>{
+      if(!ref)return '';
+      if(ref.startsWith('data:image/')||ref.startsWith('blob:')||ref.startsWith('http'))return ref;
+      try{return await photoGet(ref)}catch(e){return '';}
+    }));
+  }
+  function photoCssUrl(src){
+    return src ? `background-image:url("${String(src).replace(/"/g,'%22')}")` : '';
+  }
+
+  async function leadPhotosToDataUrls(files){
+    const list=Array.from(files||[]).filter(f=>f&&/^image\\//i.test(f.type));
+    const keys=[];
+    for(const file of list){
+      try{
+        const blob=await new Promise((resolve,reject)=>{
+          const reader=new FileReader();
+          reader.onerror=()=>reject(reader.error);
+          reader.onload=()=>{
+            const img=new Image();
+            img.onload=()=>{
+              try{
+                const maxSide=1600, scale=Math.min(1,maxSide/Math.max(img.width||maxSide,img.height||maxSide));
+                const canvas=document.createElement('canvas');
+                canvas.width=Math.max(1,Math.round((img.width||maxSide)*scale));
+                canvas.height=Math.max(1,Math.round((img.height||maxSide)*scale));
+                const ctx=canvas.getContext('2d',{alpha:false});
+                ctx.drawImage(img,0,0,canvas.width,canvas.height);
+                canvas.toBlob(b=>b?resolve(b):reject(new Error('compress')),'image/jpeg',.72);
+              }catch(e){reject(e)}
+            };
+            img.onerror=()=>reject(new Error('image'));
+            img.src=reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+        keys.push(await photoPut(blob));
+      }catch(e){console.warn('Photo skipped',e);}
+    }
+    return keys;
   }
 
   function addGarageLead(){
@@ -2344,14 +2418,14 @@ function addDaysISO(baseISO, days){
   function openGarageLeadSheet(leadId){
     const lead = state.leadVariants.find(v => v.id === leadId);
     if(!lead) return;
-    const photos = (lead.photos || []).slice(0,6);
+    const photos = (lead.photos || []);
     const html = `
       <div class="sheetHead">
         <h3>${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</h3>
         <button class="closeBtn" id="closeLeadSheet">✕</button>
       </div>
       <div class="garageLeadCard" style="margin:0">
-        <div class="garageLeadHero" style="${photos[0] ? `background-image:url('${photos[0]}')` : ''}">
+        <div class="garageLeadHero" style="${photos[0] ? photoCssUrl(photoUrlCache[photos[0]] || photos[0]) : ''}">
           <div class="leadPill">${garageLeadDaysText(lead)}</div>
           <div class="leadPill">${escapeHTML(lead.city || 'Be miesto')}</div>
         </div>
@@ -2374,7 +2448,7 @@ function addDaysISO(baseISO, days){
               <div class="field"><label>Mūsų kaina</label><input class="input" id="editLeadTargetPrice" type="number" min="0" step="1" value="${Number(lead.targetPrice || 0)}" /></div>
               <div class="field"><label>Po kiek dienų skambinti</label><input class="input" id="editLeadFollowDays" type="number" min="0" step="1" value="${Number(lead.followUpDays || 0)}" /></div>
               <div class="field leadEditFull"><label>Defektai ir pastabos</label><textarea class="input" id="editLeadNotes" rows="4">${escapeHTML((lead.notes || lead.defects || '').trim())}</textarea></div>
-              <div class="field leadEditFull"><label>Pridėti nuotraukų</label><input class="input" id="editLeadPhotos" type="file" accept="image/*" multiple /></div>
+              <div class="field leadEditFull"><label>Pridėti nuotraukų</label><input class="input" id="editLeadPhotos" type="file" accept="image/*" multiple /><div class="subtle" style="margin-top:6px">Naujų nuotraukų kiekio neriboja programėlė — riboja tik telefono laisva vieta.</div></div>
             </div>
             <div class="leadEditNote">Naujos nuotraukos bus pridėtos prie esamų. Jei nekeisi nuotraukų, jos liks tokios pat.</div>
           </div>
@@ -2441,26 +2515,27 @@ function addDaysISO(baseISO, days){
   }
 
 
-  function openLeadGallery(leadId, startIndex=0){
+  async function openLeadGallery(leadId, startIndex=0){
     const lead = state.leadVariants.find(v => v.id === leadId);
     if(!lead) return;
     const photos = (lead.photos || []).filter(Boolean);
     if(!photos.length) return;
+    const photoUrls = await photoRefsToUrls(photos);
     const idx = clamp(Number(startIndex) || 0, 0, photos.length - 1);
-    const active = photos[idx];
+    const active = photoUrls[idx] || '';
     const html = `
       <div class="sheetHead">
         <h3>${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</h3>
         <button class="closeBtn" id="closeGallerySheet">✕</button>
       </div>
       <div class="gallerySheet">
-        <div class="galleryMain" style="background-image:url('${active}')"></div>
+        <div class="galleryMain" style="${photoCssUrl(active)}"></div>
         <div class="garageLeadTags">
           <span class="garageLeadTag good">${photos.length} nuotraukos</span>
           <span class="garageLeadTag">${escapeHTML(lead.city || 'Be miesto')}</span>
         </div>
         <div class="galleryThumbs">
-          ${photos.map((src, i) => `<button type="button" data-gallery-index="${i}"><div class="img" style="background-image:url('${src}')"></div></button>`).join('')}
+          ${photos.map((src, i) => `<button type="button" data-gallery-index="${i}"><div class="img" style="${photoCssUrl(photoUrls[i] || '')}"></div></button>`).join('')}
         </div>
       </div>
     `;
@@ -3455,7 +3530,8 @@ function addDaysISO(baseISO, days){
     if(debtDate && !debtDate.value) debtDate.value = todayISO();
   }
 
-  function render(){
+  async function render(){
+    await hydrateLeadPhotos();
     checkDateReset();
     ensureMonthlyCycle();
     if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
@@ -3759,7 +3835,7 @@ function addDaysISO(baseISO, days){
       leadRoot.innerHTML = allLeads.length ? allLeads.map(lead => {
         const days = garageLeadDaysLeft(lead);
         const daysClass = days < 0 ? 'danger' : days === 0 ? 'warn' : 'good';
-        const heroStyle = lead.photos?.[0] ? `background-image:url('${lead.photos[0]}')` : '';
+        const heroStyle = lead.photos?.[0] ? photoCssUrl(photoUrlCache[lead.photos[0]] || lead.photos[0]) : '';
         const contactLine = [lead.city || 'Be miesto', lead.fuel || '—', lead.phone || '—'].filter(Boolean).join(' • ');
         const notesText = String(lead.notes || lead.defects || '—').trim();
         return `
@@ -3781,7 +3857,7 @@ function addDaysISO(baseISO, days){
                 ${escapeHTML(notesText)}
               </div>
               <div class="garageLeadLine"><span>Skambinti po: ${Number(lead.followUpDays || 0)} d.</span><span>Atnaujinta: ${escapeHTML(lead.updatedAt || lead.createdAt || '')}</span></div>
-              <div class="leadGallery">${(lead.photos || []).map((src, i) => `<button type="button" class="leadThumbBtn" data-open-lead-gallery="${lead.id}" data-photo-index="${i}"><div class="img" style="background-image:url('${src}')"></div></button>`).join('') || '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
+              <div class="leadGallery">${(lead.photos || []).map((src, i) => `<button type="button" class="leadThumbBtn" data-open-lead-gallery="${lead.id}" data-photo-index="${i}"><div class="img" style="${photoCssUrl(photoUrlCache[src] || src)}"></div></button>`).join('') || '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
               <div class="garageLeadActions">
                 <button class="btn secondary" type="button" data-call-lead="${lead.id}">📞 Skambinta</button>
                 <button class="btn secondary" type="button" data-edit-lead="${lead.id}">Redaguoti</button>
