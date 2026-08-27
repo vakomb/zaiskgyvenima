@@ -1,0 +1,4104 @@
+<!DOCTYPE html>
+<html lang="lt" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>Žaisk Gyvenimą — paprasta versija</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --surface-2:#f1f4f9;
+      --surface-3:#e9eef6;
+      --text:#101828;
+      --muted:#667085;
+      --muted-2:#98a2b3;
+      --line:#e4e9f1;
+      --shadow:0 10px 30px rgba(16,24,40,.08);
+      --shadow-soft:0 6px 18px rgba(16,24,40,.05);
+      --accent:#2563eb;
+      --accent-2:#0f766e;
+      --success:#16a34a;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:22px;
+      --radius2:16px;
+      --nav:#ffffff;
+      --navBorder:#e4e9f1;
+    }
+    html[data-theme="dark"]{
+      --bg:#0f172a;
+      --surface:#111827;
+      --surface-2:#162033;
+      --surface-3:#1e293b;
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --muted-2:#94a3b8;
+      --line:#263247;
+      --shadow:0 10px 30px rgba(0,0,0,.24);
+      --shadow-soft:0 6px 18px rgba(0,0,0,.16);
+      --nav:#111827;
+      --navBorder:#263247;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      overflow-x:hidden;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .app{
+      max-width:430px;
+      margin:0 auto;
+      min-height:100%;
+      padding:12px 12px 118px;
+      position:relative;
+    }
+    .topbar{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding-top: env(safe-area-inset-top);
+      margin-bottom:12px;
+      text-align:center;
+    }
+    .topbar h1{
+      margin:0;
+      font-size:18px !important;
+      line-height:1.1;
+      letter-spacing:.16em;
+      font-weight:900;
+    }
+    .view{display:none;animation:fade .18s ease}
+    .view.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .section{margin-top:12px}
+    .sectionHead{
+      display:flex;align-items:flex-end;justify-content:space-between;
+      margin:0 2px 8px;
+      gap:10px;
+    }
+    .sectionHead h2{margin:0;font-size:15px;line-height:1.2}
+    .sectionHead span{font-size:12px;color:var(--muted);text-align:right}
+    .panel{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel.pad{padding:14px}
+    .hero{display:grid;grid-template-columns:1fr;gap:10px}
+    .heroCard{
+      min-height:auto;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:14px;
+      background:var(--surface);
+    }
+    .subtle{font-size:12px;color:var(--muted)}
+    .topStats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .miniStat{
+      padding:12px;border-radius:18px;background:var(--surface-2);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+    }
+    .miniStat .label{font-size:12px;color:var(--muted);margin-bottom:8px}
+    .miniStat .value{font-size:20px;font-weight:900;line-height:1}
+    .miniStat .hint{margin-top:5px;font-size:12px;color:var(--muted-2)}
+    .xpWrap{margin-top:2px}
+    .xpLine{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:12px;color:var(--muted)}
+    .xpLine strong{display:block;font-size:18px;color:var(--text);margin-top:3px}
+    .bar{
+      height:12px;border-radius:999px;background:var(--surface-3);
+      border:1px solid var(--line);overflow:hidden;
+    }
+    .bar .fill{height:100%;width:0%;border-radius:inherit;background:var(--accent);transition:width .35s ease}
+    .ringBox{
+      min-height:196px;
+      display:flex;flex-direction:column;justify-content:space-between;
+      padding:16px;
+    }
+    .ring{
+      width:128px;height:128px;position:relative;margin:0 auto;
+      display:grid;place-items:center;
+    }
+    .ring svg{transform:rotate(-90deg)}
+    .ring .center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+    .ring .center strong{display:block;font-size:28px;line-height:1}
+    .ring .center span{font-size:11px;color:var(--muted)}
+    .tag{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;
+      letter-spacing:.2px; text-transform:uppercase;
+      border:1px solid var(--line);
+      background:var(--surface-2);
+    }
+    .tag.rare,.tag.epic,.tag.legendary,.tag.good{background:var(--surface-2)}
+    .dailyCard{
+      padding:14px;
+      background:var(--surface);
+    }
+    .dailyCard h3{margin:10px 0 6px;font-size:18px}
+    .dailyCard p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      border:none;cursor:pointer;font:inherit;font-weight:800;
+      padding:12px 14px;border-radius:16px;
+      background:var(--accent);
+      color:#fff;box-shadow:var(--shadow-soft);
+      transition:transform .12s ease, opacity .12s ease, filter .12s ease, background .12s ease;
+    }
+    .btn.secondary{
+      background:var(--surface-2);color:var(--text);border:1px solid var(--line);box-shadow:var(--shadow-soft);
+    }
+    .btn.ghost{
+      background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none;
+    }
+    .btn.danger{
+      background:var(--danger);
+      color:#fff;
+    }
+    .smallBtn{
+      width:34px;height:34px;border-radius:12px;
+      border:1px solid var(--line);background:var(--surface);color:var(--text);
+      display:grid;place-items:center;cursor:pointer;font:inherit;font-weight:900;
+      box-shadow:var(--shadow-soft);
+    }
+    .smallBtn.danger{
+      background:#fff1f2;
+      color:var(--danger);
+      border-color:#fecdd3;
+    }
+    .btn:active,.navBtn:active,.taskCard:active,.carCard:active,.zoneCard:active,.rewardCard:active,.smallBtn:active,.achievement:active{transform:scale(.985)}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .taskGroupHead{
+      display:flex;justify-content:space-between;align-items:center;
+      margin:12px 2px 8px;
+    }
+    .taskGroupHead h3{
+      margin:0;font-size:12px;letter-spacing:.3px;text-transform:uppercase;color:var(--muted);
+    }
+    .taskGroupHead span{font-size:12px;color:var(--muted-2)}
+    .taskList{display:grid;gap:10px}
+    .taskCard{
+      display:flex;align-items:center;gap:12px;
+      padding:13px 14px;border-radius:18px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      position:relative;overflow:hidden;
+      transition:transform .12s ease, opacity .12s ease, border-color .12s ease;
+    }
+    .taskCard.done{
+      opacity:.92;
+      border-color:#bbf7d0;
+      background:var(--surface);
+    }
+    .taskCard.done .check{
+      background:#dcfce7;border-color:#86efac;color:var(--success);
+    }
+    .taskCard::after{content:none}
+    .check{
+      width:26px;height:26px;border-radius:9px;flex:0 0 auto;
+      display:grid;place-items:center;
+      border:1.5px solid var(--line);
+      color:transparent;background:var(--surface-2);
+      font-size:16px;font-weight:900;
+    }
+    .taskMain{flex:1;min-width:0}
+    .taskMain strong{display:block;font-size:14px;margin-bottom:4px}
+    .taskMeta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+    .rewardPills{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto}
+    .rewardPills .xp{font-size:12px;font-weight:900;color:var(--accent)}
+    .rewardPills .coins{font-size:12px;font-weight:900;color:#a16207}
+    .taskCard.done .rewardPills .xp{color:var(--accent)}
+    .taskCard.done .rewardPills .coins{color:#a16207}
+    .cardNotice{
+      padding:12px 14px;border-radius:16px;background:var(--surface-2);
+      border:1px solid var(--line);font-size:12px;color:var(--muted);
+    }
+    .smallStatBox{
+      padding:14px;border-radius:18px;background:var(--surface);
+      border:1px solid var(--line);box-shadow:var(--shadow-soft);
+      min-height:92px;
+    }
+    .smallStatBox .label{font-size:12px;color:var(--muted);margin-bottom:10px}
+    .smallStatBox .value{font-size:20px;font-weight:900;line-height:1.05}
+    .smallStatBox .hint{font-size:12px;color:var(--muted-2);margin-top:6px}
+    .mapGrid{
+      display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+    }
+    .zoneCard{
+      min-height:92px;padding:12px;border-radius:18px;
+      background:var(--surface);
+      border:1px solid var(--line);box-shadow:var(--shadow-soft);overflow:hidden;position:relative;
+    }
+    .zoneCard.active{outline:1px solid #bfdbfe}
+    .zoneCard.locked{
+      opacity:.58;filter:saturate(.9);
+    }
+    .zoneCard i{font-style:normal;font-size:18px}
+    .zoneCard strong{display:block;margin-top:18px;font-size:12px}
+    .zoneCard span{font-size:11px;color:var(--muted)}
+    .zoneCard .req{
+      position:absolute;top:10px;right:10px;
+      font-size:10px;font-weight:800;padding:4px 7px;border-radius:999px;
+      background:var(--surface-2);border:1px solid var(--line)
+    }
+    .historyList{display:grid;gap:10px}
+    .historyItem{
+      display:flex;gap:12px;align-items:flex-start;
+      padding:12px 14px;border-radius:16px;
+      background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-soft);
+    }
+    .histIcon{
+      width:32px;height:32px;border-radius:11px;
+      display:grid;place-items:center;flex:0 0 auto;
+      background:var(--surface-2);
+    }
+    .historyItem strong{display:block;font-size:13px;margin-bottom:2px}
+    .historyItem span{display:block;font-size:12px;color:var(--muted)}
+    .shopGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .rewardCard{
+      padding:14px;border-radius:18px;background:var(--surface);
+      border:1px solid var(--line);box-shadow:var(--shadow-soft);
+      display:flex;flex-direction:column;gap:10px;min-height:138px;
+    }
+    .rewardCard .top{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+    }
+    .rewardCard .ico{
+      width:38px;height:38px;border-radius:14px;display:grid;place-items:center;
+      background:var(--surface-2);
+      font-size:18px;
+    }
+    .rewardCard strong{display:block;font-size:14px;margin-top:2px}
+    .rewardCard p{margin:0;font-size:12px;color:var(--muted);line-height:1.45}
+    .rewardCard .cost{
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+      background:#fef3c7;font-size:11px;font-weight:900;border:1px solid #fde68a
+    }
+    .rewardCard .buy{margin-top:auto;width:100%}
+    .skillGrid{display:grid;gap:12px}
+    .skillCard{
+      padding:14px;border-radius:20px;background:var(--surface);
+      border:1px solid var(--line);box-shadow:var(--shadow-soft);
+    }
+    .skillTop{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;
+    }
+    .skillTop strong{font-size:15px}
+    .skillTop span{font-size:12px;color:var(--muted)}
+    .skillDesc{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+    .achGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .achievement{
+      padding:14px;border-radius:20px;background:var(--surface);
+      border:1px solid var(--line);box-shadow:var(--shadow-soft);min-height:120px;
+      position:relative;overflow:hidden;
+    }
+    .achievement.locked{opacity:.55;filter:saturate(.9)}
+    .achievement .ico{font-size:24px}
+    .achievement strong{display:block;margin:10px 0 4px;font-size:14px}
+    .achievement span{font-size:12px;color:var(--muted)}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 10px;border-radius:999px;font-size:11px;
+      background:var(--surface-2);border:1px solid var(--line);font-weight:800;
+    }
+    .badge.good{background:#dcfce7}
+    .badge.info{background:#dbeafe}
+    .badge.warn{background:#fef3c7}
+    .switch{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:13px 14px;border-radius:16px;
+      background:var(--surface);border:1px solid var(--line);margin-bottom:10px;
+    }
+    .switch strong{display:block;font-size:14px}
+    .switch .sub{font-size:12px;color:var(--muted);margin-top:3px}
+    .toggle{
+      width:54px;height:32px;border-radius:999px;
+      position:relative;background:var(--surface-3);border:1px solid var(--line);flex:0 0 auto;
+      transition:background .18s ease;
+    }
+    .toggle::after{
+      content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+      background:#fff;box-shadow:0 6px 14px rgba(0,0,0,.14);transition:transform .18s ease;
+    }
+    .toggle.on{background:var(--accent)}
+    .toggle.on::after{transform:translateX(22px)}
+    .field{margin-bottom:12px}
+    .field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px 2px}
+    .input{
+      width:100%;padding:13px 14px;border-radius:16px;
+      background:var(--surface);border:1px solid var(--line);color:var(--text);outline:none;font:inherit;
+    }
+    .navWrap{
+      position:fixed;left:0;right:0;bottom:0;z-index:30;
+      padding:10px 12px calc(12px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,.82);
+      border-top:1px solid var(--line);
+      pointer-events:none;
+      backdrop-filter:saturate(140%) blur(14px);
+    }
+    html[data-theme="dark"] .navWrap{background:rgba(15,23,42,.9)}
+    .nav{
+      max-width:430px;margin:0 auto;padding:8px;border-radius:22px;
+      background:var(--nav);border:1px solid var(--navBorder);box-shadow:var(--shadow);
+      display:grid;grid-template-columns:repeat(5,1fr);gap:6px;pointer-events:auto;
+    }
+    .navBtn{
+      padding:9px 6px;border-radius:16px;background:transparent;border:1px solid transparent;
+      display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:11px;
+    }
+    .navBtn.active{color:var(--text);background:#eff6ff;border-color:#bfdbfe}
+    html[data-theme="dark"] .navBtn.active{background:#1e293b;border-color:#334155}
+    .navBtn .ico{font-size:18px;line-height:1}
+    .toastWrap{
+      position:fixed;left:50%;bottom:124px;transform:translateX(-50%);z-index:60;
+      width:min(92vw,420px);display:grid;gap:10px;pointer-events:none;
+    }
+    .toast{
+      padding:12px 14px;border-radius:16px;
+      background:#111827;color:#fff;border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      display:flex;justify-content:space-between;gap:12px;align-items:center;
+      animation:toastIn .22s ease;
+      font-size:13px;
+    }
+    html[data-theme="light"] .toast{background:#ffffff;color:var(--text);border-color:var(--line)}
+    @keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+    .spark{
+      position:fixed;pointer-events:none;z-index:9999;font-size:22px;
+      transform:translate(-50%,-50%);animation:spark .8s ease forwards;
+    }
+    @keyframes spark{0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-130%) scale(1.35)}}
+    .pulse{animation:pulse .55s ease}
+    @keyframes pulse{0%{transform:scale(1)}35%{transform:scale(1.04)}100%{transform:scale(1)}}
+    .modalBackdrop{
+      position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.48);
+      display:none;align-items:flex-end;justify-content:center;
+    }
+    .modalBackdrop.show{display:flex}
+    .sheet{
+      width:min(100%,430px);
+      max-height:88vh;overflow:auto;
+      background:var(--surface);
+      color:var(--text);
+      border-radius:26px 26px 0 0;border:1px solid var(--line);
+      box-shadow:var(--shadow);padding:16px;
+    }
+    .sheetHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    .sheetHead h3{margin:0;font-size:18px}
+    .closeBtn{
+      width:40px;height:40px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:18px
+    }
+    .carGrid{display:grid;gap:12px}
+    .carCard{
+      overflow:hidden;border-radius:22px;background:var(--surface);
+      border:1px solid var(--line);box-shadow:var(--shadow-soft)
+    }
+    .carHero{
+      height:148px;position:relative;
+      background-color:var(--surface-2);
+      display:flex;align-items:flex-end;justify-content:space-between;padding:14px;
+      background-size:cover;background-position:center;
+    }
+    .carHero .pill{
+      padding:6px 10px;border-radius:999px;
+      background:rgba(15,23,42,.68);color:#fff;font-size:11px;font-weight:800;
+    }
+    .carBody{padding:14px}
+    .carBody h4{margin:0 0 6px;font-size:16px}
+    .carLine{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+    .miniBar{
+      height:10px;border-radius:999px;background:var(--surface-3);border:1px solid var(--line);overflow:hidden;margin:10px 0
+    }
+    .miniBar .fill{height:100%;border-radius:inherit;background:var(--accent-2);width:0%;transition:width .35s ease}
+    .list{display:grid;gap:8px}
+    .listItem{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:11px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);
+    }
+    .listItem label{display:flex;gap:10px;align-items:center;flex:1;min-width:0}
+    .listItem input{width:18px;height:18px}
+    .listItem .small{font-size:11px;color:var(--muted)}
+    .emptyState{
+      padding:16px;border-radius:18px;background:var(--surface);border:1px dashed var(--line);color:var(--muted);font-size:13px;line-height:1.5
+    }
+    .footerSpace{height:10px}
+
+    .garageMenuPanel{
+      display:grid;
+      gap:12px;
+    }
+    .garageMenuTitle{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .garageMenuTitle strong{display:block;font-size:18px;line-height:1.2}
+    .garageMenuTitle span{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+    .garageMenuGrid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+    .garageAction{
+      padding:14px;
+      border-radius:18px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      text-align:left;
+      font:inherit;
+      color:var(--text);
+      cursor:pointer;
+      appearance:none;
+      width:100%;
+    }
+    .garageAction .left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .garageAction .ico{
+      width:40px;height:40px;border-radius:14px;
+      display:grid;place-items:center;
+      background:var(--surface-2);
+      font-size:20px;
+      flex:0 0 auto;
+    }
+    .garageAction strong{display:block;font-size:14px}
+    .garageAction span{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
+    .garageAction .chev{font-size:18px;color:var(--muted)}
+    .garageStatsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .garageStatsGrid .smallStatBox .value{font-size:18px}
+    .garageStatsGrid .smallStatBox .hint{line-height:1.35}
+    .garageCarTaskCard{
+      padding:14px;
+      border-radius:18px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      margin-bottom:10px;
+    }
+    .garageCarTaskHead{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+    .garageCarTaskHead strong{font-size:14px;display:block}
+    .garageCarTaskHead span{font-size:12px;color:var(--muted)}
+    .garageLeadGrid{display:grid;gap:12px}
+    .garageLeadCard{
+      overflow:hidden;
+      border-radius:22px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      display:grid;
+    }
+    .garageLeadHero{
+      min-height:150px;
+      background:var(--surface-2);
+      background-size:cover;
+      background-position:center;
+      position:relative;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      padding:14px;
+    }
+    .garageLeadHero::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(15,23,42,0) 25%, rgba(15,23,42,.58) 100%);
+      pointer-events:none;
+    }
+    .garageLeadHero > *{position:relative;z-index:1}
+    .garageLeadHero .leadPill{
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(15,23,42,.72);
+      color:#fff;
+      font-size:11px;
+      font-weight:800;
+    }
+    .garageLeadBody{padding:14px}
+    .garageLeadBody h4{margin:0 0 6px;font-size:16px;line-height:1.25}
+    .garageLeadLine{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+      flex-wrap:wrap;
+    }
+    .garageLeadTags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+    .garageLeadTag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--surface-2);
+      font-size:11px;
+      font-weight:800;
+    }
+    .garageLeadTag.warn{background:#fef3c7;border-color:#fde68a}
+    .garageLeadTag.good{background:#dcfce7;border-color:#bbf7d0}
+    .garageLeadTag.danger{background:#fee2e2;border-color:#fecaca}
+    .garageLeadActions{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+    .garageLeadActions .btn,
+    .garageLeadActions .btn.secondary,
+    .garageLeadActions .btn.danger{
+      width:100%;
+      padding:11px 10px;
+      border-radius:14px;
+      font-size:12px;
+    }
+    .leadGallery{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+    .leadGallery .img{
+      aspect-ratio:1/1;
+      border-radius:14px;
+      background:var(--surface-2);
+      background-size:cover;
+      background-position:center;
+      border:1px solid var(--line);
+    }
+    .leadFilterBar{
+      display:grid;
+      grid-template-columns:1.5fr .9fr .9fr;
+      gap:8px;
+      margin-top:12px;
+    }
+    .leadDetailBox{
+      padding:12px 14px;
+      border-radius:16px;
+      background:var(--surface-2);
+      border:1px solid var(--line);
+      font-size:12px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    .menuIntro{
+      padding:16px;border-radius:24px;
+      background:var(--surface);
+      border:1px solid var(--line);box-shadow:var(--shadow);
+    }
+    .menuLinks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .menuLink{
+      padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-soft);
+      display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;cursor:pointer;
+      border:none;font:inherit;appearance:none
+    }
+    .menuLink strong{font-size:14px}
+    .menuLink span{font-size:12px;color:var(--muted);line-height:1.35}
+    .menuLink .ico{font-size:22px}
+    .taskGroup{
+      padding:0;overflow:hidden;
+      margin-bottom:10px;
+      border-radius:22px;
+    }
+    .taskGroupHead{
+      width:100%;
+      border:none;
+      background:transparent;
+      margin:0;
+      padding:16px 16px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      cursor:pointer;
+      text-align:left;
+      color:var(--text);
+      font:inherit;
+      appearance:none;
+    }
+    .taskGroupHead h3{margin:0;font-size:14px;letter-spacing:.3px;text-transform:uppercase;color:var(--muted)}
+    .taskGroupHead .sub{display:block;font-size:12px;color:var(--muted-2);margin-top:4px}
+    .taskGroupBody{display:none;padding:0 16px 16px}
+    .taskGroupBody.open{display:block}
+    .chev{
+      width:32px;height:32px;border-radius:12px;display:grid;place-items:center;
+      background:var(--surface-2);border:1px solid var(--line);color:var(--muted);flex:0 0 auto;
+      font-size:18px
+    }
+    .historyToggle{
+      width:100%;
+      border:none;
+      background:transparent;
+      text-align:left;
+      color:var(--text);
+      cursor:pointer;
+      padding:0;
+      font:inherit;
+      appearance:none;
+    }
+    .historyBody{display:none;padding-top:12px}
+    .historyBody.open{display:block}
+    .historyHeadLine{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      padding:14px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-soft)
+    }
+    .historyHeadLine strong{font-size:15px}
+    .historyHeadLine span{font-size:12px;color:var(--muted)}
+
+    @media (max-width: 430px){
+      .grid2,.achGrid,.shopGrid,.mapGrid{grid-template-columns:1fr 1fr}
+      .topStats{grid-template-columns:1fr 1fr}
+    }
+    @media (min-width: 900px){
+      .app{max-width:430px}
+    }
+
+  
+    /* Cleaner compact UI */
+    .menuIntro p,
+    .menuLink span,
+    .garageAction span,
+    .taskGroupHead .sub,
+    .rewardCard p,
+    .smallStatBox .hint{display:none !important;}
+    .menuIntro h3{margin-top:0}
+    .financeGrid,
+    .garageStatsGrid,
+    .metricsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .financeGrid .smallStatBox,
+    .metricsGrid .smallStatBox{min-height:88px}
+    .sectionHeaderRow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+    .viewHeaderActions{display:flex;gap:8px;flex-wrap:wrap}
+    .financeActions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .financeRow{padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-soft);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .financeRow strong{display:block;font-size:14px}
+    .financeRow span{font-size:12px;color:var(--muted)}
+    .financeList{display:grid;gap:10px}
+    .leadGallery .img,
+    .leadThumbBtn{cursor:pointer}
+    .leadThumbBtn{border:none;background:transparent;padding:0;appearance:none}
+    .leadThumbBtn .img{width:100%;height:100%;display:block}
+    .heroImageBtn{display:block;border:none;background:transparent;padding:0;width:100%;appearance:none}
+    .heroImageBtn .carHero{min-height:160px}
+    .gallerySheet{display:grid;gap:12px}
+    .galleryMain{width:100%;aspect-ratio:4/3;border-radius:20px;background:var(--surface-2);background-size:cover;background-position:center;border:1px solid var(--line)}
+    .galleryThumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .galleryThumbs button{border:none;padding:0;background:transparent;appearance:none}
+    .galleryThumbs .img{aspect-ratio:1/1;border-radius:14px;background-size:cover;background-position:center;border:1px solid var(--line)}
+    .statChip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);font-size:11px;font-weight:800}
+
+  
+    /* Premium visual refresh — appended overrides */
+    html{scroll-behavior:smooth}
+    body{
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 28%),
+        radial-gradient(circle at 85% 12%, rgba(14,165,233,.10), transparent 22%),
+        linear-gradient(180deg, #f8fbff 0%, #f3f7fd 38%, #eef3f9 100%);
+      background-attachment: fixed;
+    }
+    html[data-theme="dark"] body{
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 28%),
+        radial-gradient(circle at 85% 12%, rgba(20,184,166,.12), transparent 22%),
+        linear-gradient(180deg, #0b1220 0%, #0f172a 48%, #111827 100%);
+    }
+    .app{
+      max-width: 500px;
+      padding: 14px 14px 132px;
+      isolation: isolate;
+    }
+    .app::before,
+    .app::after{
+      content:"";
+      position:fixed;
+      inset:auto;
+      width:420px;
+      height:420px;
+      border-radius:50%;
+      pointer-events:none;
+      z-index:-1;
+      filter: blur(24px);
+      opacity:.7;
+    }
+    .app::before{
+      top:-120px;
+      right:-170px;
+      background:radial-gradient(circle, rgba(37,99,235,.18) 0%, rgba(37,99,235,0) 68%);
+    }
+    .app::after{
+      left:-180px;
+      bottom:120px;
+      background:radial-gradient(circle, rgba(15,118,110,.12) 0%, rgba(15,118,110,0) 66%);
+    }
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:25;
+      margin:0 -14px 12px;
+      padding: calc(env(safe-area-inset-top) + 12px) 14px 12px;
+      backdrop-filter: blur(16px) saturate(150%);
+      background: linear-gradient(180deg, rgba(248,251,255,.92) 0%, rgba(248,251,255,.62) 100%);
+      border-bottom: 1px solid rgba(148,163,184,.22);
+    }
+    html[data-theme="dark"] .topbar{
+      background: linear-gradient(180deg, rgba(15,23,42,.92) 0%, rgba(15,23,42,.68) 100%);
+      border-bottom-color: rgba(148,163,184,.12);
+    }
+    .topbar h1{
+      width:auto !important;
+      font-size:20px !important;
+      letter-spacing:.22em;
+      text-shadow:0 1px 0 rgba(255,255,255,.18);
+    }
+    .section{
+      margin-top:14px;
+      scroll-margin-top:96px;
+    }
+    .sectionHead{
+      margin:0 4px 10px;
+      align-items:center;
+    }
+    .sectionHead h2{
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+    .sectionHead span{
+      font-size:11px;
+      line-height:1.2;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(148,163,184,.10);
+      color: var(--muted);
+      border: 1px solid rgba(148,163,184,.16);
+    }
+    .panel,
+    .taskCard,
+    .carCard,
+    .rewardCard,
+    .smallStatBox,
+    .zoneCard,
+    .achievement,
+    .switch,
+    .listItem,
+    .financeRow,
+    .historyItem,
+    .garageAction,
+    .menuLink,
+    .garageCarTaskCard,
+    .garageLeadCard{
+      border-radius:24px;
+      box-shadow:0 16px 40px rgba(15,23,42,.08);
+      border-color:rgba(148,163,184,.20);
+    }
+    html[data-theme="dark"] .panel,
+    html[data-theme="dark"] .taskCard,
+    html[data-theme="dark"] .carCard,
+    html[data-theme="dark"] .rewardCard,
+    html[data-theme="dark"] .smallStatBox,
+    html[data-theme="dark"] .zoneCard,
+    html[data-theme="dark"] .achievement,
+    html[data-theme="dark"] .switch,
+    html[data-theme="dark"] .listItem,
+    html[data-theme="dark"] .financeRow,
+    html[data-theme="dark"] .historyItem,
+    html[data-theme="dark"] .garageAction,
+    html[data-theme="dark"] .menuLink,
+    html[data-theme="dark"] .garageCarTaskCard,
+    html[data-theme="dark"] .garageLeadCard{
+      border-color:rgba(148,163,184,.14);
+      box-shadow:0 16px 40px rgba(0,0,0,.22);
+    }
+    .panel{
+      background: linear-gradient(180deg, var(--surface) 0%, rgba(255,255,255,.98) 100%);
+    }
+    html[data-theme="dark"] .panel{
+      background: linear-gradient(180deg, rgba(17,24,39,.98) 0%, rgba(17,24,39,.92) 100%);
+    }
+    .panel.pad{padding:16px}
+    .heroCard,
+    .dailyCard,
+    .menuIntro,
+    .sheet,
+    .nav,
+    .garageAction,
+    .menuLink,
+    .rewardCard,
+    .taskCard,
+    .carCard,
+    .financeRow,
+    .historyItem{
+      backdrop-filter: blur(12px);
+    }
+    .heroCard{
+      padding:16px;
+      gap:16px;
+      border-radius:28px;
+    }
+    .subtle{
+      color:var(--muted);
+      letter-spacing:.01em;
+    }
+    .topStats{
+      gap:12px;
+    }
+    .miniStat{
+      border-radius:20px;
+      padding:14px;
+      background: linear-gradient(180deg, rgba(241,245,249,.92) 0%, rgba(248,250,252,.96) 100%);
+      border: 1px solid rgba(148,163,184,.18);
+      box-shadow:0 10px 24px rgba(15,23,42,.05);
+    }
+    html[data-theme="dark"] .miniStat{
+      background: linear-gradient(180deg, rgba(30,41,59,.95) 0%, rgba(15,23,42,.92) 100%);
+      border-color: rgba(148,163,184,.14);
+    }
+    .miniStat .label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+    .miniStat .value{
+      font-size:24px;
+      letter-spacing:-.03em;
+    }
+    .miniStat .hint{
+      font-size:11px;
+    }
+    .bar{
+      height:14px;
+      border-radius:999px;
+      background:rgba(148,163,184,.18);
+      border-color:rgba(148,163,184,.16);
+      overflow:hidden;
+    }
+    .bar .fill{
+      background:linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%);
+    }
+    .xpLine{
+      margin-top:12px;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+    .xpLine strong{
+      font-size:20px;
+      margin-top:4px;
+      letter-spacing:-.03em;
+    }
+    .tag{
+      border-radius:999px;
+      background:rgba(37,99,235,.08);
+      border-color:rgba(37,99,235,.12);
+      color:var(--text);
+    }
+    .dailyCard{
+      padding:16px;
+      border-radius:28px;
+    }
+    .dailyCard h3{
+      font-size:20px;
+      letter-spacing:-.02em;
+    }
+    .btnRow{
+      margin-top:16px;
+    }
+    .btn,
+    .btn.secondary,
+    .btn.ghost,
+    .smallBtn,
+    .closeBtn{
+      min-height:48px;
+    }
+    .btn{
+      border-radius:16px;
+      background:linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow:0 14px 24px rgba(37,99,235,.22);
+      letter-spacing:.01em;
+    }
+    .btn.secondary{
+      background:linear-gradient(180deg, rgba(241,245,249,.98) 0%, rgba(226,232,240,.96) 100%);
+      border-color:rgba(148,163,184,.18);
+      color:var(--text);
+    }
+    html[data-theme="dark"] .btn.secondary{
+      background:linear-gradient(180deg, rgba(30,41,59,.98) 0%, rgba(15,23,42,.96) 100%);
+    }
+    .btn.ghost{
+      background:transparent;
+      border-color:rgba(148,163,184,.22);
+    }
+    .btn:focus-visible,
+    .navBtn:focus-visible,
+    .garageAction:focus-visible,
+    .menuLink:focus-visible,
+    .taskCard:focus-visible,
+    .carCard:focus-visible,
+    .rewardCard:focus-visible,
+    .achievement:focus-visible,
+    .smallBtn:focus-visible,
+    .closeBtn:focus-visible,
+    .input:focus-visible,
+    select:focus-visible{
+      outline:3px solid rgba(37,99,235,.26);
+      outline-offset:2px;
+    }
+    .grid2,
+    .grid3,
+    .shopGrid,
+    .achGrid,
+    .mapGrid,
+    .garageMenuGrid,
+    .garageStatsGrid,
+    .financeGrid,
+    .metricsGrid,
+    .financeActions{
+      gap:12px;
+    }
+    .menuIntro{
+      padding:18px;
+      border-radius:28px;
+    }
+    .menuIntro h3{
+      font-size:22px !important;
+      line-height:1.15;
+      letter-spacing:-.03em;
+    }
+    .menuLinks{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+    .menuLink{
+      min-height:122px;
+      padding:16px;
+      border-radius:24px;
+      justify-content:space-between;
+      background:linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(248,250,252,.98) 100%);
+      border:1px solid rgba(148,163,184,.18);
+      box-shadow:0 12px 26px rgba(15,23,42,.06);
+      width:100%;
+      align-items:flex-start;
+    }
+    html[data-theme="dark"] .menuLink{
+      background:linear-gradient(180deg, rgba(30,41,59,.96) 0%, rgba(15,23,42,.92) 100%);
+      border-color:rgba(148,163,184,.14);
+    }
+    .menuLink .ico{
+      width:42px;height:42px;border-radius:14px;
+      display:grid;place-items:center;
+      background:rgba(37,99,235,.08);
+      margin-bottom:10px;
+    }
+    .menuLink strong{
+      font-size:15px;
+      line-height:1.2;
+      letter-spacing:-.01em;
+    }
+    .garageMenuPanel{
+      width:100%;
+      align-items:stretch;
+      justify-items:stretch;
+    }
+    .garageMenuTitle{
+      width:100%;
+      align-items:center;
+    }
+    .garageMenuTitle strong{
+      font-size:20px;
+      letter-spacing:-.02em;
+    }
+    .garageMenuGrid{
+      width:100%;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      align-items:stretch;
+      justify-items:stretch;
+    }
+    .garageAction{
+      width:100%;
+      min-width:0;
+      min-height:108px;
+      padding:16px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+      gap:12px;
+      text-align:left;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .garageAction{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.94) 100%);
+    }
+    .garageAction .left{
+      width:100%;
+      gap:14px;
+      align-items:flex-start;
+      min-width:0;
+    }
+    .garageAction .ico{
+      width:44px;height:44px;
+      border-radius:16px;
+      background:rgba(37,99,235,.08);
+    }
+    .garageAction strong{
+      font-size:15px;
+      letter-spacing:-.01em;
+    }
+    .garageAction .chev{
+      width:34px;height:34px;border-radius:12px;
+      background:rgba(148,163,184,.12);
+    }
+    .garageStatsGrid,
+    .financeGrid,
+    .metricsGrid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    .garageStatsGrid .smallStatBox,
+    .financeGrid .smallStatBox,
+    .metricsGrid .smallStatBox{
+      padding:16px;
+      min-height:104px;
+      border-radius:24px;
+    }
+    .smallStatBox .label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+    .smallStatBox .value{
+      font-size:22px;
+      letter-spacing:-.03em;
+    }
+    .smallStatBox .hint{
+      font-size:11px;
+      line-height:1.45;
+    }
+    .taskGroup{
+      border-radius:28px;
+    }
+    .taskGroupHead{
+      padding:18px 18px 16px;
+    }
+    .taskGroupHead h3{
+      font-size:13px;
+      letter-spacing:.12em;
+    }
+    .taskCard,
+    .carCard,
+    .rewardCard,
+    .achievement,
+    .historyItem,
+    .financeRow,
+    .listItem,
+    .switch,
+    .smallStatBox,
+    .garageCarTaskCard,
+    .garageLeadCard{
+      overflow:hidden;
+    }
+    .taskCard{
+      padding:15px 16px;
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .taskCard{
+      background:linear-gradient(180deg, rgba(30,41,59,.98) 0%, rgba(15,23,42,.96) 100%);
+    }
+    .taskMain strong{
+      font-size:15px;
+      letter-spacing:-.01em;
+    }
+    .taskMeta{
+      margin-top:2px;
+      font-size:10px;
+    }
+    .check{
+      width:28px;height:28px;border-radius:10px;
+    }
+    .rewardPills .xp,
+    .rewardPills .coins{
+      font-size:11px;
+    }
+    .carGrid{
+      gap:14px;
+    }
+    .carCard{
+      border-radius:28px;
+    }
+    .carHero{
+      min-height:168px;
+      padding:16px;
+    }
+    .carBody{
+      padding:16px;
+    }
+    .carBody h4{
+      font-size:18px;
+      letter-spacing:-.02em;
+    }
+    .miniBar{
+      height:12px;
+      margin:12px 0;
+    }
+    .rewardCard{
+      min-height:154px;
+      padding:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .rewardCard{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.95) 100%);
+    }
+    .rewardCard .ico,
+    .achievement .ico,
+    .histIcon{
+      background:rgba(37,99,235,.08);
+    }
+    .rewardCard strong,
+    .achievement strong{
+      font-size:15px;
+      letter-spacing:-.01em;
+    }
+    .rewardCard p,
+    .achievement span,
+    .historyItem span,
+    .garageLeadLine,
+    .leadDetailBox,
+    .financeRow span{
+      line-height:1.5;
+    }
+    .achievement{
+      min-height:132px;
+      padding:16px;
+      border-radius:24px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .achievement{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.95) 100%);
+    }
+    .switch{
+      padding:15px 16px;
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .switch{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.95) 100%);
+    }
+    .input{
+      min-height:48px;
+      padding:14px 15px;
+      border-radius:16px;
+      border-color:rgba(148,163,184,.22);
+      background:rgba(255,255,255,.92);
+    }
+    html[data-theme="dark"] .input{
+      background:rgba(15,23,42,.65);
+      border-color:rgba(148,163,184,.16);
+    }
+    select.input{
+      appearance:none;
+      background-image:linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+      background-position:calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px);
+      background-size:5px 5px, 5px 5px;
+      background-repeat:no-repeat;
+      padding-right:36px;
+    }
+    .navWrap{
+      padding:10px 12px calc(14px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg, rgba(248,251,255,.18) 0%, rgba(248,251,255,.82) 100%);
+      border-top:none;
+    }
+    html[data-theme="dark"] .navWrap{
+      background:linear-gradient(180deg, rgba(15,23,42,.18) 0%, rgba(15,23,42,.88) 100%);
+    }
+    .nav{
+      max-width:500px;
+      padding:10px;
+      border-radius:26px;
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(148,163,184,.18);
+      box-shadow:0 18px 40px rgba(15,23,42,.12);
+    }
+    html[data-theme="dark"] .nav{
+      background:rgba(15,23,42,.78);
+      border-color:rgba(148,163,184,.14);
+    }
+    .navBtn{
+      border-radius:18px;
+      padding:10px 6px;
+      min-height:66px;
+      transition:transform .16s ease, background .16s ease, border-color .16s ease, color .16s ease;
+    }
+    .navBtn.active{
+      background:linear-gradient(180deg, rgba(37,99,235,.10) 0%, rgba(37,99,235,.16) 100%);
+      border-color:rgba(37,99,235,.14);
+      transform:translateY(-1px);
+      box-shadow:inset 0 0 0 1px rgba(37,99,235,.10);
+    }
+    .navBtn .ico{font-size:19px}
+    .toast{
+      border-radius:18px;
+      box-shadow:0 20px 46px rgba(15,23,42,.18);
+    }
+    .modalBackdrop{
+      background:rgba(15,23,42,.56);
+      backdrop-filter:blur(6px);
+    }
+    .sheet{
+      width:min(100%,500px);
+      padding:18px;
+      border-radius:28px 28px 0 0;
+      background:linear-gradient(180deg, var(--surface) 0%, rgba(255,255,255,.98) 100%);
+    }
+    html[data-theme="dark"] .sheet{
+      background:linear-gradient(180deg, rgba(17,24,39,.99) 0%, rgba(17,24,39,.95) 100%);
+    }
+    .sheetHead h3{
+      font-size:20px;
+      letter-spacing:-.02em;
+    }
+    .closeBtn{
+      width:44px;
+      height:44px;
+      border-radius:16px;
+      background:rgba(148,163,184,.10);
+    }
+    .garageLeadCard{
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .garageLeadCard{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.95) 100%);
+    }
+    .garageLeadHero{
+      min-height:182px;
+      padding:16px;
+    }
+    .garageLeadBody{
+      padding:16px;
+    }
+    .garageLeadBody h4{
+      font-size:18px;
+      letter-spacing:-.02em;
+    }
+    .garageLeadTags{
+      gap:10px;
+    }
+    .garageLeadTag{
+      border-radius:999px;
+    }
+    .garageLeadActions{
+      gap:10px;
+    }
+    .garageLeadActions .btn,
+    .garageLeadActions .btn.secondary,
+    .garageLeadActions .btn.danger{
+      min-height:44px;
+      font-size:12px;
+    }
+    .garageCarTaskCard{
+      padding:16px;
+      border-radius:24px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .garageCarTaskCard{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.95) 100%);
+    }
+    .garageCarTaskHead strong,
+    .financeRow strong{
+      font-size:15px;
+      letter-spacing:-.01em;
+    }
+    .financeRow{
+      padding:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .financeRow{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.95) 100%);
+    }
+    .financeActions{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    .leadFilterBar{
+      grid-template-columns:minmax(0,1.4fr) minmax(0,.9fr) minmax(0,.9fr);
+    }
+    .heroImageBtn .carHero{
+      min-height:176px;
+    }
+    .galleryThumbs{
+      gap:10px;
+    }
+    .galleryThumbs .img{
+      border-radius:16px;
+    }
+    .statChip{
+      border-radius:999px;
+      background:rgba(37,99,235,.08);
+      border-color:rgba(37,99,235,.14);
+    }
+    .historyHeadLine{
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.98) 100%);
+    }
+    html[data-theme="dark"] .historyHeadLine{
+      background:linear-gradient(180deg, rgba(30,41,59,.97) 0%, rgba(15,23,42,.95) 100%);
+    }
+    .historyHeadLine strong{
+      font-size:16px;
+    }
+    .garageMenuTitle span,
+    .sectionHead span{
+      color:var(--muted);
+    }
+
+    .garageAction{
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+    }
+    .garageAction .left{
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .taskGroupHead{
+      justify-content:center;
+      text-align:center;
+    }
+    .taskGroupHead > div:first-child{
+      flex:1;
+      text-align:center;
+    }
+    .taskGroupHead .chev,
+    .garageAction .chev{
+      display:none !important;
+    }
+    @media (max-width: 430px){
+      .app{padding-left:12px;padding-right:12px}
+      .topbar{
+        margin-left:-12px;
+        margin-right:-12px;
+      }
+      .garageStatsGrid,
+      .financeGrid,
+      .metricsGrid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .garageMenuGrid,
+      .menuLinks{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .garageAction{
+        min-height:106px;
+      }
+      .menuLink{
+        min-height:116px;
+      }
+    }
+    @media (min-width: 700px){
+      .app{max-width:520px}
+      .sheet{width:min(100%,520px)}
+      .nav{max-width:520px}
+    }
+
+    .menuAccordion{display:none;}
+    .menuAccordion.open{display:block;}
+    .leadEditGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    .leadEditGrid .field{margin-bottom:0}
+    .leadEditFull{grid-column:1/-1}
+    .leadEditNote{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.4;
+    }
+    .sheetActions{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+
+  
+/* Codex premium motivation app v3 */
+:root{--bg:#f6f8fb;--surface:#ffffff;--surface-2:#f1f5f9;--surface-3:#e8eef5;--text:#142033;--muted:#64748b;--muted-2:#8a97a8;--line:#dbe4ee;--shadow:0 10px 28px rgba(15,23,42,.07);--shadow-soft:0 5px 16px rgba(15,23,42,.045);--accent:#2563eb;--accent-2:#0f766e;--success:#16803c;--warn:#b7791f;--danger:#dc2626;--radius:14px;--radius2:10px;--nav:#ffffff;--navBorder:#dbe4ee}html[data-theme="dark"]{--radius:14px;--radius2:10px}.app{max-width:470px;padding:12px 12px 112px}.topbar{justify-content:flex-start;text-align:left;margin:0 0 10px;padding:8px 2px 0}.topbar h1{font-size:22px!important;letter-spacing:0!important;line-height:1;font-weight:950;color:var(--text)}.panel,.miniStat,.taskCard,.rewardCard,.achievement,.zoneCard,.carCard,.garageCarTaskCard,.historyItem,.statBox,.smallStatBox{border-radius:14px!important;box-shadow:var(--shadow-soft)!important}.panel{border-color:var(--line)!important}.panel.pad{padding:13px}.hero{gap:10px}.heroCard{padding:14px;border-radius:16px!important;border:1px solid var(--line);box-shadow:var(--shadow)!important}.topStats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.miniStat{padding:11px;background:#fff;border:1px solid var(--line)}.miniStat .label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;margin-bottom:7px}.miniStat .value{font-size:22px}.miniStat .hint{display:none}.xpLine{margin-top:8px}.xpLine strong{font-size:17px}.bar{height:10px;border-radius:999px;background:#e8eef5;border:1px solid #dbe4ee;overflow:hidden}.fill{background:#2563eb!important;background-image:none!important;border-radius:999px}.btn,.smallBtn{border-radius:10px!important;background:#0f766e!important;background-image:none!important;border:1px solid #0f766e!important;box-shadow:none!important;font-weight:900}.btn.secondary,.smallBtn.secondary{background:#fff!important;color:var(--text)!important;border-color:var(--line)!important}.btn.warn{background:#b7791f!important;border-color:#b7791f!important}.btn.danger{background:#dc2626!important;border-color:#dc2626!important}.section{margin-top:14px}.sectionHead{margin:0 2px 8px;align-items:center}.sectionHead h2{font-size:17px;letter-spacing:0}.sectionHead span,.subtle,.taskGroupHead .sub,.rewardCard p,.switch .sub,.smallStatBox .hint{display:none!important}.taskList{gap:9px}.taskCard{padding:12px;border:1px solid var(--line);background:#fff;align-items:center}.taskMain strong{font-size:15px}.taskMeta{font-size:12px}.check{width:34px!important;height:34px!important;border-radius:10px!important}.rewardPills{gap:5px}.rewardPills .xp,.rewardPills .coins{font-size:13px;padding:4px 7px;border-radius:999px;background:#f1f5f9}.rewardPills .xp{color:#2563eb}.rewardPills .coins{color:#a16207}.shopGrid{display:grid;grid-template-columns:1fr;gap:10px}.rewardCard{border:1px solid var(--line);padding:13px;background:#fff;display:grid;gap:10px}.rewardCard .top{align-items:center}.rewardCard .ico{width:42px;height:42px;border-radius:12px;background:#f1f5f9;border:1px solid var(--line);font-size:20px}.rewardCard .cost{font-size:14px;background:#fff7e6;color:#92400e;border-color:#f6dba8}.rewardCard .buy{min-height:40px}.grid2{gap:9px}.input,.select,.textarea{border-radius:10px!important;background:#fff!important;border-color:var(--line)!important}.navWrap{padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:rgba(246,248,251,.94)!important;backdrop-filter:blur(16px)}.nav{border-radius:18px!important;padding:7px!important;gap:4px;box-shadow:0 14px 34px rgba(15,23,42,.14)!important}.navBtn{min-height:60px!important;border-radius:13px!important;font-size:11px!important;gap:3px!important}.navBtn .ico{font-size:23px!important}.navBtn.active{background:#e8f7f4!important;border-color:#bfe6dc!important;color:#0f766e!important}.navBtn:nth-child(1) .ico{color:#0f766e}.navBtn:nth-child(2) .ico{color:#2563eb}.navBtn:nth-child(3) .ico{color:#7c3aed}.navBtn:nth-child(4) .ico{color:#b7791f}.navBtn:nth-child(5) .ico{color:#dc2626}.toast{border-radius:12px!important}.premiumHome2{display:grid;gap:12px}.missionCard{border:1px solid #cfe1dc;background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px;display:grid;gap:12px}.missionTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.missionTop span{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase}.missionTop strong{display:block;font-size:25px;line-height:1.05;margin-top:4px}.missionPill{border:1px solid #dbe4ee;background:#f8fafc;border-radius:999px;padding:7px 9px;font-size:12px;font-weight:900;white-space:nowrap}.scoreGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.scoreBox{border:1px solid var(--line);background:#f8fafc;border-radius:12px;padding:10px}.scoreIcon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;margin-bottom:8px;font-size:17px}.scoreBox:nth-child(1) .scoreIcon{background:#e8f0ff;color:#2563eb}.scoreBox:nth-child(2) .scoreIcon{background:#fff4dc;color:#b7791f}.scoreBox:nth-child(3) .scoreIcon{background:#e8f7f4;color:#0f766e}.scoreBox span{display:block;font-size:10px;color:var(--muted);font-weight:900;text-transform:uppercase}.scoreBox strong{display:block;margin-top:4px;font-size:20px;line-height:1}.focusGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.focusBtn{border:1px solid var(--line);background:#fff;border-radius:14px;box-shadow:var(--shadow-soft);padding:12px;display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:center;text-align:left;color:var(--text)}.focusIcon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:18px}.focusBtn:nth-child(1) .focusIcon{background:#e8f7f4;color:#0f766e}.focusBtn:nth-child(2) .focusIcon{background:#e8f0ff;color:#2563eb}.focusBtn:nth-child(3) .focusIcon{background:#fff4dc;color:#b7791f}.focusBtn:nth-child(4) .focusIcon{background:#feecec;color:#dc2626}.focusBtn strong{display:block;font-size:14px}.focusBtn span{display:block;font-size:12px;color:var(--muted);margin-top:2px}.dailyPremium{border:1px solid var(--line);background:#fff;border-radius:16px;box-shadow:var(--shadow-soft);padding:13px;display:grid;gap:10px}.dailyPremiumHead{display:flex;justify-content:space-between;align-items:center}.dailyPremium h3{margin:0;font-size:16px}.dailyPremium .badge{background:#e8f0ff;color:#1d4ed8;border-color:#ccdcff}.economyStrip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.economyStrip div{border:1px solid var(--line);background:#f8fafc;border-radius:12px;padding:9px;text-align:center}.economyStrip span{display:block;font-size:10px;color:var(--muted);font-weight:900;text-transform:uppercase}.economyStrip strong{display:block;margin-top:4px;font-size:16px}.premiumHistory{display:grid;gap:8px}.premiumHistory .historyItem{box-shadow:none!important}@media(max-width:370px){.focusGrid{grid-template-columns:1fr}.topStats,.scoreGrid{gap:6px}.scoreBox strong,.miniStat .value{font-size:18px}.navBtn .ico{font-size:21px!important}.navBtn{min-height:56px!important}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <h1 style="margin:0;font-size:22px;letter-spacing:.18em;text-transform:uppercase;text-align:center;width:100%">MOTYVACIJA</h1>
+  </div>
+
+  <div class="view active" id="view-home">
+    <div class="hero">
+      <div class="panel heroCard">
+        <div>
+          <div class="subtle">XP / lygio progresas</div>
+          <div class="xpWrap">
+            <div class="bar"><div class="fill" id="xpFill"></div></div>
+            <div class="xpLine">
+              <div>
+                <span>Lygis</span>
+                <strong id="levelValue">1</strong>
+              </div>
+              <div style="text-align:right">
+                <span>Kitas lygis</span>
+                <strong id="xpToNext">0 XP</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="topStats">
+          <div class="miniStat">
+            <div class="label">🔥 Serija</div>
+            <div class="value" id="streakValue">0</div>
+            <div class="hint" id="streakHint">Judėk į priekį</div>
+          </div>
+          <div class="miniStat">
+            <div class="label">🪙 Monetos</div>
+            <div class="value" id="coinsValue">0</div>
+            <div class="hint">Atlygiams</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2>Šiandienos užduotys</h2><span id="taskProgressLabel">0/0 atlikta</span></div>
+      <div id="tasksRoot"></div>
+    </div>
+
+    <div class="section">
+      <button class="historyToggle" id="historyToggleBtn" type="button">
+        <div class="historyHeadLine">
+          <div>
+            <strong>Paskutiniai veiksmai</strong>
+            <span id="historyHint">Paspausk, kad pamatytum istoriją</span>
+          </div>
+          <div class="chev" id="historyChev">▸</div>
+        </div>
+      </button>
+      <div class="historyBody" id="historyBody">
+        <div class="historyList" id="historyRoot"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="view" id="view-garage">
+    <div class="sectionHead"><h2>Garažas</h2><span>Auto ir veiksmai</span></div>
+
+    <div class="panel pad garageMenuPanel">
+      <div class="garageMenuTitle">
+        <div>
+          <strong>Garažo meniu</strong>
+        </div>
+        <div class="badge info" id="garageMenuBadge">0 aktyvių / 0 parduotų</div>
+      </div>
+      <div style="display:none">
+        <span id="carCount"></span>
+        <strong id="monthlyProfitValue"></strong>
+        <div id="monthlyProfitFill"></div>
+      </div>
+      <div class="garageMenuGrid">
+        <button class="garageAction" type="button" data-garage-action="tasks">
+          <div class="left">
+            <div class="ico">✅</div>
+            <div><strong>Užduotys</strong></div>
+          </div>
+        </button>
+        <button class="garageAction" type="button" data-garage-action="leads">
+          <div class="left">
+            <div class="ico">📋</div>
+            <div><strong>Dominantys variantai</strong></div>
+          </div>
+        </button>
+        <button class="garageAction" type="button" data-garage-action="addcar">
+          <div class="left">
+            <div class="ico">➕</div>
+            <div><strong>Pridėti automobilį</strong></div>
+          </div>
+        </button>
+        <button class="garageAction" type="button" data-garage-action="stats">
+          <div class="left">
+            <div class="ico">📊</div>
+            <div><strong>Statistika</strong></div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="section" id="garageTasksSection">
+      <div class="sectionHead"><h2>Užduotys</h2><span id="garageTaskSummary">0 automobilių užduočių / 0 kitų užduočių</span></div>
+
+      <div class="panel taskGroup">
+        <button class="taskGroupHead" type="button" data-garage-toggle="autos">
+          <div>
+            <h3>Automobilių užduotys</h3>
+          </div>
+        </button>
+        <div class="taskGroupBody" id="garageAutosBody">
+          <div class="taskList" id="garageAutoTasksRoot"></div>
+        </div>
+      </div>
+
+      <div class="panel taskGroup">
+        <button class="taskGroupHead" type="button" data-garage-toggle="custom">
+          <div>
+            <h3>Kitos užduotys</h3>
+          </div>
+        </button>
+        <div class="taskGroupBody" id="garageCustomBody">
+          <form class="panel pad" style="margin:0 16px 16px" id="garageTaskForm">
+            <div class="field"><label>Užduoties pavadinimas</label><input class="input" id="garageTaskTitle" placeholder="Pvz. Nuplauti saloną" /></div>
+            <div class="grid2">
+              <div class="field"><label>XP</label><input class="input" id="garageTaskXp" type="number" min="0" step="1" value="10" /></div>
+              <div class="field"><label>Monetos</label><input class="input" id="garageTaskCoins" type="number" min="0" step="1" value="5" /></div>
+            </div>
+            <button class="btn" id="addGarageTaskBtn" type="submit" style="width:100%">Pridėti garažo užduotį</button>
+            <div class="leadEditNote">Patogiausia: įrašyk pavadinimą, pasirink XP / monetas ir spausk Enter arba mygtuką.</div>
+          </form>
+          <div class="taskList" id="garageCustomTasksRoot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel pad">
+        <div class="field"><label>Pavadinimas</label><input class="input" id="carName" placeholder="Nissan X-Trail" /></div>
+        <div class="grid2">
+          <div class="field"><label>Pirkimo kaina</label><input class="input" id="carBuyPrice" type="number" min="0" step="1" placeholder="4500" /></div>
+          <div class="field"><label>Nuotrauka</label><input class="input" id="carPhoto" type="file" accept="image/*" /></div>
+        </div>
+        <button class="btn" id="addCarBtn" style="width:100%">Pridėti automobilį</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2>Aktyvūs automobiliai</h2><span id="activeCarCount">0 auto</span></div>
+      <div class="carGrid" id="activeCarGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2>Parduoti automobiliai</h2><span id="soldCarCount">0 auto</span></div>
+      <div class="carGrid" id="soldCarGrid"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-garage-leads">
+    <div class="sectionHead"><h2>Dominantys variantai</h2><span>Įkelti variantai</span></div>
+
+    <div class="section">
+      <div class="panel pad">
+        <div class="garageMenuTitle" style="margin-bottom:12px">
+          <div>
+            <strong>Įkelti variantai</strong>
+            <span>Variantų sąrašas viršuje, naujas įkėlimas apačioje.</span>
+          </div>
+          <div class="badge info" id="garageLeadCount">0 variantų</div>
+        </div>
+        <div class="garageLeadGrid" id="garageLeadRoot"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel pad">
+        <div class="garageMenuTitle">
+          <div>
+            <strong>Naujas dominantis variantas</strong>
+            <span>Vienas laukas defektams ir pastaboms, kad pildymas būtų greitas ir aiškus.</span>
+          </div>
+          <button class="btn secondary" type="button" id="backToGarageBtn">← Į garažą</button>
+        </div>
+        <div class="field"><label>Markė</label><input class="input" id="leadMake" placeholder="Nissan" /></div>
+        <div class="grid2">
+          <div class="field"><label>Modelis</label><input class="input" id="leadModel" placeholder="X-Trail" /></div>
+          <div class="field"><label>Metai</label><input class="input" id="leadYear" type="number" min="1900" step="1" placeholder="2008" /></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Kuras</label><input class="input" id="leadFuel" placeholder="Dyzelis" /></div>
+          <div class="field"><label>Tel. nr.</label><input class="input" id="leadPhone" placeholder="+370..." /></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Miestas</label><input class="input" id="leadCity" placeholder="Vilnius" /></div>
+          <div class="field"><label>Pradinė kaina</label><input class="input" id="leadInitialPrice" type="number" min="0" step="1" placeholder="2000" /></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Mūsų siūlyta kaina</label><input class="input" id="leadTargetPrice" type="number" min="0" step="1" placeholder="1500" /></div>
+          <div class="field"><label>Po kiek dienų skambinti</label><input class="input" id="leadFollowDays" type="number" min="0" step="1" value="2" /></div>
+        </div>
+        <div class="field"><label>Defektai ir pastabos</label><textarea class="input" id="leadNotes" rows="4" placeholder="Variklis, kėbulas, derybų stadija, ką sakė, kada skambinti..."></textarea></div>
+        <div class="field"><label>Nuotraukos</label><input class="input" id="leadPhotos" type="file" accept="image/*" multiple /></div>
+        <button class="btn" id="addGarageLeadBtn" style="width:100%">Įkelti variantą</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="view" id="view-garage-stats">
+    <div class="sectionHead">
+      <h2>Garažo statistika</h2>
+      <span>Platesnė automobilių suvestinė</span>
+    </div>
+
+    <div class="panel pad">
+      <div class="garageMenuTitle">
+        <div>
+          <strong>Smulkesnė, aiškesnė statistika</strong>
+        </div>
+        <button class="btn secondary" type="button" id="backToGarageStatsBtn">← Į garažą</button>
+      </div>
+      <div class="garageStatsGrid" id="garageStatsOverviewGrid" style="margin-top:12px"></div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2>Pelnas ir tempas</h2><span id="garageStatsMeta">–</span></div>
+      <div class="metricsGrid" id="garageStatsDetailRoot"></div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2>Paskutiniai pardavimai</h2><span id="garageSalesCount">0 auto</span></div>
+      <div class="carGrid" id="garageSalesRoot"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-finance">
+    <div class="sectionHead">
+      <h2>Finansai</h2>
+      <span>Biudžetas, skolos ir judėjimas</span>
+    </div>
+
+    <div class="panel pad">
+      <div class="garageMenuTitle">
+        <div><strong>Finansų centras</strong></div>
+        <button class="btn secondary" type="button" id="backToMenuBtn">← Į meniu</button>
+      </div>
+      <div class="financeGrid" id="financeSummaryGrid" style="margin-top:12px"></div>
+    </div>
+
+    <div class="section">
+      <div class="panel pad">
+        <div class="field">
+          <label>Tipas</label>
+          <select class="input" id="financeTxType">
+            <option value="income">Pajamos</option>
+            <option value="expense">Išlaidos</option>
+          </select>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Suma</label><input class="input" id="financeTxAmount" type="number" min="0" step="1" placeholder="250" /></div>
+          <div class="field"><label>Data</label><input class="input" id="financeTxDate" type="date" /></div>
+        </div>
+        <div class="field"><label>Pavadinimas</label><input class="input" id="financeTxTitle" placeholder="Auto pardavimas / Remontas / Kuras" /></div>
+        <div class="field"><label>Aprašymas</label><input class="input" id="financeTxNote" placeholder="Papildoma pastaba" /></div>
+        <button class="btn" id="addFinanceTxBtn" style="width:100%">Pridėti įrašą</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="panel pad">
+        <div class="field">
+          <label>Veiksmas</label>
+          <select class="input" id="debtAction">
+            <option value="add">Pridėti skolą</option>
+            <option value="subtract">Atimti skolą</option>
+          </select>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Kam</label><input class="input" id="debtPerson" placeholder="Vardas / įmonė" /></div>
+          <div class="field"><label>Suma</label><input class="input" id="debtAmount" type="number" min="0" step="1" placeholder="100" /></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Data</label><input class="input" id="debtDate" type="date" /></div>
+          <div class="field"><label>Aprašymas</label><input class="input" id="debtNote" placeholder="Kodėl keitėsi skola" /></div>
+        </div>
+        <button class="btn" id="addDebtBtn" style="width:100%">Pridėti skolos veiksmą</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2>Operacijos</h2><span id="financeTxCount">0 įrašų</span></div>
+      <div class="financeList" id="financeTxRoot"></div>
+    </div>
+
+    <div class="section">
+      <div class="sectionHead"><h2>Skolos</h2><span id="financeDebtCount">0 žmonių</span></div>
+      <div class="financeList" id="financeDebtRoot"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-menu">
+
+    <div class="sectionHead"><h2>Meniu</h2><span>Pagrindiniai skyriai</span></div>
+
+    <div class="panel pad menuIntro">
+      <div class="garageMenuTitle">
+        <div><strong>Greita navigacija</strong></div>
+      </div>
+      <div class="menuLinks">
+        <button class="menuLink" data-jump="menu-shop" data-menu-section="shop"><div class="ico">🛍️</div><strong>Atlygių parduotuvė</strong></button>
+        <button class="menuLink" data-jump="menu-stats" data-menu-section="stats"><div class="ico">📊</div><strong>Statistika</strong></button>
+        <button class="menuLink" data-open-view="finance"><div class="ico">💼</div><strong>Finansai</strong></button>
+      </div>
+    </div>
+
+    <div class="section" id="menu-shop" style="display:none">
+      <div class="sectionHead"><h2>Atlygių parduotuvė</h2><span>Monetos</span></div>
+      <div class="shopGrid" id="shopGrid"></div>
+    </div>
+
+    <div class="section" id="menu-stats" style="display:none">
+      <div class="sectionHead"><h2>Statistika</h2><span>Kasdienė eiga</span></div>
+      <div class="grid2" id="statsGrid"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-achievements">
+    <div class="sectionHead"><h2>Užduotys</h2><span>Asmeniniai darbai</span></div>
+    <div class="panel pad">
+      <div class="field"><label>Užduoties pavadinimas</label><input class="input" id="importantTitle" placeholder="Sumokėti mokesčius" /></div>
+      <div class="grid2">
+        <div class="field"><label>XP</label><input class="input" id="importantXp" type="number" min="0" step="1" value="20" /></div>
+        <div class="field"><label>Monetos</label><input class="input" id="importantCoins" type="number" min="0" step="1" value="10" /></div>
+      </div>
+      <button class="btn" id="addImportantBtn" style="width:100%">Pridėti užduotį</button>
+    </div>
+    <div class="section">
+      <div class="taskList" id="importantTasksRoot"></div>
+    </div>
+    <div id="achievementsRoot" style="display:none"></div>
+    <div id="skillsRoot" style="display:none"></div>
+  </div>
+
+
+  <div class="view" id="view-settings">
+    <div class="sectionHead"><h2>Nustatymai</h2><span>Premium valdymas</span></div>
+    <div class="panel pad">
+      <div class="switch">
+        <div><strong>Šviesus / tamsus režimas</strong><div class="sub">Šviesus režimas yra numatytas</div></div>
+        <div class="toggle on" id="themeToggle"></div>
+      </div>
+      <div class="switch">
+        <div><strong>Garsas</strong><div class="sub">Užduotims, lygiui ir atrakinimams</div></div>
+        <div class="toggle on" id="soundToggle"></div>
+      </div>
+      <div class="switch">
+        <div><strong>Vibracija</strong><div class="sub">Haptinis grįžtamasis ryšys</div></div>
+        <div class="toggle on" id="vibrateToggle"></div>
+      </div>
+      <div class="switch">
+        <div><strong>Visiškai nuresetinti žaidimą</strong><div class="sub">Ištrina visą lokalų progresą ir pradeda iš naujo</div></div>
+        <button class="btn ghost" id="resetBtn">Pilnas reset</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footerSpace">
+</div>
+</div>
+
+<div class="toastWrap" id="toastWrap"></div>
+
+<div class="modalBackdrop" id="modalBackdrop">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<div class="navWrap">
+  <div class="nav">
+    <button class="navBtn active" data-view="home"><div class="ico">🏠</div><div>Pagrindinis</div></button>
+    <button class="navBtn" data-view="garage"><div class="ico">🚗</div><div>Garažas</div></button>
+    <button class="navBtn" data-view="menu"><div class="ico">☰</div><div>Meniu</div></button>
+    <button class="navBtn" data-view="achievements"><div class="ico">🏆</div><div>Užduotys</div></button>
+    <button class="navBtn" data-view="settings"><div class="ico">⚙️</div><div>Nustatymai</div></button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const STORAGE_KEY = 'zaisk_gyvenimas_premium_lt_v2';
+  const todayISO = () => new Date().toISOString().slice(0,10);
+  const currentMonthKey = () => new Date().toISOString().slice(0,7);
+  const nowLabel = () => new Date().toLocaleString('lt-LT', {year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  const escapeHTML = (str='') => String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+  const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const clamp = (n,min,max) => Math.max(min, Math.min(max, n));
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id_' + Date.now() + '_' + Math.random().toString(16).slice(2));
+  const moneyFmt = (n) => `${new Intl.NumberFormat('lt-LT').format(Math.round(Number(n) || 0))} €`;
+
+
+  const taskTemplates = [
+    {id:'water', cat:'Sveikata', icon:'💧', title:'2L vandens', xp:18, coins:8, difficulty:'Vidutinė', statKey:'waterLiters', statValue:2, skill:'Discipline'},
+    {id:'social', cat:'Sveikata', icon:'📵', title:'60 min be socialinių tinklų', xp:16, coins:7, difficulty:'Vidutinė', statKey:'socialMinutes', statValue:60, skill:'Discipline'},
+    {id:'walk', cat:'Sveikata', icon:'🚶', title:'30 min pasivaikščiojimas', xp:15, coins:6, difficulty:'Lengva', statKey:'walkMinutes', statValue:30, skill:'Strength'},
+    {id:'push', cat:'Sveikata', icon:'💪', title:'50 atsispaudimų', xp:24, coins:10, difficulty:'Sunkesnė', statKey:'pushups', statValue:50, skill:'Strength'},
+    {id:'pull', cat:'Sveikata', icon:'🏋️', title:'20 prisitraukimų', xp:30, coins:14, difficulty:'Sunkesnė', statKey:'pullups', statValue:20, skill:'Strength'},
+    {id:'meal', cat:'Sveikata', icon:'🍽️', title:'3 kartai valgymo', xp:12, coins:5, difficulty:'Lengva', statKey:'meals', statValue:3, skill:'Discipline'},
+    {id:'addiction', cat:'Sveikata', icon:'🛡️', title:'24h be priklausomybių', xp:35, coins:18, difficulty:'Epik', statKey:'cleanDays', statValue:1, skill:'Discipline'},
+
+    {id:'mom', cat:'Produktyvumas', icon:'👪', title:'30 min pas mamą', xp:10, coins:5, difficulty:'Lengva', statKey:'momVisits', statValue:30, skill:'Discipline'},
+    {id:'clean', cat:'Produktyvumas', icon:'🧹', title:'Sutvarkyti namus', xp:22, coins:9, difficulty:'Vidutinė', statKey:'homeCleanings', statValue:1, skill:'Discipline'},
+    {id:'sales5', cat:'Produktyvumas', icon:'📄', title:'5 pardavimo sutartys', xp:35, coins:18, difficulty:'Epik', statKey:'salesContracts', statValue:5, skill:'Business'},
+    {id:'garage2h', cat:'Produktyvumas', icon:'🔧', title:'2h darbas garaže', xp:26, coins:12, difficulty:'Sunkesnė', statKey:'garageHours', statValue:2, skill:'Business'},
+    {id:'carAds', cat:'Produktyvumas', icon:'📸', title:'1 auto į skelbimus', xp:24, coins:11, difficulty:'Sunkesnė', statKey:'carsListed', statValue:1, skill:'Business'},
+    {id:'buyCar', cat:'Produktyvumas', icon:'🚘', title:'1 nupirktas auto', xp:30, coins:16, difficulty:'Sunkesnė', statKey:'carsBought', statValue:1, skill:'Business'},
+    {id:'sellCar', cat:'Produktyvumas', icon:'💸', title:'1 parduotas auto', xp:35, coins:22, difficulty:'Epik', statKey:'carsSold', statValue:1, skill:'Business'},
+    {id:'procrast', cat:'Produktyvumas', icon:'⏳', title:'Atidėliotas dalykas (1/2)', xp:20, coins:8, difficulty:'Vidutinė', statKey:'procrastTasks', statValue:1, skill:'Focus'},
+
+    {id:'study', cat:'Tobulėjimas', icon:'📚', title:'60 min mokymasis', xp:20, coins:8, difficulty:'Vidutinė', statKey:'studyMinutes', statValue:60, skill:'Focus'},
+    {id:'read', cat:'Tobulėjimas', icon:'📖', title:'20 puslapių skaitymas', xp:14, coins:6, difficulty:'Lengva', statKey:'readPages', statValue:20, skill:'Focus'},
+    {id:'ce', cat:'Tobulėjimas', icon:'🪪', title:'60 min CE teorija', xp:18, coins:7, difficulty:'Vidutinė', statKey:'ceMinutes', statValue:60, skill:'Focus'},
+    {id:'teeth', cat:'Tobulėjimas', icon:'🦷', title:'Dantys ryte/vakare', xp:10, coins:4, difficulty:'Lengva', statKey:'teethSessions', statValue:1, skill:'Discipline'},
+    {id:'shower', cat:'Tobulėjimas', icon:'🚿', title:'Prausimasis', xp:10, coins:4, difficulty:'Lengva', statKey:'showers', statValue:1, skill:'Discipline'},
+    {id:'tv', cat:'Tobulėjimas', icon:'📺', title:'Diena be TV', xp:16, coins:6, difficulty:'Vidutinė', statKey:'tvFreeDays', statValue:1, skill:'Focus'}
+  ];
+
+
+  const dailyQuestPool = taskTemplates.filter(t => [
+    'social','walk','push','pull','mom','clean','sales5','procrast','study','read','ce'
+  ].includes(t.id));
+
+  const worldDefs = [
+    {name:'Pradžios zona', emoji:'🌱', req:1, desc:'Pirmas žingsnis', atlygis:{xp:25, coins:20}},
+    {name:'Disciplinos miestas', emoji:'🛡️', req:4, desc:'Įpročiai ir ritmas', atlygis:{xp:40, coins:35}},
+    {name:'Pinigų rajonas', emoji:'💼', req:8, desc:'Pinigų judėjimas', atlygis:{xp:60, coins:50}},
+    {name:'Elito zona', emoji:'👑', req:15, desc:'Aukštas lygis', atlygis:{xp:90, coins:80}},
+    {name:'Laisvės pasaulis', emoji:'🕊️', req:25, desc:'Laisvė ir kontrolė', atlygis:{xp:140, coins:120}}
+  ];
+
+
+  const rewardsShop = [
+    {id:'pizza', name:'Picos vakaras', icon:'🍕', cost:70, desc:'Smagus vakaro atlygis po geros dienos.'},
+    {id:'random15', name:'15€ atsitiktinis pirkinys', icon:'🎁', cost:110, desc:'Mažas atpildas už stiprų progresą.'},
+    {id:'cinema', name:'Kinas', icon:'🎬', cost:150, desc:'Atsipalaidavimas su premium jausmu.'},
+    {id:'massage', name:'Masažas', icon:'💆', cost:200, desc:'Atsistatymas kūnui ir protui.'},
+    {id:'shopping80', name:'80€ pirkinys', icon:'🛍️', cost:260, desc:'Didelis atlygis už didelį progresą.'},
+    {id:'trip3', name:'3 dienų kelionė', icon:'✈️', cost:420, desc:'Didžiausias savaitgalio prizas.'}
+  ];
+
+
+  const achievementDefs = [
+    {id:'daily10', icon:'🥇', title:'10 užduočių per dieną', desc:'Per vieną dieną atlik 10 užduočių', need:s => stateDailyTaskCount(s) >= 10, atlygis:{xp:60, coins:40}},
+    {id:'weekly100', icon:'📅', title:'100 užduočių per savaitę', desc:'Per 7 dienas atlik 100 užduočių', need:s => stateWeeklyTaskCount(s) >= 100, atlygis:{xp:120, coins:80}},
+    {id:'streak3', icon:'🔥', title:'3 dienų serija', desc:'Išlaikyk 3 dienas iš eilės', need:s => s.streak >= 3, atlygis:{xp:40, coins:30}},
+    {id:'streak7', icon:'🔥', title:'7 dienų serija', desc:'Išlaikyk 7 dienas iš eilės', need:s => s.streak >= 7, atlygis:{xp:70, coins:50}},
+    {id:'streak15', icon:'🔥', title:'15 dienų serija', desc:'Išlaikyk 15 dienų iš eilės', need:s => s.streak >= 15, atlygis:{xp:120, coins:90}},
+    {id:'push100', icon:'💪', title:'100 atsispaudimų', desc:'Surink 100 atsispaudimų', need:s => s.stats.pushups >= 100, atlygis:{xp:60, coins:35}},
+    {id:'push300', icon:'💪', title:'300 atsispaudimų', desc:'Surink 300 atsispaudimų', need:s => s.stats.pushups >= 300, atlygis:{xp:120, coins:70}},
+    {id:'push500', icon:'💪', title:'500 atsispaudimų', desc:'Surink 500 atsispaudimų', need:s => s.stats.pushups >= 500, atlygis:{xp:180, coins:110}},
+    {id:'pull50', icon:'🏋️', title:'50 prisitraukimų', desc:'Surink 50 prisitraukimų', need:s => s.stats.pullups >= 50, atlygis:{xp:60, coins:35}},
+    {id:'pull100', icon:'🏋️', title:'100 prisitraukimų', desc:'Surink 100 prisitraukimų', need:s => s.stats.pullups >= 100, atlygis:{xp:120, coins:70}},
+    {id:'pull200', icon:'🏋️', title:'200 prisitraukimų', desc:'Surink 200 prisitraukimų', need:s => s.stats.pullups >= 200, atlygis:{xp:180, coins:110}},
+    {id:'profit5k', icon:'💎', title:'5 000 € grynojo pelno per mėnesį', desc:'Per mėnesį pasiek 5 000 € grynojo pelno', need:s => (s.finances?.monthlyNetProfit || 0) >= 5000, atlygis:{xp:140, coins:120}},
+    {id:'profit10k', icon:'💎', title:'10 000 € grynojo pelno per mėnesį', desc:'Per mėnesį pasiek 10 000 € grynojo pelno', need:s => (s.finances?.monthlyNetProfit || 0) >= 10000, atlygis:{xp:180, coins:150}}
+  ];
+
+  const defaultSkills = [
+    {key:'Strength', icon:'💪', desc:'Sportas, kūnas ir energija', xp:0, level:1, boost:1.12},
+    {key:'Focus', icon:'🧠', desc:'Mokymasis, koncentracija ir gylis', xp:0, level:1, boost:1.10},
+    {key:'Business', icon:'💰', desc:'Automobilių pardavimai ir pinigų judėjimas', xp:0, level:1, boost:1.10},
+    {key:'Discipline', icon:'🧘', desc:'Įpročiai, ritmas ir stabilumas', xp:0, level:1, boost:1.14}
+  ];
+
+
+  const defaultStats = () => ({
+    tasksCompleted:0,
+    lifetimeXp:0,
+    waterLiters:0,
+    socialMinutes:0,
+    walkMinutes:0,
+    pushups:0,
+    pullups:0,
+    meals:0,
+    cleanDays:0,
+    momVisits:0,
+    homeCleanings:0,
+    salesContracts:0,
+    garageHours:0,
+    carsListed:0,
+    carsBought:0,
+    carsSold:0,
+    procrastTasks:0,
+    studyMinutes:0,
+    readPages:0,
+    ceMinutes:0,
+    teethSessions:0,
+    showers:0,
+    tvFreeDays:0,
+    shopSpends:0,
+    shopPurchases:0,
+    badgesEarned:0,
+    worldUnlocks:0
+  });
+
+
+  function parseISODateLocal(iso){
+    if(!iso) return null;
+    const parts = String(iso).split('-').map(Number);
+    if(parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return null;
+    const [y,m,d] = parts;
+    return new Date(y, m - 1, d);
+  }
+
+  function toISODateLocal(date){
+    return [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, '0'),
+      String(date.getDate()).padStart(2, '0')
+    ].join('-');
+  }
+
+  
+function installMotivationPremiumV3(){
+ if(window.__motivationPremiumV3)return;window.__motivationPremiumV3=true;
+ const rewardPlans={coffee:{cost:35,name:'Kava be kaltės',desc:'Mažas malonumas po realaus veiksmo.'},movie:{cost:120,name:'Filmo vakaras',desc:'Ramus vakaras už sukauptą discipliną.'},gaming:{cost:90,name:'Žaidimų sesija',desc:'45 min. žaidimų tik po plano.'},food:{cost:160,name:'Mėgstamas maistas',desc:'Atlygis už stiprią dieną.'},trip:{cost:420,name:'Mini išvyka',desc:'Didesnis prizas už savaitės ritmą.'},gear:{cost:650,name:'Naudingas pirkinys',desc:'Daiktas, kuris padeda judėti toliau.'}};
+ if(Array.isArray(rewardsShop)) rewardsShop.forEach(function(r){if(rewardPlans[r.id])Object.assign(r,rewardPlans[r.id])});
+ const oldAdd=addXpAndCoins;
+ addXpAndCoins=function(baseXp,coins,source,skillKey,icon){
+   const streakBonus=state.streak>=14?1.25:state.streak>=7?1.18:state.streak>=3?1.1:1;
+   const cleanXp=Math.max(1,Math.round(Number(baseXp||0)*streakBonus));
+   const cleanCoins=Math.max(0,Math.round(Number(coins||0)*(streakBonus>1?1.1:1)));
+   oldAdd(cleanXp,cleanCoins,source,skillKey,icon);
+   if(streakBonus>1){addHistory('Serijos bonusas','Atlygis padidintas už ritmą','🔥');saveState();render();}
+ };
+ const oldRender=render;
+ render=function(){oldRender();renderPremiumHomeV3();polishEconomyLabels()};
+}
+function polishEconomyLabels(){
+ const title=document.querySelector('.topbar h1'); if(title)title.textContent='Motyvacija';
+ document.querySelectorAll('.rewardCard .buy').forEach(function(b){if(!b.textContent.includes('Pirkti'))b.textContent='Pirkti'});
+}
+function renderPremiumHomeV3(){
+ if(state.selectedView!=='home')return;
+ const root=document.getElementById('view-home'); if(!root)return;
+ const xpNeeded=state.level*100; const xpPct=clamp(Math.round((state.xp/xpNeeded)*100),0,100);
+ const done=Object.keys(state.completedToday||{}).length; const total=taskTemplates.length;
+ const q=state.dailyQuest; const qReward=q?generateQuestReward(q):{xp:0,coins:0};
+ root.innerHTML='<div class="premiumHome2"><div class="missionCard"><div class="missionTop"><div><span>Lygis '+state.level+'</span><strong>'+state.xp+' / '+xpNeeded+' XP</strong></div><div class="missionPill">'+state.streak+' d. serija</div></div><div class="bar"><div class="fill" style="width:'+xpPct+'%"></div></div><div class="scoreGrid"><div class="scoreBox"><div class="scoreIcon">XP</div><span>Iki lygio</span><strong>'+Math.max(0,xpNeeded-state.xp)+'</strong></div><div class="scoreBox"><div class="scoreIcon">🪙</div><span>Monetos</span><strong>'+state.coins+'</strong></div><div class="scoreBox"><div class="scoreIcon">✓</div><span>Šiandien</span><strong>'+done+'/'+total+'</strong></div></div></div>'+
+ '<div class="dailyPremium"><div class="dailyPremiumHead"><h3>Dienos misija</h3>'+(state.dailyQuestClaimed?'<span class="badge green">Atlikta</span>':'<span class="badge">+'+qReward.xp+' XP · '+qReward.coins+' 🪙</span>')+'</div><strong>'+(q?esc(q.title):'Misija ruošiama')+'</strong><button class="btn" id="premiumClaimDaily" type="button" '+(state.dailyQuestClaimed?'disabled':'')+'>'+(state.dailyQuestClaimed?'Jau paimta':'Paimti atlygį')+'</button></div>'+
+ '<div class="focusGrid"><button class="focusBtn" data-jump-premium="achievements"><div class="focusIcon">✓</div><div><strong>Užduotys</strong><span>Asmeniniai darbai</span></div></button><button class="focusBtn" data-jump-premium="menu"><div class="focusIcon">🪙</div><div><strong>Atlygiai</strong><span>Parduotuvė</span></div></button><button class="focusBtn" data-jump-premium="garage"><div class="focusIcon">🚗</div><div><strong>Garažas</strong><span>Auto tikslai</span></div></button><button class="focusBtn" data-jump-premium="finance"><div class="focusIcon">€</div><div><strong>Finansai</strong><span>Balansas</span></div></button></div>'+
+ '<div class="economyStrip"><div><span>Užduotys</span><strong>'+state.stats.tasksCompleted+'</strong></div><div><span>Išleista</span><strong>'+state.stats.shopSpends+' 🪙</strong></div><div><span>Pirkiniai</span><strong>'+state.stats.shopPurchases+'</strong></div></div>'+
+ '<div class="sectionHead"><h2>Istorija</h2></div><div class="premiumHistory">'+(state.history.slice(0,5).map(function(h){return '<div class="historyItem"><div class="historyIcon">'+esc(h.icon)+'</div><div><strong>'+esc(h.title)+'</strong><span>'+esc(h.desc)+' · '+esc(h.time)+'</span></div></div>'}).join('')||'<div class="empty">Dar nėra įrašų.</div>')+'</div></div>';
+ const claim=document.getElementById('premiumClaimDaily'); if(claim)claim.onclick=claimDailyQuest;
+ root.querySelectorAll('[data-jump-premium]').forEach(function(b){b.onclick=function(){state.selectedView=b.dataset.jumpPremium;saveState();render()}});
+}
+
+function addDaysISO(baseISO, days){
+    const base = parseISODateLocal(baseISO || todayISO()) || new Date();
+    const d = new Date(base.getTime());
+    d.setDate(d.getDate() + Number(days || 0));
+    return toISODateLocal(d);
+  }
+
+  function daysBetweenISO(fromISO, toISO){
+    const from = parseISODateLocal(fromISO);
+    const to = parseISODateLocal(toISO);
+    if(!from || !to) return 0;
+    return Math.round((to - from) / 86400000);
+  }
+
+  function garageLeadDaysLeft(lead){
+    return daysBetweenISO(todayISO(), lead?.nextCallDate || todayISO());
+  }
+
+  function garageLeadDaysText(lead){
+    const days = garageLeadDaysLeft(lead);
+    if(days < 0) return `${Math.abs(days)} d. vėluoja`;
+    if(days === 0) return 'Skambinti šiandien';
+    if(days === 1) return '1 diena liko';
+    return `${days} d. liko`;
+  }
+
+  function garageLeadDueFilterMatch(lead, filter){
+    const days = garageLeadDaysLeft(lead);
+    if(filter === 'all') return true;
+    if(filter === 'overdue') return days < 0;
+    return days === Number(filter);
+  }
+
+  function garageTaskStatsList(){
+    const today = todayISO();
+    const weekCutoff = new Date();
+    weekCutoff.setDate(weekCutoff.getDate() - 6);
+    const weekISO = toISODateLocal(weekCutoff);
+    const monthKey = currentMonthKey();
+
+    const carTasksToday = (state.completionLog || []).filter(e => e.kind === 'garageCarTask' && e.date === today).length;
+    const customTasksToday = (state.completionLog || []).filter(e => e.kind === 'garageCustomTask' && e.date === today).length;
+    const carTasksWeek = (state.completionLog || []).filter(e => e.kind === 'garageCarTask' && e.date >= weekISO).length;
+    const customTasksWeek = (state.completionLog || []).filter(e => e.kind === 'garageCustomTask' && e.date >= weekISO).length;
+    const carTasksMonth = (state.completionLog || []).filter(e => e.kind === 'garageCarTask' && e.date.startsWith(monthKey)).length;
+    const customTasksMonth = (state.completionLog || []).filter(e => e.kind === 'garageCustomTask' && e.date.startsWith(monthKey)).length;
+
+    const soldToday = (state.cars || []).filter(c => c.status === 'parduotas' && (c.soldDateISO || '').slice(0,10) === today);
+    const soldWeek = (state.cars || []).filter(c => c.status === 'parduotas' && (c.soldDateISO || '') >= weekISO);
+    const soldMonth = (state.cars || []).filter(c => c.status === 'parduotas' && (c.soldDateISO || '').slice(0,7) === monthKey);
+
+    const boughtToday = (state.cars || []).filter(c => (c.createdDateISO || '').slice(0,10) === today).length;
+    const boughtWeek = (state.cars || []).filter(c => (c.createdDateISO || '') >= weekISO).length;
+    const boughtMonth = (state.cars || []).filter(c => (c.createdDateISO || '').slice(0,7) === monthKey).length;
+
+    const dayRevenue = soldToday.reduce((sum, c) => sum + Number(c.soldPrice || 0), 0);
+    const weekRevenue = soldWeek.reduce((sum, c) => sum + Number(c.soldPrice || 0), 0);
+    const monthRevenue = soldMonth.reduce((sum, c) => sum + Number(c.soldPrice || 0), 0);
+
+    const dayProfit = soldToday.reduce((sum, c) => sum + Number(c.netProfit || 0), 0);
+    const weekProfit = soldWeek.reduce((sum, c) => sum + Number(c.netProfit || 0), 0);
+    const monthProfit = soldMonth.reduce((sum, c) => sum + Number(c.netProfit || 0), 0);
+
+    return [
+      {label:'Diena', value:`${moneyFmt(dayRevenue)} / ${moneyFmt(dayProfit)}`, hint:`Pardavimai / grynas pelnas • Pirkta ${boughtToday} • Užduočių ${carTasksToday + customTasksToday}`},
+      {label:'Savaitė', value:`${moneyFmt(weekRevenue)} / ${moneyFmt(weekProfit)}`, hint:`Pirkta ${boughtWeek} • Parduota ${soldWeek.length} • Užduočių ${carTasksWeek + customTasksWeek}`},
+      {label:'Mėnuo', value:`${moneyFmt(monthProfit)}`, hint:`Pardavimai ${moneyFmt(monthRevenue)} • Pirkta ${boughtMonth} • Užduočių ${carTasksMonth + customTasksMonth}`}
+    ];
+  }
+
+  function resetGarageDailyTasks(){
+    const today = todayISO();
+    if(state.garageTaskLastReset !== today){
+      state.garageTaskLastReset = today;
+      state.garageTasks = (state.garageTasks || []).map(task => ({
+        ...task,
+        done:false,
+        doneDate:'',
+        completedAt:null
+      }));
+    }
+  }
+
+  function ensureGarageDailyTasks(){
+    resetGarageDailyTasks();
+  }
+
+  function completeGarageTask(taskId){
+    const task = state.garageTasks.find(t => t.id === taskId);
+    if(!task || task.done) return;
+    task.done = true;
+    task.doneDate = todayISO();
+    task.completedAt = nowLabel();
+    state.stats.tasksCompleted += 1;
+    logTaskCompletion(task.title, 'garageCustomTask');
+    addXpAndCoins(task.xp, task.coins, 'Garažo užduotis', 'Discipline', '🧩');
+  }
+
+  function addGarageTask(title, xp, coins){
+    const task = {
+      id: uid(),
+      title: String(title || '').trim(),
+      xp: Math.max(0, Number(xp) || 0),
+      coins: Math.max(0, Number(coins) || 0),
+      done:false,
+      doneDate:'',
+      createdAt: nowLabel(),
+      completedAt:null
+    };
+    if(!task.title) return false;
+    state.garageTasks.unshift(task);
+    addHistory('Garažo užduotis', `Pridėta: ${task.title}`, '➕');
+    toast('Garažo užduotis pridėta', '➕');
+    saveState();
+    render();
+    return true;
+  }
+
+  function deleteGarageTask(taskId){
+    const task = state.garageTasks.find(t => t.id === taskId);
+    if(!task) return;
+    const ok = window.confirm(`Ištrinti garažo užduotį „${task.title}“?`);
+    if(!ok) return;
+    state.garageTasks = state.garageTasks.filter(t => t.id !== taskId);
+    addHistory('Garažo užduotis', `Ištrinta: ${task.title}`, '🗑️');
+    toast('Garažo užduotis ištrinta', '🗑️');
+    saveState();
+    render();
+  }
+
+  function garageLeadFromFormValues(){
+    const make = document.getElementById('leadMake')?.value.trim();
+    const model = document.getElementById('leadModel')?.value.trim();
+    const year = Number(document.getElementById('leadYear')?.value || 0);
+    const fuel = document.getElementById('leadFuel')?.value.trim();
+    const phone = document.getElementById('leadPhone')?.value.trim();
+    const city = document.getElementById('leadCity')?.value.trim();
+    const initialPrice = Number(document.getElementById('leadInitialPrice')?.value || 0);
+    const targetPrice = Number(document.getElementById('leadTargetPrice')?.value || 0);
+    const followDays = Math.max(0, Number(document.getElementById('leadFollowDays')?.value || 0));
+    const notes = document.getElementById('leadNotes')?.value.trim();
+    const files = Array.from(document.getElementById('leadPhotos')?.files || []);
+    return {make, model, year, fuel, phone, city, initialPrice, targetPrice, followDays, notes, files};
+  }
+
+  function leadPhotosToDataUrls(files){
+    const list = Array.from(files || []).filter(Boolean).slice(0, 8);
+    return Promise.all(list.map(file => new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onerror = () => resolve('');
+      reader.onload = () => {
+        const raw = reader.result;
+        if(typeof raw !== 'string' || !raw.startsWith('data:image/')){
+          resolve(raw || '');
+          return;
+        }
+        const img = new Image();
+        img.onload = () => {
+          try{
+            const maxSide = 1280;
+            const scale = Math.min(1, maxSide / Math.max(img.width || maxSide, img.height || maxSide));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round((img.width || maxSide) * scale));
+            canvas.height = Math.max(1, Math.round((img.height || maxSide) * scale));
+            const ctx = canvas.getContext('2d');
+            if(!ctx){ resolve(raw); return; }
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.82));
+          }catch(err){
+            resolve(raw);
+          }
+        };
+        img.onerror = () => resolve(raw);
+        img.src = raw;
+      };
+      reader.readAsDataURL(file);
+    }))).then(arr => arr.filter(Boolean));
+  }
+
+  function addGarageLead(){
+    const data = garageLeadFromFormValues();
+    if(!data.make || !data.model){
+      toast('Įrašyk markę ir modelį', '✍️');
+      return;
+    }
+    leadPhotosToDataUrls(data.files).then(photos => {
+      const lead = {
+        id: uid(),
+        make: data.make,
+        model: data.model,
+        year: data.year || '',
+        fuel: data.fuel,
+        phone: data.phone,
+        city: data.city,
+        initialPrice: data.initialPrice || 0,
+        targetPrice: data.targetPrice || 0,
+        notes: data.notes,
+        defects: '',
+        followUpDays: data.followDays,
+        createdAt: nowLabel(),
+        createdDateISO: todayISO(),
+        lastCalledAt: '',
+        nextCallDate: addDaysISO(todayISO(), data.followDays || 0),
+        photos,
+        calls: 0,
+        status: 'aktyvus'
+      };
+      state.leadVariants.unshift(lead);
+      addHistory('Dominantis variantas', `${lead.make} ${lead.model} įkeltas`, '📋');
+      toast('Variantas įkeltas', '📋');
+      saveState();
+      render();
+      ['leadMake','leadModel','leadYear','leadFuel','leadPhone','leadCity','leadInitialPrice','leadTargetPrice','leadFollowDays','leadNotes','leadPhotos'].forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        if(el.type === 'file') el.value = '';
+        else if(id === 'leadFollowDays') el.value = '2';
+        else el.value = '';
+      });
+    });
+  }
+
+  function callGarageLead(leadId){
+    const lead = state.leadVariants.find(v => v.id === leadId);
+    if(!lead) return;
+    lead.calls = Number(lead.calls || 0) + 1;
+    lead.lastCalledAt = nowLabel();
+    lead.updatedAt = nowLabel();
+    lead.nextCallDate = addDaysISO(todayISO(), lead.followUpDays || 0);
+    addHistory('Skambutis variantui', `${lead.make} ${lead.model} — kitas skambutis po ${lead.followUpDays || 0} d.`, '📞');
+    toast(`Paskambinta. Kitas skambutis po ${lead.followUpDays || 0} d.`, '📞');
+    saveState();
+    render();
+  }
+
+  function deleteGarageLead(leadId){
+    const lead = state.leadVariants.find(v => v.id === leadId);
+    if(!lead) return;
+    const ok = window.confirm(`Ištrinti variantą „${lead.make} ${lead.model}“?`);
+    if(!ok) return;
+    state.leadVariants = state.leadVariants.filter(v => v.id !== leadId);
+    addHistory('Dominantis variantas', `Ištrintas: ${lead.make} ${lead.model}`, '🗑️');
+    toast('Variantas ištrintas', '🗑️');
+    saveState();
+    render();
+  }
+
+  function updateGarageLead(leadId, data, photos=[]){
+    const lead = state.leadVariants.find(v => v.id === leadId);
+    if(!lead) return false;
+    lead.make = (data.make || '').trim();
+    lead.model = (data.model || '').trim();
+    lead.year = data.year || '';
+    lead.fuel = (data.fuel || '').trim();
+    lead.phone = (data.phone || '').trim();
+    lead.city = (data.city || '').trim();
+    lead.initialPrice = Math.max(0, Number(data.initialPrice) || 0);
+    lead.targetPrice = Math.max(0, Number(data.targetPrice) || 0);
+    lead.followUpDays = Math.max(0, Number(data.followUpDays) || 0);
+    lead.notes = (data.notes || '').trim();
+    lead.defects = '';
+    if(Array.isArray(photos) && photos.length){
+      lead.photos = [...(lead.photos || []), ...photos];
+    }
+    lead.updatedAt = nowLabel();
+    lead.nextCallDate = addDaysISO(todayISO(), lead.followUpDays || 0);
+    return true;
+  }
+
+  function openGarageLeadsPage(){
+    state.selectedView = 'garage-leads';
+    saveState();
+    render();
+  }
+
+  function openGarageTasks(){
+    state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
+    state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
+    state.ui.garageTaskGroups.autos = true;
+    state.ui.garageTaskGroups.custom = true;
+    saveState();
+    render();
+    const sec = document.getElementById('garageTasksSection');
+    if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function openGarageAddCar(){
+    const el = document.getElementById('carName');
+    if(el) el.focus({preventScroll:false});
+    const sec = document.querySelector('#view-garage .panel.pad');
+    if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function openGarageStats(){
+    state.selectedView = 'garage-stats';
+    saveState();
+    render();
+  }
+
+  function openFinancePage(){
+    state.selectedView = 'finance';
+    saveState();
+    render();
+  }
+
+  function openGarageLeadSheet(leadId){
+    const lead = state.leadVariants.find(v => v.id === leadId);
+    if(!lead) return;
+    const photos = (lead.photos || []).slice(0,6);
+    const html = `
+      <div class="sheetHead">
+        <h3>${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</h3>
+        <button class="closeBtn" id="closeLeadSheet">✕</button>
+      </div>
+      <div class="garageLeadCard" style="margin:0">
+        <div class="garageLeadHero" style="${photos[0] ? `background-image:url('${photos[0]}')` : ''}">
+          <div class="leadPill">${garageLeadDaysText(lead)}</div>
+          <div class="leadPill">${escapeHTML(lead.city || 'Be miesto')}</div>
+        </div>
+        <div class="garageLeadBody">
+          <div class="garageLeadTags">
+            <span class="garageLeadTag good">Pradinė ${moneyFmt(lead.initialPrice)}</span>
+            <span class="garageLeadTag">Mūsų kaina ${moneyFmt(lead.targetPrice)}</span>
+            <span class="garageLeadTag">${escapeHTML(lead.fuel || 'Nenurodyta')}</span>
+          </div>
+
+          <div class="panel pad" style="margin-top:12px">
+            <div class="field"><label>Markė</label><input class="input" id="editLeadMake" value="${escapeHTML(lead.make || '')}" /></div>
+            <div class="field"><label>Modelis</label><input class="input" id="editLeadModel" value="${escapeHTML(lead.model || '')}" /></div>
+            <div class="leadEditGrid">
+              <div class="field"><label>Metai</label><input class="input" id="editLeadYear" type="number" min="1900" step="1" value="${escapeHTML(String(lead.year || ''))}" /></div>
+              <div class="field"><label>Kuras</label><input class="input" id="editLeadFuel" value="${escapeHTML(lead.fuel || '')}" /></div>
+              <div class="field"><label>Tel. nr.</label><input class="input" id="editLeadPhone" value="${escapeHTML(lead.phone || '')}" /></div>
+              <div class="field"><label>Miestas</label><input class="input" id="editLeadCity" value="${escapeHTML(lead.city || '')}" /></div>
+              <div class="field"><label>Pradinė kaina</label><input class="input" id="editLeadInitialPrice" type="number" min="0" step="1" value="${Number(lead.initialPrice || 0)}" /></div>
+              <div class="field"><label>Mūsų kaina</label><input class="input" id="editLeadTargetPrice" type="number" min="0" step="1" value="${Number(lead.targetPrice || 0)}" /></div>
+              <div class="field"><label>Po kiek dienų skambinti</label><input class="input" id="editLeadFollowDays" type="number" min="0" step="1" value="${Number(lead.followUpDays || 0)}" /></div>
+              <div class="field leadEditFull"><label>Defektai ir pastabos</label><textarea class="input" id="editLeadNotes" rows="4">${escapeHTML((lead.notes || lead.defects || '').trim())}</textarea></div>
+              <div class="field leadEditFull"><label>Pridėti nuotraukų</label><input class="input" id="editLeadPhotos" type="file" accept="image/*" multiple /></div>
+            </div>
+            <div class="leadEditNote">Naujos nuotraukos bus pridėtos prie esamų. Jei nekeisi nuotraukų, jos liks tokios pat.</div>
+          </div>
+
+          <div class="leadDetailBox" style="margin-top:12px">
+            <strong style="color:var(--text);display:block;margin-bottom:6px">Kontaktai ir būsena</strong>
+            Skambinta: ${escapeHTML(lead.lastCalledAt || 'dar ne')}<br>
+            Kitas skambutis: ${escapeHTML(lead.nextCallDate || '—')}<br>
+            Po ${Number(lead.followUpDays || 0)} dienų.
+          </div>
+
+          <div class="leadGallery">${photos.length ? photos.map((src, i) => `<button type="button" class="leadThumbBtn" data-open-gallery-index="${i}"><div class="img" style="background-image:url('${src}')"></div></button>`).join('') : '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
+
+          <div class="sheetActions">
+            <button class="btn" id="leadSaveBtn">Išsaugoti pakeitimus</button>
+            <button class="btn secondary" id="leadGalleryBtn">Nuotraukos</button>
+            <button class="btn secondary" id="leadCallNowBtn">📞 Paskambinta</button>
+            <button class="btn danger" id="leadDeleteBtn">Ištrinti variantą</button>
+          </div>
+        </div>
+      </div>
+    `;
+    openSheet(html);
+    document.getElementById('closeLeadSheet').onclick = closeSheet;
+    document.getElementById('leadSaveBtn').onclick = async () => {
+      const make = document.getElementById('editLeadMake').value.trim();
+      const model = document.getElementById('editLeadModel').value.trim();
+      if(!make || !model){
+        toast('Įrašyk markę ir modelį', '✍️');
+        return;
+      }
+      const files = Array.from(document.getElementById('editLeadPhotos').files || []);
+      const photos = files.length ? await leadPhotosToDataUrls(files) : [];
+      const ok = updateGarageLead(lead.id, {
+        make,
+        model,
+        year: Number(document.getElementById('editLeadYear').value || 0) || '',
+        fuel: document.getElementById('editLeadFuel').value.trim(),
+        phone: document.getElementById('editLeadPhone').value.trim(),
+        city: document.getElementById('editLeadCity').value.trim(),
+        initialPrice: Number(document.getElementById('editLeadInitialPrice').value || 0),
+        targetPrice: Number(document.getElementById('editLeadTargetPrice').value || 0),
+        followUpDays: Number(document.getElementById('editLeadFollowDays').value || 0),
+        notes: document.getElementById('editLeadNotes').value.trim()
+      }, photos);
+      if(!ok) return;
+      addHistory('Dominantis variantas', `${make} ${model} atnaujintas`, '✏️');
+      toast('Pakeitimai išsaugoti', '✏️');
+      saveState();
+      render();
+      openGarageLeadSheet(lead.id);
+    };
+    document.getElementById('leadCallNowBtn').onclick = () => {
+      callGarageLead(lead.id);
+      openGarageLeadSheet(lead.id);
+    };
+    document.getElementById('leadDeleteBtn').onclick = () => {
+      deleteGarageLead(lead.id);
+      closeSheet();
+    };
+    const galleryBtn = document.getElementById('leadGalleryBtn');
+    if(galleryBtn) galleryBtn.onclick = () => openLeadGallery(lead.id, 0);
+    document.querySelectorAll('[data-open-gallery-index]').forEach(btn => btn.onclick = () => openLeadGallery(lead.id, Number(btn.dataset.openGalleryIndex || 0)));
+  }
+
+
+  function openLeadGallery(leadId, startIndex=0){
+    const lead = state.leadVariants.find(v => v.id === leadId);
+    if(!lead) return;
+    const photos = (lead.photos || []).filter(Boolean);
+    if(!photos.length) return;
+    const idx = clamp(Number(startIndex) || 0, 0, photos.length - 1);
+    const active = photos[idx];
+    const html = `
+      <div class="sheetHead">
+        <h3>${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</h3>
+        <button class="closeBtn" id="closeGallerySheet">✕</button>
+      </div>
+      <div class="gallerySheet">
+        <div class="galleryMain" style="background-image:url('${active}')"></div>
+        <div class="garageLeadTags">
+          <span class="garageLeadTag good">${photos.length} nuotraukos</span>
+          <span class="garageLeadTag">${escapeHTML(lead.city || 'Be miesto')}</span>
+        </div>
+        <div class="galleryThumbs">
+          ${photos.map((src, i) => `<button type="button" data-gallery-index="${i}"><div class="img" style="background-image:url('${src}')"></div></button>`).join('')}
+        </div>
+      </div>
+    `;
+    openSheet(html);
+    document.getElementById('closeGallerySheet').onclick = closeSheet;
+    document.querySelectorAll('[data-gallery-index]').forEach(btn => btn.onclick = () => openLeadGallery(leadId, Number(btn.dataset.galleryIndex)));
+  }
+
+  const defaultState = () => ({
+    theme:'light',
+    sound:true,
+    vibrate:true,
+    selectedView:'home',
+    level:1,
+    xp:0,
+    coins:0,
+    streak:0,
+    maxStreak:0,
+    lastActiveDate:todayISO(),
+    streakCountedFor:'',
+    completedToday:{},
+    dailyQuest:null,
+    dailyQuestDate:'',
+    dailyQuestClaimed:false,
+    importantTasks:[],
+    completionLog:[],
+    finances:{
+      monthKey: currentMonthKey(),
+      monthlyNetProfit:0,
+      monthlyRevenue:0,
+      monthlyExpenses:0,
+      lifetimeNetProfit:0,
+      budgetBalance:0,
+      transactions:[],
+      debts:[],
+      debtLedger:[]
+    },
+    stats: defaultStats(),
+    skills: JSON.parse(JSON.stringify(defaultSkills)),
+    unlockedAchievements:{},
+    worldsUnlocked:[],
+    shopPurchases:[],
+    cars:[],
+    history:[],
+    garageTasks:[],
+    garageTaskLastReset:todayISO(),
+    leadVariants:[],
+    ui:{
+      taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false},
+      historyOpen:false,
+      garageTaskGroups:{autos:false, custom:false},
+      leadFilters:{query:'', due:'all', sort:'due'},
+      menuSections:{shop:false, stats:false}
+    }
+  });
+
+  let state = loadState();
+
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return defaultState();
+      const parsed = JSON.parse(raw);
+      const base = defaultState();
+      return {
+        ...base,
+        ...parsed,
+        finances: {
+          ...base.finances,
+          ...(parsed.finances||{}),
+          transactions: Array.isArray(parsed.finances?.transactions) ? parsed.finances.transactions : [],
+          debts: Array.isArray(parsed.finances?.debts) ? parsed.finances.debts : [],
+          debtLedger: Array.isArray(parsed.finances?.debtLedger) ? parsed.finances.debtLedger : []
+        },
+        stats: {...base.stats, ...(parsed.stats||{})},
+        skills: Array.isArray(parsed.skills) && parsed.skills.length ? parsed.skills : JSON.parse(JSON.stringify(defaultSkills)),
+        unlockedAchievements: {...(parsed.unlockedAchievements||{})},
+        worldsUnlocked: Array.isArray(parsed.worldsUnlocked) ? parsed.worldsUnlocked : [],
+        shopPurchases: Array.isArray(parsed.shopPurchases) ? parsed.shopPurchases : [],
+        cars: Array.isArray(parsed.cars) ? parsed.cars : [],
+        history: Array.isArray(parsed.history) ? parsed.history : [],
+        completedToday: parsed.completedToday || {},
+        importantTasks: Array.isArray(parsed.importantTasks) ? parsed.importantTasks : [],
+        completionLog: Array.isArray(parsed.completionLog) ? parsed.completionLog : [],
+        garageTasks: Array.isArray(parsed.garageTasks) ? parsed.garageTasks : [],
+        garageTaskLastReset: parsed.garageTaskLastReset || todayISO(),
+        leadVariants: Array.isArray(parsed.leadVariants) ? parsed.leadVariants : [],
+        ui: {
+          taskGroups: {Sveikata:false, Produktyvumas:false, Tobulėjimas:false, ...(parsed.ui?.taskGroups||{})},
+          historyOpen: !!parsed.ui?.historyOpen,
+          garageTaskGroups: {autos:false, custom:false, ...(parsed.ui?.garageTaskGroups||{})},
+          leadFilters: {query:'', due:'all', sort:'due', ...(parsed.ui?.leadFilters||{})}
+        }
+      };
+    }catch(e){
+      console.warn('State load failed', e);
+      return defaultState();
+    }
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(err){
+      console.warn("State save failed", err);
+      toast("Nepavyko išsaugoti pakeitimų — per daug nuotraukų arba naršyklės vietos.", "⚠️");
+    }
+  }
+
+  function addHistory(title, desc, icon='⚡'){
+    state.history.unshift({title, desc, icon, time: nowLabel()});
+    state.history = state.history.slice(0, 12);
+  }
+
+  function logTaskCompletion(label='užduotis', kind='task'){
+    state.completionLog.unshift({kind, label, date: todayISO(), time: nowLabel()});
+    state.completionLog = state.completionLog.slice(0, 500);
+  }
+
+  function stateDailyTaskCount(s = state){
+    const today = todayISO();
+    return (s.completionLog || []).filter(e => e.kind === 'task' && e.date === today).length;
+  }
+
+  function stateWeeklyTaskCount(s = state){
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 6);
+    const cutoffISO = cutoff.toISOString().slice(0,10);
+    return (s.completionLog || []).filter(e => e.kind === 'task' && e.date >= cutoffISO).length;
+  }
+
+  function ensureMonthlyCycle(){
+    const mk = currentMonthKey();
+    if(!state.finances) state.finances = defaultState().finances;
+    if(state.finances.monthKey !== mk){
+      state.finances.monthKey = mk;
+      state.finances.monthlyNetProfit = 0;
+      state.finances.monthlyRevenue = 0;
+      state.finances.monthlyExpenses = 0;
+    }
+  }
+
+  function carChecklistExpenses(car){
+    return (car?.checklist || []).reduce((sum, item) => sum + (Number(item.expense) || 0), 0);
+  }
+
+  function carTotalCost(car){
+    return Number(car?.buyPrice || 0) + carChecklistExpenses(car);
+  }
+
+  function ensureFinanceCollections(){
+    if(!state.finances) state.finances = defaultState().finances;
+    state.finances.transactions = Array.isArray(state.finances.transactions) ? state.finances.transactions : [];
+    state.finances.debts = Array.isArray(state.finances.debts) ? state.finances.debts : [];
+    state.finances.debtLedger = Array.isArray(state.finances.debtLedger) ? state.finances.debtLedger : [];
+    state.finances.budgetBalance = Number(state.finances.budgetBalance || 0);
+  }
+
+  function financeSignedAmount(entry){
+    const amount = Math.abs(Number(entry?.amount || 0));
+    if(entry?.type === 'income') return amount;
+    if(entry?.type === 'expense') return -amount;
+    return Number(entry?.delta || 0);
+  }
+
+  function financeDebtSigned(entry){
+    const amount = Math.abs(Number(entry?.amount || 0));
+    return entry?.action === 'subtract' ? -amount : amount;
+  }
+
+  function financeDebtTotal(list=[]){
+    return list.reduce((sum, entry) => sum + financeDebtSigned(entry), 0);
+  }
+
+  function financeTotals(){
+    ensureMonthlyCycle();
+    ensureFinanceCollections();
+    const txNet = state.finances.transactions.reduce((sum, tx) => sum + financeSignedAmount(tx), 0);
+    const manualNet = txNet;
+    const soldCars = (state.cars || []).filter(c => c.status === 'parduotas');
+    const carPurchaseCost = (state.cars || []).reduce((sum, car) => sum + Number(car.buyPrice || 0), 0);
+    const carRevenue = soldCars.reduce((sum, car) => sum + Number(car.soldPrice || 0), 0);
+    const carNet = soldCars.reduce((sum, car) => sum + carNetProfit(car), 0);
+    const debtBalance = state.finances.debts.reduce((sum, debt) => sum + financeDebtSigned(debt), 0);
+    return {
+      txNet,
+      carPurchaseCost,
+      carRevenue,
+      carNet,
+      debtBalance,
+      budget: Number(state.finances.budgetBalance || 0),
+      totalCurrent: Number(state.finances.budgetBalance || 0) + carNet + manualNet,
+      manualNet
+    };
+  }
+
+  function addFinanceTransaction(type, amount, title, note, date){
+    ensureFinanceCollections();
+    const entry = {
+      id: uid(),
+      type,
+      amount: Math.abs(Number(amount) || 0),
+      title: title || (type === 'income' ? 'Pajamos' : 'Išlaidos'),
+      note: note || '',
+      date: date || todayISO(),
+      createdAt: nowLabel()
+    };
+    state.finances.transactions.unshift(entry);
+    state.finances.budgetBalance += financeSignedAmount(entry);
+    state.finances.budgetBalance = Number(state.finances.budgetBalance || 0);
+    addHistory('Finansai', `${entry.title}: ${financeSignedAmount(entry) >= 0 ? '+' : ''}${moneyFmt(entry.amount)}`, type === 'income' ? '💰' : '💸');
+    saveState();
+    render();
+  }
+
+  function addDebtAction(action, person, amount, note, date){
+    ensureFinanceCollections();
+    const entry = {
+      id: uid(),
+      action,
+      person: person || 'Nežinoma',
+      amount: Math.abs(Number(amount) || 0),
+      note: note || '',
+      date: date || todayISO(),
+      createdAt: nowLabel()
+    };
+    state.finances.debtLedger.unshift(entry);
+    state.finances.debts.unshift(entry);
+    addHistory('Skola', `${entry.person}: ${action === 'subtract' ? '-' : '+'}${moneyFmt(entry.amount)}`, action === 'subtract' ? '↘' : '↗');
+    saveState();
+    render();
+  }
+
+  function aggregateDebts(){
+    ensureFinanceCollections();
+    const map = new Map();
+    for(const entry of state.finances.debtLedger){
+      const key = String(entry.person || 'Nežinoma').trim() || 'Nežinoma';
+      const current = map.get(key) || {person:key, total:0, lastDate:'', notes:[], entries:[]};
+      current.total += financeDebtSigned(entry);
+      current.lastDate = current.lastDate && current.lastDate > entry.date ? current.lastDate : entry.date;
+      current.notes.push(entry.note || '');
+      current.entries.push(entry);
+      map.set(key, current);
+    }
+    return [...map.values()].sort((a,b) => Math.abs(b.total) - Math.abs(a.total));
+  }
+
+  function carNetProfit(car){
+    if(!car || car.status !== 'parduotas') return 0;
+    return Number(car.soldPrice || 0) - carTotalCost(car);
+  }
+
+  function carDoneCount(car){
+    return (car?.checklist || []).filter(i => i.done).length;
+  }
+
+  function carProgress(car){
+    const total = (car?.checklist || []).length || 1;
+    return Math.round((carDoneCount(car) / total) * 100);
+  }
+
+  function skillLabel(key){
+    return ({
+      Strength:'Jėga',
+      Focus:'Susikaupimas',
+      Business:'Verslas',
+      Discipline:'Disciplina'
+    }[key] || key);
+  }
+
+  function toast(msg, icon='•'){
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = `<span>${escapeHTML(msg)}</span><strong>${escapeHTML(icon)}</strong>`;
+    wrap.appendChild(el);
+    setTimeout(() => { el.style.opacity='0'; el.style.transform='translateY(10px) scale(.98)'; }, 1600);
+    setTimeout(() => el.remove(), 2000);
+  }
+
+  function pulse(sel){
+    const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
+    if(!el) return;
+    el.classList.remove('pulse');
+    void el.offsetWidth;
+    el.classList.add('pulse');
+    setTimeout(() => el.classList.remove('pulse'), 560);
+  }
+
+  function spark(emoji='✨'){
+    const count = 8;
+    const startX = window.innerWidth / 2;
+    const startY = window.innerHeight * 0.52;
+    for(let i=0;i<count;i++){
+      const s = document.createElement('div');
+      s.className = 'spark';
+      s.textContent = emoji;
+      s.style.left = (startX + (Math.random()*240 - 120)) + 'px';
+      s.style.top = (startY + (Math.random()*100 - 50)) + 'px';
+      s.style.animationDelay = (Math.random()*0.12)+'s';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 900);
+    }
+  }
+
+  function vibrate(pattern){
+    if(!state.vibrate || !navigator.vibrate) return;
+    navigator.vibrate(pattern);
+  }
+
+  let audioCtx;
+  function playTone(freq=440, dur=0.09){
+    if(!state.sound) return;
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.value = 0.04;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    }catch(e){}
+  }
+
+  function skillLevelFromXp(xp){
+    return 1 + Math.floor(xp / 100);
+  }
+
+  function skillMultiplier(){
+    const discipline = state.skills.find(s => s.key === 'Discipline')?.level || 1;
+    return 1 + (state.level - 1) * 0.03 + (discipline - 1) * 0.01;
+  }
+
+  function checkDateReset(){
+    const today = todayISO();
+    if(state.dailyQuestDate !== today){
+      state.dailyQuestDate = today;
+      state.dailyQuestClaimed = false;
+      state.dailyQuest = rand(dailyQuestPool);
+      state.completedToday = {};
+      const y = yesterdayISO();
+      if(state.lastActiveDate !== y && state.lastActiveDate !== today){
+        state.streak = 0;
+        state.streakCountedFor = '';
+      }
+    }
+    resetGarageDailyTasks();
+  }
+
+  function yesterdayISO(){
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().slice(0,10);
+  }
+
+  function markStreakOnFirstCompletion(){
+    const today = todayISO();
+    if(state.streakCountedFor === today) return;
+    const y = yesterdayISO();
+    if(state.lastActiveDate === y){
+      state.streak += 1;
+    }else if(state.lastActiveDate !== today){
+      state.streak = 1;
+    }
+    state.maxStreak = Math.max(state.maxStreak, state.streak);
+    state.streakCountedFor = today;
+    state.lastActiveDate = today;
+  }
+
+  function levelUpCheck(){
+    let leveled = false;
+    while(state.xp >= state.level * 100){
+      state.xp -= state.level * 100;
+      state.level += 1;
+      const bonus = 20 + state.level * 6;
+      state.coins += bonus;
+      addHistory('Lygio pakėlimas', `Pasiekei ${state.level} lygį ir gavai +${bonus} 🪙`, '⭐');
+      toast(`Lygis pakeltas! +${bonus} 🪙`, '⭐');
+      spark('✨');
+      pulse('#levelValue');
+      playTone(660, 0.11);
+      vibrate([20,30,20]);
+      leveled = true;
+    }
+    return leveled;
+  }
+
+  function updateSkills(key, gainedXp){
+    const skill = state.skills.find(s => s.key === key);
+    if(!skill) return;
+    skill.xp += gainedXp;
+    skill.level = skillLevelFromXp(skill.xp);
+    skill.boost = key === 'Strength' ? 1.12 + (skill.level-1) * 0.01 :
+                  key === 'Focus' ? 1.10 + (skill.level-1) * 0.01 :
+                  key === 'Business' ? 1.10 + (skill.level-1) * 0.01 :
+                  1.14 + (skill.level-1) * 0.01;
+  }
+
+  function addXpAndCoins(baseXp, coins, source, skillKey=null, icon='✅'){
+    const gainedXp = Math.round(baseXp);
+    state.xp += gainedXp;
+    state.stats.lifetimeXp += gainedXp;
+    state.coins += coins;
+    if(skillKey) updateSkills(skillKey, gainedXp);
+    addHistory(source, `+${gainedXp} XP ir +${coins} 🪙`, icon);
+    toast(`+${gainedXp} XP • +${coins} 🪙`, icon);
+    spark(icon === '✨' ? '✨' : '🪙');
+    pulse('#coinsValue');
+    if(state.sound) playTone(icon === '✨' ? 520 : 420, 0.08);
+    if(state.vibrate) vibrate(18);
+    levelUpCheck();
+    checkWorldUnlocks();
+    checkAchievements();
+    saveState();
+    render();
+  }
+
+  function completeTask(id){
+    checkDateReset();
+    if(state.completedToday[id]) return;
+    const t = taskTemplates.find(x => x.id === id);
+    if(!t) return;
+    state.completedToday[id] = true;
+    state.stats.tasksCompleted += 1;
+    state.stats[t.statKey] += t.statValue;
+    markStreakOnFirstCompletion();
+    logTaskCompletion(t.title);
+    addXpAndCoins(t.xp, t.coins, 'Užduotis atlikta', t.skill, '✅');
+    if(id === 'push') addHistory('Sportas', '+50 atsispaudimų pridėti prie statistikos', '💪');
+    if(id === 'sellCar') state.stats.carsSold += 1;
+    if(id === 'carAds') state.stats.carsListed += 1;
+    if(id === 'buyCar') state.stats.carsBought += 1;
+  }
+
+  function generateQuestReward(q){
+    const bonus = q.xp >= 30 ? {xp:24, coins:18} : q.xp >= 20 ? {xp:18, coins:14} : {xp:12, coins:8};
+    return {xp: q.xp + bonus.xp, coins: q.coins + bonus.coins};
+  }
+
+  function claimDailyQuest(){
+    checkDateReset();
+    if(state.dailyQuestClaimed || !state.dailyQuest) return;
+    state.dailyQuestClaimed = true;
+    state.stats.tasksCompleted += 1;
+    markStreakOnFirstCompletion();
+    const q = state.dailyQuest;
+    const atlygis = generateQuestReward(q);
+    logTaskCompletion(q.title);
+    state.stats[q.statKey] += q.statValue;
+    addXpAndCoins(atlygis.xp, atlygis.coins, 'Dienos questas', q.skill, '✨');
+    addHistory('Dienos questas', `Įvykdyta: ${q.title}`, '🏅');
+    if(state.streak >= 7){
+      state.coins += 20;
+      addHistory('Streak bonus', '+20 🪙 už 7+ dienų seriją', '🔥');
+      toast('Streak bonus +20 🪙', '🔥');
+    }
+    saveState();
+    render();
+  }
+
+  function rerollDailyQuest(){
+    const pool = dailyQuestPool;
+    let next = rand(pool);
+    if(state.dailyQuest && pool.length > 1){
+      let tries = 0;
+      while(next.id === state.dailyQuest.id && tries < 10){
+        next = rand(pool);
+        tries++;
+      }
+    }
+    state.dailyQuest = next;
+    state.dailyQuestDate = todayISO();
+    state.dailyQuestClaimed = false;
+    addHistory('Misijos perridenimas', 'Sugeneruota nauja dienos užduotis', '🎲');
+    saveState();
+    render();
+    toast('Naujas dienos questas', '🎲');
+  }
+
+  function checkWorldUnlocks(){
+    const newlyUnlocked = [];
+    worldDefs.forEach(w => {
+      if(w.name === 'Pradžios zona'){
+        if(!state.worldsUnlocked.includes(w.name)) state.worldsUnlocked.push(w.name);
+        return;
+      }
+      if(state.level >= w.req && !state.worldsUnlocked.includes(w.name)){
+        state.worldsUnlocked.push(w.name);
+        newlyUnlocked.push(w);
+        state.stats.worldUnlocks += 1;
+        state.coins += w.atlygis.coins;
+        state.xp += w.atlygis.xp;
+        addHistory('Pasaulis atrakintas', `${w.name} atrakintas: +${w.atlygis.xp} XP +${w.atlygis.coins} 🪙`, w.emoji);
+        toast(`${w.name} atrakintas! +${w.atlygis.xp} XP +${w.atlygis.coins} 🪙`, w.emoji);
+        spark(w.emoji);
+        playTone(880, 0.1);
+        vibrate([20,30,20]);
+      }
+    });
+    if(newlyUnlocked.length){
+      levelUpCheck();
+    }
+  }
+
+  function checkAchievements(){
+    achievementDefs.forEach(a => {
+      if(!state.unlockedAchievements[a.id] && a.need(state)){
+        state.unlockedAchievements[a.id] = true;
+        state.stats.badgesEarned += 1;
+        state.xp += a.atlygis.xp;
+        state.stats.lifetimeXp += a.atlygis.xp;
+        state.coins += a.atlygis.coins;
+        addHistory('Pasiekimas atrakintas', `${a.title} +${a.atlygis.xp} XP +${a.atlygis.coins} 🪙`, a.icon);
+        toast(`Pasiekimas: ${a.title}`, a.icon);
+        spark(a.icon);
+        playTone(760, 0.12);
+        vibrate([20,25,20]);
+      }
+    });
+    levelUpCheck();
+  }
+
+  function buyReward(id){
+    const item = rewardsShop.find(x => x.id === id);
+    if(!item) return;
+    if(state.coins < item.cost){
+      toast('Nepakanka monetų', '🪙');
+      return;
+    }
+    state.coins -= item.cost;
+    state.stats.shopSpends += item.cost;
+    state.stats.shopPurchases += 1;
+    state.shopPurchases.unshift({name:item.name, cost:item.cost, time: nowLabel()});
+    state.shopPurchases = state.shopPurchases.slice(0, 10);
+    addHistory('Pirkimas parduotuvėje', `${item.name} nupirkta už ${item.cost} 🪙`, item.icon);
+    toast(`Nupirkta: ${item.name}`, item.icon);
+    spark(item.icon);
+    playTone(600, 0.08);
+    saveState();
+    render();
+  }
+
+
+  function addImportantTask(title, xp, coins){
+    const task = {
+      id: uid(),
+      title: title.trim(),
+      xp: Math.max(0, Number(xp) || 0),
+      coins: Math.max(0, Number(coins) || 0),
+      done: false,
+      createdAt: nowLabel(),
+      completedAt: null
+    };
+    state.importantTasks.unshift(task);
+    addHistory('Svarbi užduotis', `Pridėta: ${task.title}`, '⭐');
+    saveState();
+    render();
+  }
+
+  function completeImportantTask(taskId){
+    const task = state.importantTasks.find(t => t.id === taskId);
+    if(!task || task.done) return;
+    task.done = true;
+    task.completedAt = nowLabel();
+    state.stats.tasksCompleted += 1;
+    logTaskCompletion(task.title);
+    markStreakOnFirstCompletion();
+    addXpAndCoins(task.xp, task.coins, 'Svarbi užduotis atlikta', 'Discipline', '⭐');
+  }
+
+  function deleteImportantTask(taskId){
+    const task = state.importantTasks.find(t => t.id === taskId);
+    if(!task) return;
+    const ok = window.confirm(`Ištrinti svarbią užduotį „${task.title}“?`);
+    if(!ok) return;
+    state.importantTasks = state.importantTasks.filter(t => t.id !== taskId);
+    addHistory('Svarbi užduotis', `Ištrinta: ${task.title}`, '🗑️');
+    toast('Užduotis ištrinta', '🗑️');
+    saveState();
+    render();
+  }
+
+  function deleteCar(carId){
+    const car = state.cars.find(c => c.id === carId);
+    if(!car) return;
+    const ok = window.confirm(`Ištrinti automobilį „${car.name}“ visam laikui?`);
+    if(!ok) return;
+    const carCost = carTotalCost(car);
+    if(car.status === 'parduotas'){
+      const net = carNetProfit(car);
+      state.finances.monthlyRevenue = Math.max(0, state.finances.monthlyRevenue - Number(car.soldPrice || 0));
+      state.finances.monthlyExpenses = Math.max(0, state.finances.monthlyExpenses - carCost);
+      state.finances.monthlyNetProfit -= net;
+      state.finances.lifetimeNetProfit -= net;
+      state.stats.carsSold = Math.max(0, state.stats.carsSold - 1);
+      ensureFinanceCollections();
+      state.finances.budgetBalance -= Number(car.soldPrice || 0);
+      state.finances.budgetBalance += carCost;
+    } else {
+      ensureFinanceCollections();
+      state.finances.budgetBalance += carCost;
+    }
+    state.cars = state.cars.filter(c => c.id !== carId);
+    addHistory('Garažas', `Ištrintas automobilis: ${car.name}`, '🗑️');
+    toast('Automobilis ištrintas', '🗑️');
+    saveState();
+    render();
+  }
+
+  function completeCarChecklistItem(carId, itemId, expenseValue=0){
+    const car = state.cars.find(c => c.id === carId);
+    if(!car) return;
+    const item = car.checklist.find(i => i.id === itemId);
+    if(!item || item.done) return;
+    item.done = true;
+    item.expense = Math.max(0, Number(expenseValue) || 0);
+    ensureFinanceCollections();
+    state.finances.budgetBalance -= item.expense;
+    item.doneAt = nowLabel();
+    if(car.checklist.every(i => i.done)){
+      car.status = 'paruoštas';
+      toast('Auto paruoštas pardavimui!', '🏁');
+    }else if(car.checklist.filter(i => i.done).length >= Math.ceil(car.checklist.length / 2)){
+      car.status = 'beveik paruoštas';
+    }
+    state.stats.tasksCompleted += 1;
+    logTaskCompletion(item.name, 'garageCarTask');
+    addXpAndCoins(item.xp, item.coins, 'Garažo užduotis', 'Business', '🚗');
+    saveState();
+  }
+
+  function deleteChecklistItem(carId, itemId){
+    const car = state.cars.find(c => c.id === carId);
+    if(!car) return;
+    const item = car.checklist.find(i => i.id === itemId);
+    if(!item) return;
+    const ok = window.confirm(`Ištrinti užduotį „${item.name}“?`);
+    if(!ok) return;
+    car.checklist = car.checklist.filter(i => i.id !== itemId);
+    addHistory('Garažo užduotis', `Ištrinta: ${item.name}`, '🗑️');
+    saveState();
+    render();
+    openCar(carId);
+  }
+
+  function addCar(name, imageSrc, buyPrice){
+    const car = {
+      id: uid(),
+      name,
+      imageSrc,
+      buyPrice: Number(buyPrice) || 0,
+      soldPrice: null,
+      netProfit: 0,
+      soldAt: null,
+      soldDateISO: null,
+      createdDateISO: todayISO(),
+      createdAt: nowLabel(),
+      status:'aktyvus',
+      checklist:[
+        {id:'wash', name:'Nuplauti', xp:10, coins:4, done:false, expense:0},
+        {id:'photo', name:'Nufotografuoti', xp:12, coins:5, done:false, expense:0},
+        {id:'ads', name:'Įdėti į skelbimus', xp:16, coins:8, done:false, expense:0},
+        {id:'fix', name:'Sutvarkyti defektus', xp:20, coins:10, done:false, expense:0}
+      ]
+    };
+    state.cars.unshift(car);
+    ensureFinanceCollections();
+    state.finances.budgetBalance -= Number(buyPrice) || 0;
+    addHistory('Garažas', `${name} pridėtas į garažą`, '🚗');
+    toast('Automobilis pridėtas', '🚗');
+    saveState();
+    render();
+  }
+
+  function openCar(carId){
+
+    const car = state.cars.find(c => c.id === carId);
+    if(!car) return;
+    renderCarSheet(car);
+    document.getElementById('modalBackdrop').classList.add('show');
+    const backdrop = document.getElementById('modalBackdrop');
+    backdrop.onclick = (e) => { if(e.target === backdrop) closeSheet(); };
+  }
+
+
+  function renderCarSheet(car){
+    const doneCount = carDoneCount(car);
+    const pct = carProgress(car);
+    const currentCost = carTotalCost(car);
+    const isSold = car.status === 'parduotas';
+    const soldPrice = Number(car.soldPrice || 0);
+    const netProfit = isSold ? carNetProfit(car) : 0;
+    const html = `
+      <div class="sheetHead">
+        <h3>${escapeHTML(car.name)}</h3>
+        <button class="closeBtn" id="closeSheet">✕</button>
+      </div>
+      <div class="carCard">
+        <div class="carHero" style="background-color:var(--surface-2);background-image:url('${car.imageSrc || ''}')">
+          <div class="pill">${isSold ? 'Parduotas' : pct === 100 ? 'Paruoštas pardavimui' : pct >= 50 ? 'Beveik paruoštas' : 'Ruošiamas'}</div>
+          <div class="pill">${pct}%</div>
+        </div>
+        <div class="carBody">
+          <div class="grid2" style="margin-bottom:10px">
+            <div class="smallStatBox">
+              <div class="label">Pirkimo kaina</div>
+              <div class="value">${moneyFmt(car.buyPrice)}</div>
+              <div class="hint">Pradinė investicija</div>
+            </div>
+            <div class="smallStatBox">
+              <div class="label">Šiuo metu stovi</div>
+              <div class="value">${moneyFmt(currentCost)}</div>
+              <div class="hint">Pirkimas + išlaidos</div>
+            </div>
+          </div>
+          <div class="carLine"><span>Progresas</span><span>${doneCount}/${car.checklist.length} punktų</span></div>
+          <div class="miniBar"><div class="fill" style="width:${pct}%"></div></div>
+          <div class="sectionHead" style="margin:14px 0 8px"><h2>Užduočių sąrašas</h2><span>XP + monetos + išlaidos</span></div>
+          <div class="list" id="carChecklist"></div>
+          <div class="grid2" style="margin-top:12px">
+            <div class="smallStatBox">
+              <div class="label">Grynas pelnas</div>
+              <div class="value">${isSold ? (netProfit >= 0 ? '+' : '') + moneyFmt(netProfit) : moneyFmt(0)}</div>
+              <div class="hint">${isSold ? 'Galutinis rezultatas' : 'Atsiras pardavus'}</div>
+            </div>
+            <div class="smallStatBox">
+              <div class="label">Pardavimo kaina</div>
+              <div class="value">${isSold ? moneyFmt(soldPrice) : '—'}</div>
+              <div class="hint">${isSold ? 'Jau parduota' : 'Įrašyk prieš parduodant'}</div>
+            </div>
+          </div>
+          ${isSold ? `
+            <div class="cardNotice" style="margin-top:12px">
+              Automobilis parduotas ${escapeHTML(car.soldAt || '')}. Grynasis pelnas: <strong>${(netProfit >= 0 ? '+' : '') + moneyFmt(netProfit)}</strong>.
+            </div>
+            <div class="btnRow">
+              <button class="btn danger" id="deleteCarBtn">Ištrinti automobilį</button>
+            </div>
+          ` : `
+            <div class="field" style="margin-top:12px">
+              <label>Pardavimo kaina</label>
+              <input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="Įrašyk pardavimo kainą" value="${car.soldPrice || ''}" />
+            </div>
+            <div class="btnRow">
+              <button class="btn secondary" id="addChecklistBtn">+ Pridėti punktą</button>
+              <button class="btn" id="sellCarBtn" ${pct===100 ? '' : 'disabled'} style="opacity:${pct===100 ? 1 : .45};cursor:${pct===100 ? 'pointer' : 'not-allowed'}">Parduoti automobilį</button>
+              <button class="btn danger" id="deleteCarBtn">Ištrinti automobilį</button>
+            </div>
+            <div class="cardNotice" style="margin-top:12px">
+              Kai visi punktai atlikti ir įrašysi pardavimo kainą, sistema automatiškai paskaičiuos grynąjį pelną.
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+    openSheet(html);
+    renderCarChecklist(car.id);
+    const close = document.getElementById('closeSheet');
+    if(close) close.onclick = closeSheet;
+    const sellBtn = document.getElementById('sellCarBtn');
+    if(sellBtn) sellBtn.onclick = () => sellCar(car.id);
+    const addBtn = document.getElementById('addChecklistBtn');
+    if(addBtn) addBtn.onclick = () => openAddChecklistForm(car.id);
+    const deleteCarBtn = document.getElementById('deleteCarBtn');
+    if(deleteCarBtn) deleteCarBtn.onclick = () => deleteCar(car.id);
+  }
+
+  function openAddChecklistForm(carId){
+
+    const car = state.cars.find(c => c.id === carId);
+    if(!car) return;
+    const current = document.getElementById('sheet').innerHTML;
+    document.getElementById('sheet').innerHTML = `
+      <div class="sheetHead">
+        <h3>Pridėti checklist punktą</h3>
+        <button class="closeBtn" id="closeAdd">✕</button>
+      </div>
+      <div class="field"><label>Punktas</label><input class="input" id="newCheckName" placeholder="Pvz. Sutvarkyti saloną" /></div>
+      <div class="grid2">
+        <div class="field"><label>XP</label><input class="input" id="newCheckXp" type="number" value="12" /></div>
+        <div class="field"><label>Monetos</label><input class="input" id="newCheckCoins" type="number" value="5" /></div>
+      </div>
+      <div class="btnRow">
+        <button class="btn" id="saveNewCheck">Pridėti</button>
+        <button class="btn secondary" id="backToCar">Atgal</button>
+      </div>
+    `;
+    document.getElementById('closeAdd').onclick = closeSheet;
+    document.getElementById('backToCar').onclick = () => renderCarSheet(car);
+    document.getElementById('saveNewCheck').onclick = () => {
+      const name = document.getElementById('newCheckName').value.trim();
+      const xp = Number(document.getElementById('newCheckXp').value || 12);
+      const coins = Number(document.getElementById('newCheckCoins').value || 5);
+      if(!name){
+        toast('Įrašyk punktą', '✍️');
+        return;
+      }
+      car.checklist.push({id:'custom_' + Date.now(), name, xp, coins, done:false});
+      addHistory('Garažo punktas', `Pridėtas: ${name}`, '➕');
+      saveState();
+      renderCarSheet(car);
+      toast('Punktas pridėtas', '➕');
+    };
+  }
+
+
+  function renderCarChecklist(carId){
+    const car = state.cars.find(c => c.id === carId);
+    const root = document.getElementById('carChecklist');
+    if(!root || !car) return;
+    const editable = car.status !== 'parduotas';
+    root.innerHTML = car.checklist.map(item => `
+      <div class="listItem">
+        <label>
+          <input type="checkbox" ${item.done ? 'checked' : ''} ${editable ? '' : 'disabled'} data-car="${car.id}" data-item="${item.id}" />
+          <div>
+            <strong>${escapeHTML(item.name)}</strong>
+            <div class="small">+${item.xp} XP • +${item.coins} 🪙</div>
+          </div>
+        </label>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <input class="input" style="width:110px;padding:9px 10px;border-radius:12px;font-size:12px" type="number" min="0" step="1" ${item.done || !editable ? 'disabled' : ''} value="${Number(item.expense || 0) || ''}" data-expense-for="${item.id}" placeholder="Išlaidos €" />
+          <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end">
+            <span class="badge ${item.done ? 'good' : 'info'}">${item.done ? 'Atlikta' : 'Laukiama'}</span>
+            <button class="smallBtn danger" type="button" data-delete-item="${item.id}" ${editable ? '' : 'disabled'}>✕</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    root.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.onchange = () => {
+        const car = state.cars.find(c => c.id === cb.dataset.car);
+        const item = car?.checklist.find(i => i.id === cb.dataset.item);
+        if(!car || !item || item.done) return;
+        const expenseInput = root.querySelector(`[data-expense-for="${item.id}"]`);
+        const expense = Number(expenseInput?.value || 0);
+        completeCarChecklistItem(car.id, item.id, expense);
+        render();
+        openCar(car.id);
+      };
+    });
+    root.querySelectorAll('[data-delete-item]').forEach(btn => {
+      btn.onclick = () => deleteChecklistItem(car.id, btn.dataset.deleteItem);
+    });
+  }
+
+
+  function sellCar(carId){
+    const car = state.cars.find(c => c.id === carId);
+    if(!car) return;
+    if(!car.checklist.every(i => i.done)){
+      toast('Visos užduotys turi būti atliktos', '⚠️');
+      return;
+    }
+    const sellPriceInput = document.getElementById('sellPriceInput');
+    const sellPrice = Number(sellPriceInput?.value || car.soldPrice || 0);
+    if(!sellPrice || sellPrice <= 0){
+      toast('Įrašyk pardavimo kainą', '💰');
+      return;
+    }
+    car.soldPrice = sellPrice;
+    car.soldAt = nowLabel();
+    car.soldDateISO = todayISO();
+    car.status = 'parduotas';
+    car.netProfit = sellPrice - carTotalCost(car);
+    state.stats.carsSold += 1;
+    state.stats.tasksCompleted += 1;
+    state.coins += 90;
+    state.xp += 120;
+    state.stats.lifetimeXp += 120;
+    updateSkills('Business', 120);
+    state.finances.monthlyRevenue += sellPrice;
+    state.finances.monthlyExpenses += carTotalCost(car);
+    ensureFinanceCollections();
+    state.finances.budgetBalance += sellPrice;
+    state.finances.monthlyNetProfit += car.netProfit;
+    state.finances.lifetimeNetProfit += car.netProfit;
+    addHistory('Automobilis parduotas', `${car.name} parduotas už ${moneyFmt(sellPrice)}. Grynasis pelnas: ${(car.netProfit >= 0 ? '+' : '') + moneyFmt(car.netProfit)}`, '💸');
+    toast(`Parduota! +${moneyFmt(car.netProfit)}`, '💸');
+    spark('🏁');
+    playTone(920, 0.12);
+    vibrate([25,35,25]);
+    levelUpCheck();
+    checkWorldUnlocks();
+    checkAchievements();
+    saveState();
+    render();
+    closeSheet();
+  }
+
+  function openSheet(html){
+
+    document.getElementById('sheet').innerHTML = html;
+    document.getElementById('modalBackdrop').classList.add('show');
+  }
+  function closeSheet(){
+    document.getElementById('modalBackdrop').classList.remove('show');
+    document.getElementById('sheet').innerHTML = '';
+  }
+
+  function worldProgressPercent(){
+    const maxReq = worldDefs[worldDefs.length - 1].req;
+    return clamp(Math.round((state.level / maxReq) * 100), 0, 100);
+  }
+
+  function zoneForLevel(level){
+    if(level < 4) return {name:'Pradžios zona', idx:0, hint:'Pirmas startas'};
+    if(level < 8) return {name:'Disciplinos miestas', idx:1, hint:'Įpročių miestas'};
+    if(level < 15) return {name:'Pinigų rajonas', idx:2, hint:'Pinigų rajonas'};
+    if(level < 25) return {name:'Elito zona', idx:3, hint:'Aukštas brandos lygis'};
+    return {name:'Laisvės pasaulis', idx:4, hint:'Laisvės pasaulis'};
+  }
+
+  function renderGarageStatsPage(){
+    const root = document.getElementById('garageStatsOverviewGrid');
+    const detailRoot = document.getElementById('garageStatsDetailRoot');
+    const salesRoot = document.getElementById('garageSalesRoot');
+    if(!root || !detailRoot || !salesRoot) return;
+    const activeCars = state.cars.filter(car => car.status !== 'parduotas');
+    const soldCars = state.cars.filter(car => car.status === 'parduotas');
+    const boughtCost = state.cars.reduce((sum, car) => sum + Number(car.buyPrice || 0), 0);
+    const soldRevenue = soldCars.reduce((sum, car) => sum + Number(car.soldPrice || 0), 0);
+    const totalNet = soldCars.reduce((sum, car) => sum + carNetProfit(car), 0);
+    const avgBuy = state.cars.length ? Math.round(boughtCost / state.cars.length) : 0;
+    const topProfit = soldCars.slice().sort((a,b) => carNetProfit(b) - carNetProfit(a))[0];
+    const mostExpensive = state.cars.slice().sort((a,b) => Number(b.buyPrice || 0) - Number(a.buyPrice || 0))[0];
+    const monthlySold = soldCars.filter(c => (c.soldDateISO || '').slice(0,7) === currentMonthKey());
+    const monthlyProfit = monthlySold.reduce((sum, c) => sum + carNetProfit(c), 0);
+    const totalTasks = (state.completionLog || []).filter(e => e.kind === 'garageCarTask' || e.kind === 'garageCustomTask').length;
+    root.innerHTML = [
+      {label:'Viso automobilių', value:state.cars.length, icon:'🚗'},
+      {label:'Aktyvūs', value:activeCars.length, icon:'🟢'},
+      {label:'Parduoti', value:soldCars.length, icon:'🏁'},
+      {label:'Pirkimo suma', value:moneyFmt(boughtCost), icon:'💸'},
+      {label:'Pardavimai', value:moneyFmt(soldRevenue), icon:'💰'},
+      {label:'Grynasis pelnas', value:moneyFmt(totalNet), icon:'📈'}
+    ].map(s => `<div class="smallStatBox"><div class="label">${s.icon} ${s.label}</div><div class="value">${escapeHTML(String(s.value))}</div></div>`).join('');
+
+    detailRoot.innerHTML = [
+      {label:'Vid. pirkimo kaina', value:moneyFmt(avgBuy), icon:'🧾'},
+      {label:'Mėnesio pelnas', value:moneyFmt(monthlyProfit), icon:'📆'},
+      {label:'Užduočių kiekis', value:totalTasks, icon:'✅'},
+      {label:'Brangiausias auto', value: mostExpensive ? moneyFmt(mostExpensive.buyPrice) : '0 €', icon:'⭐'}
+    ].map(s => `<div class="smallStatBox"><div class="label">${s.icon} ${s.label}</div><div class="value">${escapeHTML(String(s.value))}</div></div>`).join('');
+
+    document.getElementById('garageStatsMeta').textContent = `${monthlyProfit >= 0 ? '+' : ''}${moneyFmt(monthlyProfit)} šį mėnesį`;
+    document.getElementById('garageSalesCount').textContent = `${monthlySold.length} auto`;
+    salesRoot.innerHTML = soldCars.map(car => {
+      const profit = carNetProfit(car);
+      return `<div class="carCard"><button class="heroImageBtn" type="button" data-open-car="${car.id}"><div class="carHero" style="background-image:url('${car.imageSrc || ''}')"><div class="pill">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</div><div class="pill">${escapeHTML(car.soldDateISO || '')}</div></div></button><div class="carBody"><h4>${escapeHTML(car.name)}</h4><div class="carLine"><span>Pirkta ${moneyFmt(car.buyPrice)}</span><span>Parduota ${moneyFmt(car.soldPrice)}</span></div></div></div>`;
+    }).join('') || '<div class="emptyState">Parduotų automobilių dar nėra.</div>';
+    salesRoot.querySelectorAll('[data-open-car]').forEach(btn => btn.onclick = () => openCar(btn.dataset.openCar));
+  }
+
+  function renderFinancePage(){
+    const summaryRoot = document.getElementById('financeSummaryGrid');
+    const txRoot = document.getElementById('financeTxRoot');
+    const debtRoot = document.getElementById('financeDebtRoot');
+    if(!summaryRoot || !txRoot || !debtRoot) return;
+    ensureFinanceCollections();
+    const totals = financeTotals();
+    const activeCars = state.cars.filter(c => c.status !== 'parduotas');
+    const soldCars = state.cars.filter(c => c.status === 'parduotas');
+    const debtGroups = aggregateDebts();
+    summaryRoot.innerHTML = [
+      {label:'Bendras biudžetas', value:moneyFmt(totals.budget), icon:'🧮'},
+      {label:'Auto pirkimai', value:moneyFmt(totals.carPurchaseCost), icon:'🚗'},
+      {label:'Auto pardavimai', value:moneyFmt(totals.carRevenue), icon:'💰'},
+      {label:'Auto grynasis', value:moneyFmt(totals.carNet), icon:'📈'},
+      {label:'Skolų balansas', value:moneyFmt(totals.debtBalance), icon:'👥'},
+      {label:'Likę aktyvūs auto', value:activeCars.length, icon:'🅰️'}
+    ].map(s => `<div class="smallStatBox"><div class="label">${s.icon} ${s.label}</div><div class="value">${escapeHTML(String(s.value))}</div></div>`).join('');
+
+    const txs = state.finances.transactions.slice(0,30);
+    document.getElementById('financeTxCount').textContent = `${txs.length} įrašų`;
+    txRoot.innerHTML = txs.length ? txs.map(tx => `<div class="financeRow"><div><strong>${escapeHTML(tx.title || '')}</strong><span>${escapeHTML(tx.note || '')}</span></div><div style="text-align:right"><strong style="color:${tx.type === 'income' ? 'var(--success)' : 'var(--danger)'}">${tx.type === 'income' ? '+' : '-'}${moneyFmt(tx.amount)}</strong><span>${escapeHTML(tx.date || '')}</span></div></div>`).join('') : '<div class="emptyState">Finansinių įrašų dar nėra.</div>';
+
+    document.getElementById('financeDebtCount').textContent = `${debtGroups.length} žmonių`;
+    debtRoot.innerHTML = debtGroups.length ? debtGroups.map(group => {
+      const last = group.entries[0];
+      return `<div class="financeRow"><div><strong>${escapeHTML(group.person)}</strong><span>${escapeHTML(group.entries.length)} veiksmai • ${escapeHTML(last.note || '')}</span></div><div style="text-align:right"><strong>${group.total >= 0 ? '+' : ''}${moneyFmt(Math.abs(group.total))}</strong><span>${escapeHTML(last.date || '')}</span></div></div>`;
+    }).join('') : '<div class="emptyState">Skolų dar nėra.</div>';
+
+    const txDate = document.getElementById('financeTxDate');
+    const debtDate = document.getElementById('debtDate');
+    if(txDate && !txDate.value) txDate.value = todayISO();
+    if(debtDate && !debtDate.value) debtDate.value = todayISO();
+  }
+
+  function render(){
+    checkDateReset();
+    ensureMonthlyCycle();
+    if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
+    if(!state.history.length) addHistory('Sveiki atvykę', 'Žaidimas paruoštas startui', '🎮');
+
+    const xpNeeded = state.level * 100;
+    const xpPct = clamp(Math.round((state.xp / xpNeeded) * 100), 0, 100);
+    const completedCount = Object.keys(state.completedToday).length;
+    const allCount = taskTemplates.length;
+    const stats = state.stats;
+
+    document.documentElement.setAttribute('data-theme', state.theme);
+    document.getElementById('themeToggle').classList.toggle('on', state.theme === 'light');
+    document.getElementById('soundToggle').classList.toggle('on', state.sound);
+    document.getElementById('vibrateToggle').classList.toggle('on', state.vibrate);
+
+
+    state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}, menuSections:{shop:false, stats:false}};
+    state.ui.menuSections = state.ui.menuSections || {shop:false, stats:false};
+
+    document.getElementById('xpFill').style.width = xpPct + '%';
+    document.getElementById('levelValue').textContent = state.level;
+    document.getElementById('xpToNext').textContent = `${Math.max(0, xpNeeded - state.xp)} XP iki lygio`;
+    document.getElementById('streakValue').textContent = state.streak;
+    document.getElementById('coinsValue').textContent = state.coins;
+    document.getElementById('streakHint').textContent = state.streak >= 7 ? 'Karšta serija' : state.streak >= 3 ? 'Puikus ritmas' : 'Judėk toliau';
+
+
+
+    document.getElementById('taskProgressLabel').textContent = `${completedCount}/${allCount} atlikta`;
+
+    const dailyStateEl = document.getElementById('dailyState');
+    const dailyRarityEl = document.getElementById('dailyRarity');
+    const dailyTitleEl = document.getElementById('dailyTitle');
+    const dailyDescEl = document.getElementById('dailyDesc');
+    const claimDailyBtnEl = document.getElementById('claimDailyBtn');
+    if(dailyStateEl && dailyRarityEl && dailyTitleEl && dailyDescEl && claimDailyBtnEl){
+      dailyStateEl.className = `badge ${state.dailyQuestClaimed ? 'good' : 'info'}`;
+      dailyStateEl.textContent = state.dailyQuestClaimed ? 'Dienos misija įvykdyta' : 'Dienos misija paruošta';
+
+      const q = state.dailyQuest;
+      dailyRarityEl.textContent = `${(q.rarity || (q.xp >= 30 ? 'legendinė' : q.xp >= 20 ? 'epinė' : 'reta')).toUpperCase()} MISIJA`;
+      dailyRarityEl.className = `tag ${(q.xp >= 30 ? 'legendary' : q.xp >= 20 ? 'epic' : 'rare')}`;
+      dailyTitleEl.textContent = q.title;
+      dailyDescEl.textContent = `Ši misija iš ${q.cat} kategorijos. Duoda bonus XP ir monetų.`;
+      claimDailyBtnEl.textContent = state.dailyQuestClaimed ? 'Jau įvykdyta' : 'Įvykdyti dienos užduotį';
+      claimDailyBtnEl.disabled = state.dailyQuestClaimed;
+      claimDailyBtnEl.style.opacity = state.dailyQuestClaimed ? .55 : 1;
+    }
+
+    // tasks
+    const categories = ['Sveikata','Produktyvumas','Tobulėjimas'];
+    const tasksHtml = categories.map(cat => {
+      const tasks = taskTemplates.filter(t => t.cat === cat);
+      const open = !!(state.ui?.taskGroups?.[cat]);
+      return `
+        <div class="panel taskGroup">
+          <button class="taskGroupHead" type="button" data-toggle-cat="${cat}">
+            <div>
+              <h3>${cat}</h3>
+              <span class="sub">${tasks.length} užduočių • ${open ? 'Paliesk, kad suskleistum' : 'Paliesk, kad išskleistum'}</span>
+            </div>
+          </button>
+          <div class="taskGroupBody ${open ? 'open' : ''}">
+            <div class="taskList">
+              ${tasks.map(t => {
+                const done = !!state.completedToday[t.id];
+                return `
+                  <div class="taskCard ${done ? 'done' : ''}" data-task="${t.id}">
+                    <div class="check">${done ? '✓' : ''}</div>
+                    <div class="taskMain">
+                      <strong>${t.icon} ${escapeHTML(t.title)}</strong>
+                      <div class="taskMeta">
+                        <span>${t.difficulty}</span>
+                        <span>${done ? 'Atlikta šiandien' : 'Paspausk ir gauk atlygį'}</span>
+                      </div>
+                    </div>
+                    <div class="rewardPills">
+                      <div class="xp">+${t.xp} XP</div>
+                      <div class="coins">+${t.coins} 🪙</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('tasksRoot').innerHTML = tasksHtml;
+    document.querySelectorAll('[data-task]').forEach(el => el.addEventListener('click', () => completeTask(el.dataset.task)));
+    document.querySelectorAll('[data-toggle-cat]').forEach(btn => btn.addEventListener('click', () => {
+      const cat = btn.dataset.toggleCat;
+      state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
+      state.ui.taskGroups = state.ui.taskGroups || {Sveikata:false, Produktyvumas:false, Tobulėjimas:false};
+      state.ui.taskGroups[cat] = !state.ui.taskGroups[cat];
+      saveState();
+      render();
+    }));
+
+    // stats grid
+    const statCards = [
+      {label:'Vanduo', value:`${stats.waterLiters} L`, icon:'💧'},
+      {label:'Pasivaikščiojimas', value:`${stats.walkMinutes} min`, icon:'🚶'},
+      {label:'Atsispaudimai', value:stats.pushups, icon:'💪'},
+      {label:'Prisitraukimai', value:stats.pullups, icon:'🏋️'},
+      {label:'Skaitymas', value:`${stats.readPages} psl`, icon:'📖'},
+      {label:'Mokymasis', value:`${stats.studyMinutes} min`, icon:'🧠'},
+      {label:'CE teorija', value:`${stats.ceMinutes} min`, icon:'🪪'},
+      {label:'Auto pardavimai', value:stats.carsSold, icon:'🚗'}
+    ];
+    document.getElementById('statsGrid').innerHTML = statCards.map(s => `
+      <div class="smallStatBox">
+        <div class="label">${s.icon} ${s.label}</div>
+        <div class="value">${escapeHTML(String(s.value))}</div>
+      </div>
+    `).join('');
+
+
+    // shop
+    document.getElementById('shopGrid').innerHTML = rewardsShop.map(item => `
+      <div class="rewardCard">
+        <div class="top">
+          <div>
+            <div class="ico">${item.icon}</div>
+            <strong>${escapeHTML(item.name)}</strong>
+          </div>
+          <div class="cost">🪙 ${item.cost}</div>
+        </div>
+        <button class="btn secondary buyBtn" data-buy="${item.id}">Pirkti</button>
+      </div>
+    `).join('');
+    document.querySelectorAll('[data-buy]').forEach(btn => btn.onclick = () => buyReward(btn.dataset.buy));
+
+    // history
+    const historyOpen = !!(state.ui?.historyOpen);
+    const historyRoot = document.getElementById('historyRoot');
+    document.getElementById('historyBody').classList.toggle('open', historyOpen);
+    document.getElementById('historyChev').textContent = historyOpen ? '▾' : '▸';
+    document.getElementById('historyHint').textContent = historyOpen ? 'Paspausk, kad paslėptum istoriją' : 'Paspausk, kad pamatytum istoriją';
+    historyRoot.innerHTML = historyOpen ? (state.history.length ? state.history : [{title:'Pradėk žaidimą', desc:'Atlik pirmą užduotį', icon:'🎮', time:nowLabel()}]).map(item => `
+      <div class="historyItem">
+        <div class="histIcon">${item.icon}</div>
+        <div>
+          <strong>${escapeHTML(item.title)}</strong>
+          <span>${escapeHTML(item.desc)}</span>
+          <span style="font-size:11px;opacity:.78">${escapeHTML(item.time)}</span>
+        </div>
+      </div>
+    `).join('') : '';
+
+
+
+    // garažas
+    ensureGarageDailyTasks();
+    ensureMonthlyCycle();
+    ensureFinanceCollections();
+    const activeCars = state.cars.filter(car => car.status !== 'parduotas');
+    const soldCars = state.cars.filter(car => car.status === 'parduotas');
+    document.getElementById('carCount').textContent = `${activeCars.length} aktyvūs / ${soldCars.length} parduoti`;
+    document.getElementById('activeCarCount').textContent = `${activeCars.length} auto`;
+    document.getElementById('soldCarCount').textContent = `${soldCars.length} auto`;
+    document.getElementById('garageMenuBadge').textContent = `${activeCars.length} aktyvių / ${soldCars.length} parduotų`;
+
+    const garageTaskGroups = state.ui?.garageTaskGroups || {autos:false, custom:false};
+    document.getElementById('garageAutosBody')?.classList.toggle('open', !!garageTaskGroups.autos);
+    document.getElementById('garageCustomBody')?.classList.toggle('open', !!garageTaskGroups.custom);
+
+    const garageCustomActive = state.garageTasks || [];
+    document.getElementById('garageTaskSummary').textContent = `${activeCars.reduce((sum, car) => sum + car.checklist.length, 0)} automobilių užduočių / ${garageCustomActive.length} kitų užduočių`;
+    const autoTasksRoot = document.getElementById('garageAutoTasksRoot');
+    if(autoTasksRoot){
+      autoTasksRoot.innerHTML = activeCars.length ? activeCars.map(car => `
+        <div class="garageCarTaskCard">
+          <div class="garageCarTaskHead">
+            <div>
+              <strong>${escapeHTML(car.name)}</strong>
+              <span>${carDoneCount(car)}/${car.checklist.length} atlikta • ${car.status === 'paruoštas' ? 'paruoštas pardavimui' : car.status === 'beveik paruoštas' ? 'beveik paruoštas' : 'rengiamas'}</span>
+            </div>
+            <button class="btn secondary" type="button" data-open-car="${car.id}" style="padding:10px 12px;border-radius:14px;font-size:12px">Atidaryti</button>
+          </div>
+          <div class="taskList">
+            ${car.checklist.map(item => {
+              const checked = !!item.done;
+              return `
+                <div class="listItem" style="align-items:flex-start">
+                  <label style="align-items:flex-start">
+                    <input type="checkbox" ${checked ? 'checked' : ''} ${checked ? 'disabled' : ''} data-garage-car="${car.id}" data-garage-item="${item.id}" />
+                    <div>
+                      <strong>${escapeHTML(item.name)}</strong>
+                      <div class="small">+${item.xp} XP • +${item.coins} 🪙 • išlaidos ${moneyFmt(item.expense || 0)}</div>
+                    </div>
+                  </label>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                    <span class="badge ${checked ? 'good' : 'info'}">${checked ? 'Atlikta' : 'Laukiama'}</span>
+                    <input class="input" style="width:104px;padding:9px 10px;border-radius:12px;font-size:12px" type="number" min="0" step="1" ${checked ? 'disabled' : ''} value="${Number(item.expense || 0) || ''}" data-garage-expense="${car.id}:${item.id}" placeholder="€" />
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('') : `<div class="emptyState">Kol kas nėra aktyvių automobilių. Pridėk pirmą auto ir čia iškart matysi jo darbus.</div>`;
+      autoTasksRoot.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.onchange = () => {
+          const carId = cb.dataset.garageCar;
+          const itemId = cb.dataset.garageItem;
+          const expenseInput = autoTasksRoot.querySelector(`[data-garage-expense="${carId}:${itemId}"]`);
+          const expense = Number(expenseInput?.value || 0);
+          completeCarChecklistItem(carId, itemId, expense);
+          saveState();
+          render();
+          openCar(carId);
+        };
+      });
+      autoTasksRoot.querySelectorAll('[data-open-car]').forEach(btn => btn.onclick = () => openCar(btn.dataset.openCar));
+    }
+
+    const garageCustomRoot = document.getElementById('garageCustomTasksRoot');
+    if(garageCustomRoot){
+      garageCustomRoot.innerHTML = garageCustomActive.length ? garageCustomActive
+        .slice()
+        .sort((a, b) => Number(!!a.done) - Number(!!b.done) || (b.createdAt || '').localeCompare(a.createdAt || ''))
+        .map(task => `
+        <div class="taskCard ${task.done ? 'done' : ''}">
+          <div class="check">${task.done ? '✓' : ''}</div>
+          <div class="taskMain">
+            <strong>🧩 ${escapeHTML(task.title)}</strong>
+            <div class="taskMeta">
+              <span>${task.done ? `Atlikta ${escapeHTML(task.completedAt || '')}` : `Sukurta ${escapeHTML(task.createdAt || '')}`}</span>
+              <span class="statChip">+${task.xp} XP</span>
+              <span class="statChip">+${task.coins} 🪙</span>
+            </div>
+          </div>
+          <div class="rewardPills">
+            <div class="xp">ID ${escapeHTML(task.id.slice(-4))}</div>
+            <div class="coins">${task.done ? 'Atlikta' : 'Laukiama'}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-left:10px">
+            <button class="smallBtn" data-garage-task-complete="${task.id}" ${task.done ? 'disabled' : ''}>✓</button>
+            <button class="smallBtn danger" data-garage-task-delete="${task.id}">✕</button>
+          </div>
+        </div>
+      `).join('') : `<div class="emptyState" style="margin:0 16px 16px">Kol kas nėra kitų užduočių. Pridėk pirmą darbą — jis iškart atsiras viršuje, tvarkingai atskirtas nuo atliktų.</div>`;
+      garageCustomRoot.querySelectorAll('[data-garage-task-complete]').forEach(btn => {
+        btn.onclick = () => completeGarageTask(btn.dataset.garageTaskComplete);
+      });
+      garageCustomRoot.querySelectorAll('[data-garage-task-delete]').forEach(btn => {
+        btn.onclick = () => deleteGarageTask(btn.dataset.garageTaskDelete);
+      });
+    }
+
+    document.getElementById('monthlyProfitValue').textContent = moneyFmt(state.finances.monthlyNetProfit);
+    document.getElementById('monthlyProfitFill').style.width = `${clamp((state.finances.monthlyNetProfit / 10000) * 100, 0, 100)}%`;
+
+    document.getElementById('activeCarGrid').innerHTML = activeCars.length ? activeCars.map(car => {
+      const done = carDoneCount(car);
+      const pct = carProgress(car);
+      const totalCost = carTotalCost(car);
+      return `
+        <div class="carCard" data-open-car="${car.id}">
+          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${car.imageSrc || ''}')">
+            <div class="pill">Aktyvus</div>
+            <div class="pill">${pct}%</div>
+          </div>
+          <div class="carBody">
+            <h4>${escapeHTML(car.name)}</h4>
+            <div class="carLine"><span>${done}/${car.checklist.length} punktų</span><span>Stovi: ${moneyFmt(totalCost)}</span></div>
+            <div class="miniBar"><div class="fill" style="width:${pct}%"></div></div>
+            <div class="carLine"><span>Pirkta už ${moneyFmt(car.buyPrice)}</span><span>Išlaidos: ${moneyFmt(carChecklistExpenses(car))}</span></div>
+          </div>
+        </div>
+      `;
+    }).join('') : `<div class="emptyState">Kol kas nėra aktyvių automobilių. Pridėk pirmą auto ir pradėk Garažo misiją.</div>`;
+    document.getElementById('soldCarGrid').innerHTML = soldCars.length ? soldCars.map(car => {
+      const pct = carProgress(car);
+      return `
+        <div class="carCard" data-open-car="${car.id}">
+          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${car.imageSrc || ''}')">
+            <div class="pill">Parduotas</div>
+            <div class="pill">${pct}%</div>
+          </div>
+          <div class="carBody">
+            <h4>${escapeHTML(car.name)}</h4>
+            <div class="carLine"><span>Pardavimo kaina: ${moneyFmt(car.soldPrice)}</span><span>Grynasis pelnas: ${(car.netProfit >= 0 ? '+' : '') + moneyFmt(car.netProfit)}</span></div>
+            <div class="miniBar"><div class="fill" style="width:100%"></div></div>
+            <div class="carLine"><span>Stovėjo: ${moneyFmt(carTotalCost(car))}</span><span>${escapeHTML(car.soldAt || '')}</span></div>
+          </div>
+        </div>
+      `;
+    }).join('') : `<div class="emptyState">Dar nėra parduotų automobilių. Kai parduosi pirmą, jis čia atsiras atskirai.</div>`;
+    document.getElementById('activeCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
+    document.getElementById('soldCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
+
+    const leadRoot = document.getElementById('garageLeadRoot');
+    if(leadRoot){
+      const allLeads = (state.leadVariants || []).slice().sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+      const leadCount = document.getElementById('garageLeadCount');
+      if(leadCount) leadCount.textContent = `${allLeads.length} variantų`;
+
+      leadRoot.innerHTML = allLeads.length ? allLeads.map(lead => {
+        const days = garageLeadDaysLeft(lead);
+        const daysClass = days < 0 ? 'danger' : days === 0 ? 'warn' : 'good';
+        const heroStyle = lead.photos?.[0] ? `background-image:url('${lead.photos[0]}')` : '';
+        const contactLine = [lead.city || 'Be miesto', lead.fuel || '—', lead.phone || '—'].filter(Boolean).join(' • ');
+        const notesText = String(lead.notes || lead.defects || '—').trim();
+        return `
+          <div class="garageLeadCard" data-lead-id="${lead.id}">
+            <div class="garageLeadHero" style="${heroStyle}">
+              <div class="leadPill">${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</div>
+              <div class="leadPill">${garageLeadDaysText(lead)}</div>
+            </div>
+            <div class="garageLeadBody">
+              <h4>${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</h4>
+              <div class="garageLeadLine"><span>${escapeHTML(contactLine)}</span><span>${escapeHTML(lead.lastCalledAt || 'dar ne skambinta')}</span></div>
+              <div class="garageLeadTags">
+                <span class="garageLeadTag good">Pradinė ${moneyFmt(lead.initialPrice)}</span>
+                <span class="garageLeadTag">Mūsų kaina ${moneyFmt(lead.targetPrice)}</span>
+                <span class="garageLeadTag ${daysClass}">${garageLeadDaysText(lead)}</span>
+              </div>
+              <div class="leadDetailBox" style="margin-top:12px">
+                <strong style="color:var(--text);display:block;margin-bottom:6px">Defektai ir pastabos</strong>
+                ${escapeHTML(notesText)}
+              </div>
+              <div class="garageLeadLine"><span>Skambinti po: ${Number(lead.followUpDays || 0)} d.</span><span>Atnaujinta: ${escapeHTML(lead.updatedAt || lead.createdAt || '')}</span></div>
+              <div class="leadGallery">${(lead.photos || []).map((src, i) => `<button type="button" class="leadThumbBtn" data-open-lead-gallery="${lead.id}" data-photo-index="${i}"><div class="img" style="background-image:url('${src}')"></div></button>`).join('') || '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
+              <div class="garageLeadActions">
+                <button class="btn secondary" type="button" data-call-lead="${lead.id}">📞 Skambinta</button>
+                <button class="btn secondary" type="button" data-edit-lead="${lead.id}">Redaguoti</button>
+                <button class="btn danger" type="button" data-delete-lead="${lead.id}">Ištrinti</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('') : `<div class="emptyState">Dar nėra įkeltų variantų. Įkelk pirmą pasiūlymą ir jis atsiras čia viršuje.</div>`;
+      leadRoot.querySelectorAll('[data-call-lead]').forEach(btn => btn.onclick = () => callGarageLead(btn.dataset.callLead));
+      leadRoot.querySelectorAll('[data-delete-lead]').forEach(btn => btn.onclick = () => deleteGarageLead(btn.dataset.deleteLead));
+      leadRoot.querySelectorAll('[data-edit-lead]').forEach(btn => btn.onclick = () => openGarageLeadSheet(btn.dataset.editLead));
+      leadRoot.querySelectorAll('[data-open-lead-gallery]').forEach(btn => btn.onclick = () => openLeadGallery(btn.dataset.openLeadGallery, Number(btn.dataset.photoIndex || 0)));
+    }
+
+    // įgūdžiai
+    const skillsRootEl = document.getElementById('skillsRoot');
+    if(skillsRootEl){
+      skillsRootEl.innerHTML = state.skills.map(s => `
+        <div class="skillCard">
+          <div class="skillTop">
+            <div>
+              <strong>${s.icon} ${escapeHTML(skillLabel(s.key))}</strong>
+              <span>Lygis ${s.level}</span>
+            </div>
+            <span class="badge info">Stiprinimas x${s.boost.toFixed(2)}</span>
+          </div>
+          <div class="miniBar"><div class="fill" style="width:${s.xp % 100}%"></div></div>
+          <div class="skillDesc">${escapeHTML(s.desc)}</div>
+        </div>
+      `).join('');
+    }
+
+
+    // svarbios užduotys
+    const importantRoot = document.getElementById('importantTasksRoot');
+    if(importantRoot){
+      importantRoot.innerHTML = state.importantTasks.length ? state.importantTasks.map(task => `
+        <div class="listItem ${task.done ? 'done' : ''}" style="align-items:flex-start;padding:14px 14px;gap:12px">
+          <div class="check">${task.done ? '✓' : ''}</div>
+          <div style="flex:1;min-width:0">
+            <strong style="display:block;font-size:15px;margin-bottom:4px">⭐ ${escapeHTML(task.title)}</strong>
+            <div class="taskMeta" style="margin-bottom:8px">
+              <span>${task.done ? 'Atlikta' : 'Laukiama'}</span>
+              <span>${task.completedAt ? `Baigta: ${escapeHTML(task.completedAt)}` : 'Pridėta ranka'}</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <span class="statChip">+${task.xp} XP</span>
+              <span class="statChip">+${task.coins} 🪙</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <button class="smallBtn" data-important-complete="${task.id}" ${task.done ? 'disabled' : ''}>✓</button>
+            <button class="smallBtn danger" data-important-delete="${task.id}">✕</button>
+          </div>
+        </div>
+      `).join('') : `<div class="emptyState">Kol kas nėra užduočių. Pridėk pirmą darbą, ir jis atsiras kaip aiškus sąrašas.</div>`;
+      importantRoot.querySelectorAll('[data-important-complete]').forEach(btn => {
+        btn.onclick = () => completeImportantTask(btn.dataset.importantComplete);
+      });
+      importantRoot.querySelectorAll('[data-important-delete]').forEach(btn => {
+        btn.onclick = () => deleteImportantTask(btn.dataset.importantDelete);
+      });
+    }
+
+    // achievements
+    document.getElementById('achievementsRoot').innerHTML = achievementDefs.map(a => {
+      const ok = !!state.unlockedAchievements[a.id];
+      return `
+        <div class="achievement ${ok ? '' : 'locked'}">
+          <div class="ico">${a.icon}</div>
+          <strong>${escapeHTML(a.title)}</strong>
+          <span>${escapeHTML(a.desc)}</span>
+          <div style="margin-top:12px"><span class="badge ${ok ? 'good' : 'warn'}">${ok ? `+${a.atlygis.coins} 🪙` : 'Užrakinta'}</span></div>
+        </div>
+      `;
+    }).join('');
+
+    const allowedViews = new Set(['home','garage','garage-leads','garage-stats','finance','menu','achievements','settings']);
+    if(!allowedViews.has(state.selectedView)) state.selectedView = 'home';
+    const navActiveView = (state.selectedView === 'garage-leads' || state.selectedView === 'garage-stats') ? 'garage' : (state.selectedView === 'finance' ? 'menu' : state.selectedView);
+    document.querySelectorAll('.navBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === navActiveView));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const activeView = document.getElementById(`view-${state.selectedView}`) || document.getElementById('view-home');
+    activeView.classList.add('active');
+
+    const menuShop = document.getElementById('menu-shop');
+    const menuStats = document.getElementById('menu-stats');
+    if(menuShop) menuShop.style.display = state.ui.menuSections.shop ? '' : 'none';
+    if(menuStats) menuStats.style.display = state.ui.menuSections.stats ? '' : 'none';
+
+    renderGarageStatsPage();
+    renderFinancePage();
+    saveState();
+  }
+
+  // events
+  document.querySelectorAll('.navBtn').forEach(btn => btn.addEventListener('click', () => {
+    state.selectedView = btn.dataset.view;
+    saveState();
+    render();
+  }));
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-jump]');
+    if(!btn) return;
+    const section = btn.dataset.menuSection;
+    if(section){
+      state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}, menuSections:{shop:false, stats:false}};
+      state.ui.menuSections = state.ui.menuSections || {shop:false, stats:false};
+      state.ui.menuSections[section] = !state.ui.menuSections[section];
+      saveState();
+      render();
+      if(state.ui.menuSections[section]){
+        requestAnimationFrame(() => {
+          const target = document.getElementById(btn.dataset.jump);
+          if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+        toast('Skiltis išskleista', '↘️');
+      }
+      return;
+    }
+    const target = document.getElementById(btn.dataset.jump);
+    if(target){
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      toast('Atidaryta iš meniu', '↘️');
+    }
+  });
+
+  const claimDailyBtnEl2 = document.getElementById('claimDailyBtn');
+  const rerollDailyBtnEl2 = document.getElementById('rerollDailyBtn');
+  if(claimDailyBtnEl2) claimDailyBtnEl2.onclick = claimDailyQuest;
+  if(rerollDailyBtnEl2) rerollDailyBtnEl2.onclick = rerollDailyQuest;
+  document.getElementById('historyToggleBtn').onclick = () => {
+    state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
+    state.ui.historyOpen = !state.ui.historyOpen;
+    saveState();
+    render();
+  };
+  const backToGarageStatsBtn = document.getElementById('backToGarageStatsBtn');
+  if(backToGarageStatsBtn) backToGarageStatsBtn.onclick = () => { state.selectedView = 'garage'; saveState(); render(); };
+  const backToMenuBtn = document.getElementById('backToMenuBtn');
+  if(backToMenuBtn) backToMenuBtn.onclick = () => { state.selectedView = 'menu'; saveState(); render(); };
+
+  document.addEventListener('click', (e) => {
+    const openViewBtn = e.target.closest('[data-open-view]');
+    if(openViewBtn){
+      state.selectedView = openViewBtn.dataset.openView;
+      saveState();
+      render();
+      return;
+    }
+    const actionBtn = e.target.closest('[data-garage-action]');
+    if(actionBtn){
+      const action = actionBtn.dataset.garageAction;
+      if(action === 'tasks') return openGarageTasks();
+      if(action === 'leads') return openGarageLeadsPage();
+      if(action === 'addcar') return openGarageAddCar();
+      if(action === 'stats') return openGarageStats();
+    }
+    const toggleBtn = e.target.closest('[data-garage-toggle]');
+    if(toggleBtn){
+      state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
+      state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
+      const key = toggleBtn.dataset.garageToggle;
+      state.ui.garageTaskGroups[key] = !state.ui.garageTaskGroups[key];
+      saveState();
+      render();
+    }
+  });
+
+  const addFinanceTxBtn = document.getElementById('addFinanceTxBtn');
+  if(addFinanceTxBtn) addFinanceTxBtn.onclick = () => {
+    const type = document.getElementById('financeTxType').value;
+    const amount = Number(document.getElementById('financeTxAmount').value || 0);
+    const title = document.getElementById('financeTxTitle').value.trim();
+    const note = document.getElementById('financeTxNote').value.trim();
+    const date = document.getElementById('financeTxDate').value || todayISO();
+    if(!amount || amount <= 0){ toast('Įrašyk sumą', '💶'); return; }
+    addFinanceTransaction(type, amount, title, note, date);
+    document.getElementById('financeTxAmount').value = '';
+    document.getElementById('financeTxTitle').value = '';
+    document.getElementById('financeTxNote').value = '';
+  };
+  const addDebtBtn = document.getElementById('addDebtBtn');
+  if(addDebtBtn) addDebtBtn.onclick = () => {
+    const action = document.getElementById('debtAction').value;
+    const person = document.getElementById('debtPerson').value.trim();
+    const amount = Number(document.getElementById('debtAmount').value || 0);
+    const note = document.getElementById('debtNote').value.trim();
+    const date = document.getElementById('debtDate').value || todayISO();
+    if(!person || !amount || amount <= 0){ toast('Įrašyk žmogų ir sumą', '👥'); return; }
+    addDebtAction(action, person, amount, note, date);
+    document.getElementById('debtPerson').value = '';
+    document.getElementById('debtAmount').value = '';
+    document.getElementById('debtNote').value = '';
+  };
+
+  const garageTaskForm = document.getElementById('garageTaskForm');
+  if(garageTaskForm && !garageTaskForm.dataset.bound){
+    garageTaskForm.dataset.bound = '1';
+    garageTaskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('garageTaskTitle').value.trim();
+      const xp = Number(document.getElementById('garageTaskXp').value || 0);
+      const coins = Number(document.getElementById('garageTaskCoins').value || 0);
+      if(!title){
+        toast('Įrašyk garažo užduotį', '✍️');
+        return;
+      }
+      addGarageTask(title, xp, coins);
+      document.getElementById('garageTaskTitle').value = '';
+      document.getElementById('garageTaskXp').value = '10';
+      document.getElementById('garageTaskCoins').value = '5';
+    });
+  }
+
+  document.getElementById('addCarBtn').onclick = async () => {
+    const name = document.getElementById('carName').value.trim();
+    const buyPrice = Number(document.getElementById('carBuyPrice').value || 0);
+    const file = document.getElementById('carPhoto').files[0];
+    if(!name){
+      toast('Įvesk automobilio pavadinimą', '✍️');
+      return;
+    }
+    if(!buyPrice || buyPrice <= 0){
+      toast('Įvesk pirkimo kainą', '💰');
+      return;
+    }
+    if(!file){
+      toast('Įkelk automobilio nuotrauką', '🖼️');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      addCar(name, reader.result, buyPrice);
+      document.getElementById('carName').value = '';
+      document.getElementById('carBuyPrice').value = '';
+      document.getElementById('carPhoto').value = '';
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const addGarageLeadBtn = document.getElementById('addGarageLeadBtn');
+  if(addGarageLeadBtn && !addGarageLeadBtn.dataset.bound){
+    addGarageLeadBtn.dataset.bound = '1';
+    addGarageLeadBtn.onclick = () => addGarageLead();
+  }
+  document.getElementById('backToGarageBtn').onclick = () => {
+    state.selectedView = 'garage';
+    saveState();
+    render();
+  };
+  document.getElementById('addImportantBtn').onclick = () => {
+    const title = document.getElementById('importantTitle').value.trim();
+    const xp = Number(document.getElementById('importantXp').value || 0);
+    const coins = Number(document.getElementById('importantCoins').value || 0);
+    if(!title){
+      toast('Įrašyk svarbios užduoties pavadinimą', '✍️');
+      return;
+    }
+    addImportantTask(title, xp, coins);
+    document.getElementById('importantTitle').value = '';
+    document.getElementById('importantXp').value = '20';
+    document.getElementById('importantCoins').value = '10';
+  };
+
+  document.getElementById('themeToggle').onclick = () => {
+    state.theme = state.theme === 'light' ? 'dark' : 'light';
+    toast(state.theme === 'light' ? 'Šviesus režimas' : 'Tamsus režimas', '🎨');
+    saveState(); render();
+  };
+  document.getElementById('soundToggle').onclick = () => {
+    state.sound = !state.sound;
+    toast(`Garsas ${state.sound ? 'įjungtas' : 'išjungtas'}`, '🔊');
+    saveState(); render();
+  };
+  document.getElementById('vibrateToggle').onclick = () => {
+    state.vibrate = !state.vibrate;
+    toast(`Vibracija ${state.vibrate ? 'įjungta' : 'išjungta'}`, '📳');
+    saveState(); render();
+  };
+  document.getElementById('resetBtn').onclick = () => {
+    const ok = window.confirm('Ar tikrai visiškai ištrinti žaidimą ir pradėti iš naujo?');
+    if(!ok) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state = defaultState();
+    state.dailyQuest = rand(dailyQuestPool);
+    state.dailyQuestDate = todayISO();
+    state.worldsUnlocked = [];
+    state.history = [{title:'Sveiki atvykę', desc:'Žaidimas paruoštas startui', icon:'🎮', time: nowLabel()}];
+    saveState();
+    render();
+    toast('Žaidimas visiškai nuresetintas', '🧹');
+  };
+
+  document.getElementById('modalBackdrop').addEventListener('click', (e) => {
+    if(e.target.id === 'modalBackdrop') closeSheet();
+  });
+  window.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeSheet(); });
+
+  // init
+  if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
+  if(!state.dailyQuestDate) state.dailyQuestDate = todayISO();
+  if(state.selectedView === 'skills') state.selectedView = 'menu';
+  if(!state.history.length) state.history.push({title:'Sveiki atvykę', desc:'Žaidimas paruoštas startui', icon:'🎮', time: nowLabel()});
+  state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
+  state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
+  state.ui.leadFilters = state.ui.leadFilters || {query:'', due:'all', sort:'due'};
+  checkDateReset();
+  ensureMonthlyCycle();
+  checkWorldUnlocks();
+  checkAchievements();
+  saveState();
+  installMotivationPremiumV3();
+  render();
+})();
+</script>
+</body>
+</html>
