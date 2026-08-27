@@ -1884,7 +1884,7 @@
     {id:'water', cat:'Sveikata', icon:'💧', title:'2L vandens', xp:18, coins:8, difficulty:'Vidutinė', statKey:'waterLiters', statValue:2, skill:'Discipline'},
     {id:'social', cat:'Sveikata', icon:'📵', title:'60 min be socialinių tinklų', xp:16, coins:7, difficulty:'Vidutinė', statKey:'socialMinutes', statValue:60, skill:'Discipline'},
     {id:'walk', cat:'Sveikata', icon:'🚶', title:'30 min pasivaikščiojimas', xp:15, coins:6, difficulty:'Lengva', statKey:'walkMinutes', statValue:30, skill:'Strength'},
-    {id:'push', cat:'Sveikata', icon:'💪', title:'50 atsispaudimų', xp:24, coins:10, difficulty:'Sunkesnė', statKey:'pushups', statValue:50, skill:'Strength'},
+    {id:'push', cat:'Sveikata', icon:'💪', title:'50 dipsių', xp:24, coins:10, difficulty:'Sunkesnė', statKey:'pushups', statValue:50, skill:'Strength'},
     {id:'pull', cat:'Sveikata', icon:'🏋️', title:'20 prisitraukimų', xp:30, coins:14, difficulty:'Sunkesnė', statKey:'pullups', statValue:20, skill:'Strength'},
     {id:'meal', cat:'Sveikata', icon:'🍽️', title:'3 kartai valgymo', xp:12, coins:5, difficulty:'Lengva', statKey:'meals', statValue:3, skill:'Discipline'},
     {id:'addiction', cat:'Sveikata', icon:'🛡️', title:'24h be priklausomybių', xp:35, coins:18, difficulty:'Epik', statKey:'cleanDays', statValue:1, skill:'Discipline'},
@@ -1936,9 +1936,9 @@
     {id:'streak3', icon:'🔥', title:'3 dienų serija', desc:'Išlaikyk 3 dienas iš eilės', need:s => s.streak >= 3, atlygis:{xp:40, coins:30}},
     {id:'streak7', icon:'🔥', title:'7 dienų serija', desc:'Išlaikyk 7 dienas iš eilės', need:s => s.streak >= 7, atlygis:{xp:70, coins:50}},
     {id:'streak15', icon:'🔥', title:'15 dienų serija', desc:'Išlaikyk 15 dienų iš eilės', need:s => s.streak >= 15, atlygis:{xp:120, coins:90}},
-    {id:'push100', icon:'💪', title:'100 atsispaudimų', desc:'Surink 100 atsispaudimų', need:s => s.stats.pushups >= 100, atlygis:{xp:60, coins:35}},
-    {id:'push300', icon:'💪', title:'300 atsispaudimų', desc:'Surink 300 atsispaudimų', need:s => s.stats.pushups >= 300, atlygis:{xp:120, coins:70}},
-    {id:'push500', icon:'💪', title:'500 atsispaudimų', desc:'Surink 500 atsispaudimų', need:s => s.stats.pushups >= 500, atlygis:{xp:180, coins:110}},
+    {id:'push100', icon:'💪', title:'100 dipsių', desc:'Surink 100 dipsių', need:s => s.stats.pushups >= 100, atlygis:{xp:60, coins:35}},
+    {id:'push300', icon:'💪', title:'300 dipsių', desc:'Surink 300 dipsių', need:s => s.stats.pushups >= 300, atlygis:{xp:120, coins:70}},
+    {id:'push500', icon:'💪', title:'500 dipsių', desc:'Surink 500 dipsių', need:s => s.stats.pushups >= 500, atlygis:{xp:180, coins:110}},
     {id:'pull50', icon:'🏋️', title:'50 prisitraukimų', desc:'Surink 50 prisitraukimų', need:s => s.stats.pullups >= 50, atlygis:{xp:60, coins:35}},
     {id:'pull100', icon:'🏋️', title:'100 prisitraukimų', desc:'Surink 100 prisitraukimų', need:s => s.stats.pullups >= 100, atlygis:{xp:120, coins:70}},
     {id:'pull200', icon:'🏋️', title:'200 prisitraukimų', desc:'Surink 200 prisitraukimų', need:s => s.stats.pullups >= 200, atlygis:{xp:180, coins:110}},
@@ -2969,7 +2969,7 @@ function addDaysISO(baseISO, days){
     markStreakOnFirstCompletion();
     logTaskCompletion(t.title);
     addXpAndCoins(t.xp, t.coins, 'Užduotis atlikta', t.skill, '✅');
-    if(id === 'push') addHistory('Sportas', '+50 atsispaudimų pridėti prie statistikos', '💪');
+    if(id === 'push') addHistory('Sportas', '+50 dipsių pridėti prie statistikos', '💪');
     if(id === 'sellCar') state.stats.carsSold += 1;
     if(id === 'carAds') state.stats.carsListed += 1;
     if(id === 'buyCar') state.stats.carsBought += 1;
@@ -3636,7 +3636,7 @@ function addDaysISO(baseISO, days){
     const statCards = [
       {label:'Vanduo', value:`${stats.waterLiters} L`, icon:'💧'},
       {label:'Pasivaikščiojimas', value:`${stats.walkMinutes} min`, icon:'🚶'},
-      {label:'Atsispaudimai', value:stats.pushups, icon:'💪'},
+      {label:'Dipsiai', value:stats.pushups, icon:'💪'},
       {label:'Prisitraukimai', value:stats.pullups, icon:'🏋️'},
       {label:'Skaitymas', value:`${stats.readPages} psl`, icon:'📖'},
       {label:'Mokymasis', value:`${stats.studyMinutes} min`, icon:'🧠'},
