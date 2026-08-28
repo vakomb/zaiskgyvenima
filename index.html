@@ -1620,7 +1620,7 @@
         <div class="field"><label>Pavadinimas</label><input class="input" id="carName" placeholder="Nissan X-Trail" /></div>
         <div class="grid2">
           <div class="field"><label>Pirkimo kaina</label><input class="input" id="carBuyPrice" type="number" min="0" step="1" placeholder="4500" /></div>
-          <div class="field"><label>Nuotrauka</label><input class="input" id="carPhoto" type="file" accept="image/*" /></div>
+          <div class="field"><label>Nuotraukos</label><input class="input" id="carPhoto" type="file" accept="image/*" multiple /><div class="subtle" style="margin-top:6px">Gali pasirinkti kiek nori nuotraukų. Nuotraukos saugomos atskiroje įrenginio saugykloje.</div></div>
         </div>
         <button class="btn" id="addCarBtn" style="width:100%">Pridėti automobilį</button>
       </div>
@@ -2253,6 +2253,36 @@ function addDaysISO(baseISO, days){
       try{return await photoGet(ref)}catch(e){return '';}
     }));
   }
+  async function hydrateCarPhotos(){
+    const cars = Array.isArray(state.cars) ? state.cars : [];
+    let changed = false;
+    for(const car of cars){
+      if(!Array.isArray(car.photos)){
+        car.photos = car.photo ? [car.photo] : [];
+      }
+      const next = [];
+      for(const ref of car.photos){
+        if(!ref) continue;
+        if(typeof ref === 'string' && ref.startsWith('data:image/')){
+          const key = await dataUrlToPhotoKey(ref);
+          next.push(key);
+          if(key !== ref) changed = true;
+        }else{
+          next.push(ref);
+        }
+      }
+      car.photos = next;
+      car.photo = car.photos[0] || car.photo || '';
+    }
+    if(changed) saveState();
+  }
+
+  async function getCarPhotoUrls(car){
+    const refs = Array.isArray(car.photos) && car.photos.length ? car.photos : (car.photo ? [car.photo] : []);
+    const urls = await photoRefsToUrls(refs);
+    return urls.filter(Boolean);
+  }
+
   function photoCssUrl(src){
     return src ? `background-image:url("${String(src).replace(/"/g,'%22')}")` : '';
   }
@@ -3531,7 +3561,7 @@ function addDaysISO(baseISO, days){
   }
 
   async function render(){
-    await hydrateLeadPhotos();
+    await hydrateLeadPhotos();\n  hydrateCarPhotos().catch(e => console.warn('Garage photo hydration failed', e));
     checkDateReset();
     ensureMonthlyCycle();
     if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
@@ -4078,7 +4108,7 @@ function addDaysISO(baseISO, days){
   document.getElementById('addCarBtn').onclick = async () => {
     const name = document.getElementById('carName').value.trim();
     const buyPrice = Number(document.getElementById('carBuyPrice').value || 0);
-    const file = document.getElementById('carPhoto').files[0];
+    const files = Array.from(document.getElementById('carPhoto').files || []).filter(f => f && /^image\\//i.test(f.type));
     if(!name){
       toast('Įvesk automobilio pavadinimą', '✍️');
       return;
@@ -4087,18 +4117,38 @@ function addDaysISO(baseISO, days){
       toast('Įvesk pirkimo kainą', '💰');
       return;
     }
-    if(!file){
-      toast('Įkelk automobilio nuotrauką', '🖼️');
+    if(!files.length){
+      toast('Įkelk bent vieną automobilio nuotrauką', '🖼️');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      addCar(name, reader.result, buyPrice);
+
+    try{
+      // Store compressed image blobs in IndexedDB instead of localStorage.
+      // This keeps large photo data out of the app state/localStorage.
+      const photoKeys = await leadPhotosToDataUrls(files);
+      const firstPhoto = photoKeys[0] || '';
+      addCar(name, firstPhoto, buyPrice);
+
+      // Attach all selected photos to the newly-created garage car.
+      // The first photo remains the card hero image.
+      const cars = Array.isArray(state.cars) ? state.cars : [];
+      const car = cars.find(c => c.name === name && Number(c.buyPrice || 0) === buyPrice && c.photo === firstPhoto);
+      if(car){
+        car.photos = photoKeys;
+        car.photo = firstPhoto;
+        car.updatedAt = nowLabel();
+      }
+
+      saveState();
+      render();
       document.getElementById('carName').value = '';
       document.getElementById('carBuyPrice').value = '';
       document.getElementById('carPhoto').value = '';
-    };
-    reader.readAsDataURL(file);
+      toast(`${photoKeys.length} nuotrauka${photoKeys.length === 1 ? '' : 'os'} pridėta`, '🖼️');
+    }catch(e){
+      console.error(e);
+      toast('Nuotraukų išsaugoti nepavyko', '⚠️');
+    }
   };
 
   const addGarageLeadBtn = document.getElementById('addGarageLeadBtn');
@@ -4173,6 +4223,8 @@ function addDaysISO(baseISO, days){
   checkAchievements();
   saveState();
   installMotivationPremiumV3();
+  // Migrate old garage photos out of localStorage and hydrate IndexedDB-backed URLs.
+  hydrateCarPhotos().catch(e => console.warn('Garage photo hydration failed', e));
   render();
 })();
 </script>
