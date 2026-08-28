@@ -2186,6 +2186,7 @@ function addDaysISO(baseISO, days){
   const PHOTO_DB_VERSION = 1;
   const PHOTO_STORE_NAME = 'photos';
   const photoUrlCache = Object.create(null);
+  const carPhotoUrlCache = Object.create(null);
   let photoDbPromise = null;
   let photoHydrated = false;
 
@@ -2258,7 +2259,7 @@ function addDaysISO(baseISO, days){
     let changed = false;
     for(const car of cars){
       if(!Array.isArray(car.photos)){
-        car.photos = car.photo ? [car.photo] : [];
+        car.photos = car.imageSrc ? [car.imageSrc] : [];
       }
       const next = [];
       for(const ref of car.photos){
@@ -2272,13 +2273,14 @@ function addDaysISO(baseISO, days){
         }
       }
       car.photos = next;
-      car.photo = car.photos[0] || car.photo || '';
+      car.imageSrc = car.photos[0] || car.imageSrc || '';
+      carPhotoUrlCache[car.id] = await getCarPhotoUrls(car);
     }
     if(changed) saveState();
   }
 
   async function getCarPhotoUrls(car){
-    const refs = Array.isArray(car.photos) && car.photos.length ? car.photos : (car.photo ? [car.photo] : []);
+    const refs = Array.isArray(car.photos) && car.photos.length ? car.photos : (car.imageSrc ? [car.imageSrc] : []);
     const urls = await photoRefsToUrls(refs);
     return urls.filter(Boolean);
   }
@@ -3269,7 +3271,7 @@ function addDaysISO(baseISO, days){
         <button class="closeBtn" id="closeSheet">✕</button>
       </div>
       <div class="carCard">
-        <div class="carHero" style="background-color:var(--surface-2);background-image:url('${car.imageSrc || ''}')">
+        <div class="carHero" style="background-color:var(--surface-2);background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')">
           <div class="pill">${isSold ? 'Parduotas' : pct === 100 ? 'Paruoštas pardavimui' : pct >= 50 ? 'Beveik paruoštas' : 'Ruošiamas'}</div>
           <div class="pill">${pct}%</div>
         </div>
@@ -3520,7 +3522,7 @@ function addDaysISO(baseISO, days){
     document.getElementById('garageSalesCount').textContent = `${monthlySold.length} auto`;
     salesRoot.innerHTML = soldCars.map(car => {
       const profit = carNetProfit(car);
-      return `<div class="carCard"><button class="heroImageBtn" type="button" data-open-car="${car.id}"><div class="carHero" style="background-image:url('${car.imageSrc || ''}')"><div class="pill">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</div><div class="pill">${escapeHTML(car.soldDateISO || '')}</div></div></button><div class="carBody"><h4>${escapeHTML(car.name)}</h4><div class="carLine"><span>Pirkta ${moneyFmt(car.buyPrice)}</span><span>Parduota ${moneyFmt(car.soldPrice)}</span></div></div></div>`;
+      return `<div class="carCard"><button class="heroImageBtn" type="button" data-open-car="${car.id}"><div class="carHero" style="background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')"><div class="pill">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</div><div class="pill">${escapeHTML(car.soldDateISO || '')}</div></div></button><div class="carBody"><h4>${escapeHTML(car.name)}</h4><div class="carLine"><span>Pirkta ${moneyFmt(car.buyPrice)}</span><span>Parduota ${moneyFmt(car.soldPrice)}</span></div></div></div>`;
     }).join('') || '<div class="emptyState">Parduotų automobilių dar nėra.</div>';
     salesRoot.querySelectorAll('[data-open-car]').forEach(btn => btn.onclick = () => openCar(btn.dataset.openCar));
   }
@@ -3561,7 +3563,8 @@ function addDaysISO(baseISO, days){
   }
 
   async function render(){
-    await hydrateLeadPhotos();\n  hydrateCarPhotos().catch(e => console.warn('Garage photo hydration failed', e));
+    await hydrateLeadPhotos();
+  hydrateCarPhotos().catch(e => console.warn('Garage photo hydration failed', e));
     checkDateReset();
     ensureMonthlyCycle();
     if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
@@ -3823,7 +3826,7 @@ function addDaysISO(baseISO, days){
       const totalCost = carTotalCost(car);
       return `
         <div class="carCard" data-open-car="${car.id}">
-          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${car.imageSrc || ''}')">
+          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')">
             <div class="pill">Aktyvus</div>
             <div class="pill">${pct}%</div>
           </div>
@@ -3840,7 +3843,7 @@ function addDaysISO(baseISO, days){
       const pct = carProgress(car);
       return `
         <div class="carCard" data-open-car="${car.id}">
-          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${car.imageSrc || ''}')">
+          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')">
             <div class="pill">Parduotas</div>
             <div class="pill">${pct}%</div>
           </div>
@@ -4129,14 +4132,14 @@ function addDaysISO(baseISO, days){
       const firstPhoto = photoKeys[0] || '';
       addCar(name, firstPhoto, buyPrice);
 
-      // Attach all selected photos to the newly-created garage car.
-      // The first photo remains the card hero image.
+      // Attach every selected photo to the new car. Only IndexedDB keys are kept in state.
       const cars = Array.isArray(state.cars) ? state.cars : [];
-      const car = cars.find(c => c.name === name && Number(c.buyPrice || 0) === buyPrice && c.photo === firstPhoto);
+      const car = cars.find(c => c.imageSrc === firstPhoto && c.name === name && Number(c.buyPrice || 0) === buyPrice);
       if(car){
         car.photos = photoKeys;
-        car.photo = firstPhoto;
+        car.imageSrc = firstPhoto;
         car.updatedAt = nowLabel();
+        carPhotoUrlCache[car.id] = await photoRefsToUrls(photoKeys);
       }
 
       saveState();
@@ -4221,11 +4224,16 @@ function addDaysISO(baseISO, days){
   ensureMonthlyCycle();
   checkWorldUnlocks();
   checkAchievements();
-  saveState();
   installMotivationPremiumV3();
-  // Migrate old garage photos out of localStorage and hydrate IndexedDB-backed URLs.
-  hydrateCarPhotos().catch(e => console.warn('Garage photo hydration failed', e));
-  render();
+  // First migrate ALL legacy Base64 photos out of localStorage into IndexedDB.
+  // Only after migration do we save state, so the old large localStorage payload is removed.
+  Promise.all([
+    hydrateLeadPhotos(),
+    hydrateCarPhotos()
+  ]).catch(e => console.warn('Photo migration failed', e)).finally(() => {
+    saveState();
+    render();
+  });
 })();
 </script>
 </body>
