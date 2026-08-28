@@ -1620,7 +1620,7 @@
         <div class="field"><label>Pavadinimas</label><input class="input" id="carName" placeholder="Nissan X-Trail" /></div>
         <div class="grid2">
           <div class="field"><label>Pirkimo kaina</label><input class="input" id="carBuyPrice" type="number" min="0" step="1" placeholder="4500" /></div>
-          <div class="field"><label>Nuotraukos</label><input class="input" id="carPhoto" type="file" accept="image/*" multiple /><div class="subtle" style="margin-top:6px">Gali pasirinkti kiek nori nuotraukų. Nuotraukos saugomos atskiroje įrenginio saugykloje.</div></div>
+          <div class="field"><label>Nuotraukos</label><input class="input" id="carPhoto" type="file" accept="image/*" multiple /><div class="subtle" style="margin-top:6px">Gali pasirinkti kiek nori nuotraukų. Jos saugomos atskiroje naršyklės saugykloje, ne programėlės tekstiniame faile.</div></div>
         </div>
         <button class="btn" id="addCarBtn" style="width:100%">Pridėti automobilį</button>
       </div>
@@ -2181,108 +2181,172 @@ function addDaysISO(baseISO, days){
     return {make, model, year, fuel, phone, city, initialPrice, targetPrice, followDays, notes, files};
   }
 
-  /* Persistent photo storage: keep images out of localStorage. */
-  const PHOTO_DB_NAME = 'zaisk-gyvenima-photo-store-v1';
+  /* Persistent photo storage: images are stored as IndexedDB blobs, never inside state/localStorage. */
+  const PHOTO_DB_NAME = 'zaisk-gyvenima-photo-store-v2';
   const PHOTO_DB_VERSION = 1;
   const PHOTO_STORE_NAME = 'photos';
   const photoUrlCache = Object.create(null);
-  const carPhotoUrlCache = Object.create(null);
   let photoDbPromise = null;
   let photoHydrated = false;
+  let photoMigrationOk = true;
 
   function openPhotoDB(){
-    if(photoDbPromise)return photoDbPromise;
-    photoDbPromise=new Promise((resolve,reject)=>{
-      if(!window.indexedDB){reject(new Error('IndexedDB nepalaikomas'));return;}
-      const req=indexedDB.open(PHOTO_DB_NAME,PHOTO_DB_VERSION);
-      req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(PHOTO_STORE_NAME))db.createObjectStore(PHOTO_STORE_NAME);};
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>reject(req.error||new Error('Nuotraukų saugyklos klaida'));
+    if(photoDbPromise) return photoDbPromise;
+    photoDbPromise = new Promise((resolve,reject)=>{
+      if(!window.indexedDB){
+        reject(new Error('Ši naršyklė nepalaiko IndexedDB'));
+        return;
+      }
+      const req = indexedDB.open(PHOTO_DB_NAME, PHOTO_DB_VERSION);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if(!db.objectStoreNames.contains(PHOTO_STORE_NAME)){
+          db.createObjectStore(PHOTO_STORE_NAME);
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error('Nuotraukų saugyklos klaida'));
     });
     return photoDbPromise;
   }
+
   function photoPut(blob){
-    return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
-      const key='photo_'+uid();
-      const tx=db.transaction(PHOTO_STORE_NAME,'readwrite');
+    return openPhotoDB().then(db => new Promise((resolve,reject)=>{
+      const key = 'photo_' + uid();
+      const tx = db.transaction(PHOTO_STORE_NAME,'readwrite');
       tx.objectStore(PHOTO_STORE_NAME).put(blob,key);
-      tx.oncomplete=()=>resolve(key);
-      tx.onerror=()=>reject(tx.error||new Error('Nuotraukos saugojimo klaida'));
+      tx.oncomplete = () => resolve(key);
+      tx.onerror = () => reject(tx.error || new Error('Nuotraukos saugojimo klaida'));
+      tx.onabort = () => reject(tx.error || new Error('Nuotraukos saugojimo klaida'));
     }));
   }
+
   function photoGet(key){
-    if(!key)return Promise.resolve('');
-    if(photoUrlCache[key])return Promise.resolve(photoUrlCache[key]);
-    return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
-      const req=db.transaction(PHOTO_STORE_NAME,'readonly').objectStore(PHOTO_STORE_NAME).get(key);
-      req.onsuccess=()=>{
-        if(!req.result){resolve('');return;}
-        const url=URL.createObjectURL(req.result); photoUrlCache[key]=url; resolve(url);
+    if(!key) return Promise.resolve('');
+    if(photoUrlCache[key]) return Promise.resolve(photoUrlCache[key]);
+    return openPhotoDB().then(db => new Promise((resolve,reject)=>{
+      const req = db.transaction(PHOTO_STORE_NAME,'readonly').objectStore(PHOTO_STORE_NAME).get(key);
+      req.onsuccess = () => {
+        if(!req.result){ resolve(''); return; }
+        const url = URL.createObjectURL(req.result);
+        photoUrlCache[key] = url;
+        resolve(url);
       };
-      req.onerror=()=>reject(req.error);
+      req.onerror = () => reject(req.error || new Error('Nuotraukos nuskaitymo klaida'));
     }));
   }
-  async function dataUrlToPhotoKey(dataUrl){
-    try{return await photoPut(await fetch(dataUrl).then(r=>r.blob()));}catch(e){return dataUrl;}
+
+  async function storeImageFile(file){
+    if(!file || !/^image\//i.test(file.type)) return '';
+    const blob = await new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onerror = () => reject(reader.error || new Error('Nuotraukos skaitymo klaida'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          try{
+            const maxSide = 1600;
+            const scale = Math.min(1, maxSide / Math.max(img.width || maxSide, img.height || maxSide));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round((img.width || maxSide) * scale));
+            canvas.height = Math.max(1, Math.round((img.height || maxSide) * scale));
+            const ctx = canvas.getContext('2d', {alpha:false});
+            ctx.drawImage(img,0,0,canvas.width,canvas.height);
+            canvas.toBlob(
+              b => b ? resolve(b) : reject(new Error('Nepavyko suspausti nuotraukos')),
+              'image/jpeg',
+              .72
+            );
+          }catch(e){ reject(e); }
+        };
+        img.onerror = () => reject(new Error('Nepavyko perskaityti nuotraukos'));
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+    return await photoPut(blob);
   }
+
+  async function dataUrlToPhotoKey(dataUrl){
+    if(typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) return dataUrl || '';
+    try{
+      const blob = await fetch(dataUrl).then(r => r.blob());
+      return await photoPut(blob);
+    }catch(e){
+      console.warn('Nepavyko perkelti senos nuotraukos į IndexedDB',e);
+      photoMigrationOk = false;
+      return '';
+    }
+  }
+
+  async function migratePhotoRefs(refs){
+    const result = [];
+    for(const ref of (refs || [])){
+      if(!ref) continue;
+      if(typeof ref === 'string' && ref.startsWith('data:image/')){
+        const key = await dataUrlToPhotoKey(ref);
+        if(key) result.push(key);
+      }else{
+        result.push(ref);
+      }
+    }
+    return result;
+  }
+
   async function hydrateLeadPhotos(){
-    if(photoHydrated)return;
-    const leads=Array.isArray(state.leadVariants)?state.leadVariants:[];
-    let changed=false;
+    if(photoHydrated) return;
+    const leads = Array.isArray(state.leadVariants) ? state.leadVariants : [];
     try{
       await openPhotoDB();
       for(const lead of leads){
-        if(!Array.isArray(lead.photos))lead.photos=[];
-        const next=[];
+        lead.photos = await migratePhotoRefs(Array.isArray(lead.photos) ? lead.photos : []);
         for(const ref of lead.photos){
-          if(typeof ref!=='string'||!ref)continue;
-          if(ref.startsWith('data:image/')){
-            const key=await dataUrlToPhotoKey(ref); next.push(key); if(key!==ref)changed=true;
-          }else next.push(ref);
-        }
-        lead.photos=next;
-      }
-      if(changed)saveState();
-      for(const lead of leads)for(const ref of lead.photos)if(ref.startsWith('photo_'))try{await photoGet(ref)}catch(e){}
-      photoHydrated=true;
-    }catch(e){console.warn('IndexedDB photo storage unavailable',e);photoHydrated=true;}
-  }
-  async function photoRefsToUrls(refs){
-    return Promise.all((refs||[]).map(async ref=>{
-      if(!ref)return '';
-      if(ref.startsWith('data:image/')||ref.startsWith('blob:')||ref.startsWith('http'))return ref;
-      try{return await photoGet(ref)}catch(e){return '';}
-    }));
-  }
-  async function hydrateCarPhotos(){
-    const cars = Array.isArray(state.cars) ? state.cars : [];
-    let changed = false;
-    for(const car of cars){
-      if(!Array.isArray(car.photos)){
-        car.photos = car.imageSrc ? [car.imageSrc] : [];
-      }
-      const next = [];
-      for(const ref of car.photos){
-        if(!ref) continue;
-        if(typeof ref === 'string' && ref.startsWith('data:image/')){
-          const key = await dataUrlToPhotoKey(ref);
-          next.push(key);
-          if(key !== ref) changed = true;
-        }else{
-          next.push(ref);
+          if(typeof ref === 'string' && ref.startsWith('photo_')){
+            try{ await photoGet(ref); }catch(e){ photoMigrationOk = false; }
+          }
         }
       }
-      car.photos = next;
-      car.imageSrc = car.photos[0] || car.imageSrc || '';
-      carPhotoUrlCache[car.id] = await getCarPhotoUrls(car);
+    }catch(e){
+      photoMigrationOk = false;
+      console.warn('IndexedDB nuotraukų saugykla nepasiekiama',e);
     }
-    if(changed) saveState();
+    photoHydrated = true;
   }
 
-  async function getCarPhotoUrls(car){
-    const refs = Array.isArray(car.photos) && car.photos.length ? car.photos : (car.imageSrc ? [car.imageSrc] : []);
-    const urls = await photoRefsToUrls(refs);
-    return urls.filter(Boolean);
+  async function hydrateCarPhotos(){
+    const cars = Array.isArray(state.cars) ? state.cars : [];
+    try{
+      await openPhotoDB();
+      for(const car of cars){
+        const oldRefs = Array.isArray(car.photos) && car.photos.length
+          ? car.photos
+          : (car.imageSrc ? [car.imageSrc] : []);
+        car.photos = await migratePhotoRefs(oldRefs);
+        car.imageSrc = car.photos[0] || '';
+        for(const ref of car.photos){
+          if(typeof ref === 'string' && ref.startsWith('photo_')){
+            try{ await photoGet(ref); }catch(e){ photoMigrationOk = false; }
+          }
+        }
+      }
+    }catch(e){
+      photoMigrationOk = false;
+      console.warn('IndexedDB garažo nuotraukų saugykla nepasiekiama',e);
+    }
+  }
+
+  async function hydrateAllPhotos(){
+    await hydrateLeadPhotos();
+    await hydrateCarPhotos();
+    return photoMigrationOk;
+  }
+
+  async function photoRefsToUrls(refs){
+    return Promise.all((refs || []).map(async ref=>{
+      if(!ref) return '';
+      if(ref.startsWith('blob:') || ref.startsWith('http')) return ref;
+      try{ return await photoGet(ref); }catch(e){ return ''; }
+    }));
   }
 
   function photoCssUrl(src){
@@ -2290,33 +2354,15 @@ function addDaysISO(baseISO, days){
   }
 
   async function leadPhotosToDataUrls(files){
-    const list=Array.from(files||[]).filter(f=>f&&/^image\\//i.test(f.type));
-    const keys=[];
+    const list = Array.from(files || []).filter(f => f && /^image\//i.test(f.type));
+    const keys = [];
     for(const file of list){
       try{
-        const blob=await new Promise((resolve,reject)=>{
-          const reader=new FileReader();
-          reader.onerror=()=>reject(reader.error);
-          reader.onload=()=>{
-            const img=new Image();
-            img.onload=()=>{
-              try{
-                const maxSide=1600, scale=Math.min(1,maxSide/Math.max(img.width||maxSide,img.height||maxSide));
-                const canvas=document.createElement('canvas');
-                canvas.width=Math.max(1,Math.round((img.width||maxSide)*scale));
-                canvas.height=Math.max(1,Math.round((img.height||maxSide)*scale));
-                const ctx=canvas.getContext('2d',{alpha:false});
-                ctx.drawImage(img,0,0,canvas.width,canvas.height);
-                canvas.toBlob(b=>b?resolve(b):reject(new Error('compress')),'image/jpeg',.72);
-              }catch(e){reject(e)}
-            };
-            img.onerror=()=>reject(new Error('image'));
-            img.src=reader.result;
-          };
-          reader.readAsDataURL(file);
-        });
-        keys.push(await photoPut(blob));
-      }catch(e){console.warn('Photo skipped',e);}
+        const key = await storeImageFile(file);
+        if(key) keys.push(key);
+      }catch(e){
+        console.warn('Photo skipped',e);
+      }
     }
     return keys;
   }
@@ -2327,9 +2373,11 @@ function addDaysISO(baseISO, days){
       toast('Įrašyk markę ir modelį', '✍️');
       return;
     }
-    leadPhotosToDataUrls(data.files).then(photos => {
-      const lead = {
-        id: uid(),
+    (async () => {
+      try{
+        const photos = await leadPhotosToDataUrls(data.files);
+        const lead = {
+          id: uid(),
         make: data.make,
         model: data.model,
         year: data.year || '',
@@ -2360,8 +2408,12 @@ function addDaysISO(baseISO, days){
         if(el.type === 'file') el.value = '';
         else if(id === 'leadFollowDays') el.value = '2';
         else el.value = '';
-      });
-    });
+        });
+      }catch(e){
+        console.error(e);
+        toast('Nepavyko įkelti nuotraukų. Patikrink naršyklės saugyklą.', '⚠️');
+      }
+    })();
   }
 
   function callGarageLead(leadId){
@@ -2671,10 +2723,14 @@ function addDaysISO(baseISO, days){
 
   function saveState(){
     try{
+      // Photo binaries must NEVER be stored in localStorage.
+      // State contains only small IndexedDB keys such as "photo_xxx".
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      return true;
     }catch(err){
       console.warn("State save failed", err);
-      toast("Nepavyko išsaugoti pakeitimų — per daug nuotraukų arba naršyklės vietos.", "⚠️");
+      toast("Nepavyko išsaugoti pakeitimų. Nuotraukos saugomos atskirai; patikrink naršyklės saugyklą.", "⚠️");
+      return false;
     }
   }
 
@@ -3223,6 +3279,7 @@ function addDaysISO(baseISO, days){
       id: uid(),
       name,
       imageSrc,
+      photos: imageSrc ? [imageSrc] : [],
       buyPrice: Number(buyPrice) || 0,
       soldPrice: null,
       netProfit: 0,
@@ -3271,7 +3328,7 @@ function addDaysISO(baseISO, days){
         <button class="closeBtn" id="closeSheet">✕</button>
       </div>
       <div class="carCard">
-        <div class="carHero" style="background-color:var(--surface-2);background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')">
+        <div class="carHero" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
           <div class="pill">${isSold ? 'Parduotas' : pct === 100 ? 'Paruoštas pardavimui' : pct >= 50 ? 'Beveik paruoštas' : 'Ruošiamas'}</div>
           <div class="pill">${pct}%</div>
         </div>
@@ -3522,7 +3579,7 @@ function addDaysISO(baseISO, days){
     document.getElementById('garageSalesCount').textContent = `${monthlySold.length} auto`;
     salesRoot.innerHTML = soldCars.map(car => {
       const profit = carNetProfit(car);
-      return `<div class="carCard"><button class="heroImageBtn" type="button" data-open-car="${car.id}"><div class="carHero" style="background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')"><div class="pill">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</div><div class="pill">${escapeHTML(car.soldDateISO || '')}</div></div></button><div class="carBody"><h4>${escapeHTML(car.name)}</h4><div class="carLine"><span>Pirkta ${moneyFmt(car.buyPrice)}</span><span>Parduota ${moneyFmt(car.soldPrice)}</span></div></div></div>`;
+      return `<div class="carCard"><button class="heroImageBtn" type="button" data-open-car="${car.id}"><div class="carHero" style="background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')"><div class="pill">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</div><div class="pill">${escapeHTML(car.soldDateISO || '')}</div></div></button><div class="carBody"><h4>${escapeHTML(car.name)}</h4><div class="carLine"><span>Pirkta ${moneyFmt(car.buyPrice)}</span><span>Parduota ${moneyFmt(car.soldPrice)}</span></div></div></div>`;
     }).join('') || '<div class="emptyState">Parduotų automobilių dar nėra.</div>';
     salesRoot.querySelectorAll('[data-open-car]').forEach(btn => btn.onclick = () => openCar(btn.dataset.openCar));
   }
@@ -3563,8 +3620,7 @@ function addDaysISO(baseISO, days){
   }
 
   async function render(){
-    await hydrateLeadPhotos();
-  hydrateCarPhotos().catch(e => console.warn('Garage photo hydration failed', e));
+    await hydrateAllPhotos();
     checkDateReset();
     ensureMonthlyCycle();
     if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
@@ -3826,9 +3882,10 @@ function addDaysISO(baseISO, days){
       const totalCost = carTotalCost(car);
       return `
         <div class="carCard" data-open-car="${car.id}">
-          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')">
+          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
             <div class="pill">Aktyvus</div>
             <div class="pill">${pct}%</div>
+            ${car.photos?.length ? `<div class="pill">🖼️ ${car.photos.length}</div>` : ''}
           </div>
           <div class="carBody">
             <h4>${escapeHTML(car.name)}</h4>
@@ -3843,9 +3900,10 @@ function addDaysISO(baseISO, days){
       const pct = carProgress(car);
       return `
         <div class="carCard" data-open-car="${car.id}">
-          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${((carPhotoUrlCache[car.id] && carPhotoUrlCache[car.id][0]) || car.imageSrc || '')}')">
+          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
             <div class="pill">Parduotas</div>
             <div class="pill">${pct}%</div>
+            ${car.photos?.length ? `<div class="pill">🖼️ ${car.photos.length}</div>` : ''}
           </div>
           <div class="carBody">
             <h4>${escapeHTML(car.name)}</h4>
@@ -4111,7 +4169,7 @@ function addDaysISO(baseISO, days){
   document.getElementById('addCarBtn').onclick = async () => {
     const name = document.getElementById('carName').value.trim();
     const buyPrice = Number(document.getElementById('carBuyPrice').value || 0);
-    const files = Array.from(document.getElementById('carPhoto').files || []).filter(f => f && /^image\\//i.test(f.type));
+    const files = Array.from(document.getElementById('carPhoto').files || []).filter(f => f && /^image\//i.test(f.type));
     if(!name){
       toast('Įvesk automobilio pavadinimą', '✍️');
       return;
@@ -4126,20 +4184,21 @@ function addDaysISO(baseISO, days){
     }
 
     try{
-      // Store compressed image blobs in IndexedDB instead of localStorage.
-      // This keeps large photo data out of the app state/localStorage.
-      const photoKeys = await leadPhotosToDataUrls(files);
-      const firstPhoto = photoKeys[0] || '';
-      addCar(name, firstPhoto, buyPrice);
+      const photoKeys = [];
+      for(const file of files){
+        const key = await storeImageFile(file);
+        if(key) photoKeys.push(key);
+      }
+      if(!photoKeys.length){
+        toast('Nuotraukų išsaugoti nepavyko', '⚠️');
+        return;
+      }
 
-      // Attach every selected photo to the new car. Only IndexedDB keys are kept in state.
-      const cars = Array.isArray(state.cars) ? state.cars : [];
-      const car = cars.find(c => c.imageSrc === firstPhoto && c.name === name && Number(c.buyPrice || 0) === buyPrice);
-      if(car){
+      addCar(name, photoKeys[0], buyPrice);
+      const car = state.cars[0];
+      if(car && car.name === name){
+        car.imageSrc = photoKeys[0];
         car.photos = photoKeys;
-        car.imageSrc = firstPhoto;
-        car.updatedAt = nowLabel();
-        carPhotoUrlCache[car.id] = await photoRefsToUrls(photoKeys);
       }
 
       saveState();
@@ -4147,10 +4206,10 @@ function addDaysISO(baseISO, days){
       document.getElementById('carName').value = '';
       document.getElementById('carBuyPrice').value = '';
       document.getElementById('carPhoto').value = '';
-      toast(`${photoKeys.length} nuotrauka${photoKeys.length === 1 ? '' : 'os'} pridėta`, '🖼️');
+      toast(`${photoKeys.length} nuotrauk${photoKeys.length === 1 ? 'a' : 'os'} pridėta`, '🖼️');
     }catch(e){
       console.error(e);
-      toast('Nuotraukų išsaugoti nepavyko', '⚠️');
+      toast('Nepavyko pridėti automobilio. Patikrink naršyklės saugyklą.', '⚠️');
     }
   };
 
@@ -4225,13 +4284,18 @@ function addDaysISO(baseISO, days){
   checkWorldUnlocks();
   checkAchievements();
   installMotivationPremiumV3();
-  // First migrate ALL legacy Base64 photos out of localStorage into IndexedDB.
-  // Only after migration do we save state, so the old large localStorage payload is removed.
-  Promise.all([
-    hydrateLeadPhotos(),
-    hydrateCarPhotos()
-  ]).catch(e => console.warn('Photo migration failed', e)).finally(() => {
-    saveState();
+
+  // IMPORTANT: migrate old Base64 photos out of localStorage BEFORE the first save.
+  // This prevents the old photo payload from immediately triggering the storage quota.
+  hydrateAllPhotos().then((ok) => {
+    if(ok){
+      saveState();
+    }else{
+      console.warn('Nuotraukų migracija neužbaigta — state į localStorage specialiai nerašomas.');
+    }
+    render();
+  }).catch(e => {
+    console.warn('Photo initialization failed', e);
     render();
   });
 })();
