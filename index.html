@@ -603,6 +603,14 @@
       background-position:center;
       border:1px solid var(--line);
     }
+
+    .photoGalleryBox{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2)}
+    .photoGalleryHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+    .photoGalleryHead strong{font-size:13px}
+    .photoGalleryGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+    .photoGalleryGrid button{border:0;padding:0;background:transparent;cursor:pointer}
+    .photoGalleryGrid .img{aspect-ratio:1/1;border-radius:10px;background:var(--surface);background-size:cover;background-position:center;border:1px solid var(--line)}
+    .photoMainBtn{display:block;width:100%;border:0;padding:0;background:transparent;cursor:pointer}
     .leadFilterBar{
       display:grid;
       grid-template-columns:1.5fr .9fr .9fr;
@@ -2577,6 +2585,185 @@ function addDaysISO(baseISO, days){
     render();
   }
 
+  function crc32(bytes){
+    let crc = 0 ^ -1;
+    for(let i=0;i<bytes.length;i++){
+      crc ^= bytes[i];
+      for(let j=0;j<8;j++) crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+    }
+    return (crc ^ -1) >>> 0;
+  }
+
+  function u16(n){ return new Uint8Array([n & 255, (n >>> 8) & 255]); }
+  function u32(n){ return new Uint8Array([n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255]); }
+
+  function concatBytes(parts){
+    const total = parts.reduce((s,p)=>s+p.length,0);
+    const out = new Uint8Array(total);
+    let off = 0;
+    for(const part of parts){ out.set(part,off); off += part.length; }
+    return out;
+  }
+
+  async function downloadAllEntityPhotos(kind, id){
+    const entity = kind === 'car'
+      ? state.cars.find(c=>c.id===id)
+      : state.leadVariants.find(v=>v.id===id);
+    if(!entity) return;
+
+    const refs = Array.isArray(entity.photos) && entity.photos.length
+      ? entity.photos.filter(Boolean)
+      : (entity.imageSrc ? [entity.imageSrc] : []);
+    if(!refs.length){
+      toast('Šiame įraše nėra nuotraukų', '🖼️');
+      return;
+    }
+
+    try{
+      const db = await openPhotoDB();
+      const files = [];
+
+      for(let i=0;i<refs.length;i++){
+        const ref = refs[i];
+        let blob = null;
+
+        if(typeof ref === 'string' && ref.startsWith('photo_')){
+          blob = await new Promise((resolve,reject)=>{
+            const req = db.transaction(PHOTO_STORE_NAME,'readonly').objectStore(PHOTO_STORE_NAME).get(ref);
+            req.onsuccess = ()=>resolve(req.result || null);
+            req.onerror = ()=>reject(req.error);
+          });
+        }else if(typeof ref === 'string' && ref.startsWith('data:image/')){
+          blob = await fetch(ref).then(r=>r.blob());
+        }else if(typeof ref === 'string' && (ref.startsWith('blob:') || ref.startsWith('http'))){
+          blob = await fetch(ref).then(r=>r.blob());
+        }
+
+        if(blob) files.push({name:`nuotrauka-${String(i+1).padStart(2,'0')}.jpg`, blob});
+      }
+
+      if(!files.length){
+        toast('Nuotraukų atsisiųsti nepavyko', '⚠️');
+        return;
+      }
+
+      // Build a valid ZIP with "stored" entries (no extra compression).
+      // Images are already heavily compressed, so this keeps CPU/RAM usage low on phones.
+      const localParts = [];
+      const centralParts = [];
+      let offset = 0;
+      const encoder = new TextEncoder();
+
+      for(const file of files){
+        const name = encoder.encode(file.name);
+        const data = new Uint8Array(await file.blob.arrayBuffer());
+        const crc = crc32(data);
+
+        const local = concatBytes([
+          new Uint8Array([0x50,0x4b,0x03,0x04]),
+          u16(20), u16(0), u16(0), u16(0), u16(0), u16(0),
+          u32(crc), u32(data.length), u32(data.length),
+          u16(name.length), u16(0), name, data
+        ]);
+        localParts.push(local);
+
+        const central = concatBytes([
+          new Uint8Array([0x50,0x4b,0x01,0x02]),
+          u16(20), u16(20), u16(0), u16(0), u16(0), u16(0), u16(0),
+          u32(crc), u32(data.length), u32(data.length),
+          u16(name.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset),
+          name
+        ]);
+        centralParts.push(central);
+        offset += local.length;
+      }
+
+      const central = concatBytes(centralParts);
+      const local = concatBytes(localParts);
+      const end = concatBytes([
+        new Uint8Array([0x50,0x4b,0x05,0x06]),
+        u16(0),u16(0),u16(files.length),u16(files.length),
+        u32(central.length),u32(local.length),u16(0)
+      ]);
+
+      const zip = new Blob([local,central,end],{type:'application/zip'});
+      const safeName = String(kind === 'car' ? entity.name : `${entity.make} ${entity.model}`)
+        .replace(/[^a-zA-Z0-9À-ž0-9 _-]+/g,'')
+        .trim() || 'nuotraukos';
+      const url = URL.createObjectURL(zip);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${safeName}-nuotraukos.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),30000);
+      toast(`Atsisiųsta ${files.length} nuotraukų viename ZIP`, '⬇️');
+    }catch(e){
+      console.error('Photo ZIP failed',e);
+      toast('Nepavyko paruošti nuotraukų atsisiuntimo', '⚠️');
+    }
+  }
+
+  function renderPhotoGallery(kind, entity){
+    const refs = Array.isArray(entity.photos) && entity.photos.length
+      ? entity.photos.filter(Boolean)
+      : (entity.imageSrc ? [entity.imageSrc] : []);
+    if(!refs.length) return '';
+
+    const label = refs.length === 1 ? '1 nuotrauka' : `${refs.length} nuotraukos`;
+    return `
+      <div class="photoGalleryBox">
+        <div class="photoGalleryHead">
+          <strong>Nuotraukos • ${label}</strong>
+          <button class="btn secondary" type="button" data-download-photos="${kind}:${entity.id}" style="padding:8px 10px;font-size:11px">⬇️ Atsisiųsti visas</button>
+        </div>
+        <div class="photoGalleryGrid">
+          ${refs.map((ref,i)=>`
+            <button type="button" data-entity-photo="${kind}:${entity.id}:${i}" aria-label="Atidaryti nuotrauką ${i+1}">
+              <div class="img" style="${photoCssUrl(photoUrlCache[ref] || ref)}"></div>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  async function openEntityPhotoGallery(kind, id, startIndex=0){
+    const entity = kind === 'car'
+      ? state.cars.find(c=>c.id===id)
+      : state.leadVariants.find(v=>v.id===id);
+    if(!entity) return;
+
+    const refs = Array.isArray(entity.photos) && entity.photos.length
+      ? entity.photos.filter(Boolean)
+      : (entity.imageSrc ? [entity.imageSrc] : []);
+    if(!refs.length) return;
+
+    const urls = await photoRefsToUrls(refs);
+    const idx = clamp(Number(startIndex)||0,0,urls.length-1);
+    const title = kind === 'car' ? entity.name : `${entity.make} ${entity.model}`;
+
+    openSheet(`
+      <div class="sheetHead">
+        <h3>${escapeHTML(title)} • ${urls.length} nuotrauk${urls.length===1?'a':'os'}</h3>
+        <button class="closeBtn" id="closeEntityGallery">✕</button>
+      </div>
+      <div class="gallerySheet">
+        <div class="galleryMain" style="${photoCssUrl(urls[idx] || '')}"></div>
+        <div class="galleryThumbs">
+          ${urls.map((src,i)=>`<button type="button" data-entity-gallery-index="${i}"><div class="img" style="${photoCssUrl(src)}"></div></button>`).join('')}
+        </div>
+        <button class="btn secondary" type="button" id="downloadEntityPhotos" style="width:100%;margin-top:10px">⬇️ Atsisiųsti visas nuotraukas</button>
+      </div>
+    `);
+    document.getElementById('closeEntityGallery').onclick = closeSheet;
+    document.getElementById('downloadEntityPhotos').onclick = ()=>downloadAllEntityPhotos(kind,id);
+    document.querySelectorAll('[data-entity-gallery-index]').forEach(btn=>{
+      btn.onclick = ()=>openEntityPhotoGallery(kind,id,Number(btn.dataset.entityGalleryIndex));
+    });
+  }
+
   function openGarageLeadSheet(leadId){
     const lead = state.leadVariants.find(v => v.id === leadId);
     if(!lead) return;
@@ -2622,7 +2809,7 @@ function addDaysISO(baseISO, days){
             Po ${Number(lead.followUpDays || 0)} dienų.
           </div>
 
-          <div class="leadGallery">${photos.length ? photos.map((src, i) => `<button type="button" class="leadThumbBtn" data-open-gallery-index="${i}"><div class="img" style="background-image:url('${src}')"></div></button>`).join('') : '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
+          <div class="leadGallery">${photos.length ? photos.map((src, i) => `<button type="button" class="leadThumbBtn" data-open-gallery-index="${i}"><div class="img" style="${photoCssUrl(photoUrlCache[src] || src)}"></div></button>`).join('') : '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
 
           <div class="sheetActions">
             <button class="btn" id="leadSaveBtn">Išsaugoti pakeitimus</button>
@@ -2630,6 +2817,8 @@ function addDaysISO(baseISO, days){
             <button class="btn secondary" id="leadCallNowBtn">📞 Paskambinta</button>
             <button class="btn danger" id="leadDeleteBtn">Ištrinti variantą</button>
           </div>
+          ${renderPhotoGallery('lead', lead)}
+
         </div>
       </div>
     `;
@@ -2674,6 +2863,8 @@ function addDaysISO(baseISO, days){
     const galleryBtn = document.getElementById('leadGalleryBtn');
     if(galleryBtn) galleryBtn.onclick = () => openLeadGallery(lead.id, 0);
     document.querySelectorAll('[data-open-gallery-index]').forEach(btn => btn.onclick = () => openLeadGallery(lead.id, Number(btn.dataset.openGalleryIndex || 0)));
+    document.querySelectorAll('[data-download-photos="lead:${lead.id}"]').forEach(btn => btn.onclick = () => downloadAllEntityPhotos('lead', lead.id));
+    document.querySelectorAll('[data-entity-photo^="lead:${lead.id}:"]').forEach(btn => btn.onclick = () => openEntityPhotoGallery('lead', lead.id, Number(btn.dataset.entityPhoto.split(':').pop())));
   }
 
 
@@ -3470,6 +3661,7 @@ function addDaysISO(baseISO, days){
               Kai visi punktai atlikti ir įrašysi pardavimo kainą, sistema automatiškai paskaičiuos grynąjį pelną.
             </div>
           `}
+          ${renderPhotoGallery('car', car)}
         </div>
       </div>
     `;
@@ -3477,6 +3669,14 @@ function addDaysISO(baseISO, days){
     renderCarChecklist(car.id);
     const close = document.getElementById('closeSheet');
     if(close) close.onclick = closeSheet;
+    document.querySelectorAll('[data-download-photos^="car:"]').forEach(btn => {
+      const id = btn.dataset.downloadPhotos.split(':')[1];
+      btn.onclick = () => downloadAllEntityPhotos('car', id);
+    });
+    document.querySelectorAll('[data-entity-photo^="car:"]').forEach(btn => {
+      const parts = btn.dataset.entityPhoto.split(':');
+      btn.onclick = () => openEntityPhotoGallery('car', parts[1], Number(parts[2] || 0));
+    });
     const sellBtn = document.getElementById('sellCarBtn');
     if(sellBtn) sellBtn.onclick = () => sellCar(car.id);
     const addBtn = document.getElementById('addChecklistBtn');
