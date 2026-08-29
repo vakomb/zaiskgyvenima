@@ -1527,7 +1527,83 @@
     .photoManageItem img{object-fit:cover !important}
     .leadGalleryMain,.leadGalleryThumb{box-sizing:border-box}
     
-</style>
+
+    .leadListCard{
+      display:grid;grid-template-columns:116px minmax(0,1fr);gap:14px;
+      width:100%;box-sizing:border-box;padding:12px;margin-bottom:10px;
+      border:1px solid var(--line);border-radius:20px;background:var(--surface);
+      box-shadow:var(--shadow-soft);cursor:pointer;text-align:left;appearance:none;color:inherit;
+    }
+    .leadListPhoto{width:116px;height:116px;border-radius:15px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
+    .leadListPhoto img{width:100%;height:100%;display:block;object-fit:cover}
+    .leadListInfo{min-width:0;display:flex;flex-direction:column;gap:7px}
+    .leadListTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .leadListTitle{font-size:18px;font-weight:900;line-height:1.15;min-width:0}
+    .leadListPrice{font-size:15px;font-weight:900;white-space:nowrap}
+    .leadListMeta{display:flex;flex-wrap:wrap;gap:5px}
+    .leadListChip{padding:5px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);font-size:10px;font-weight:800;color:var(--muted)}
+    .leadListNotes{font-size:12px;color:var(--muted);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .leadListBottom{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto}
+    .leadListPhotoCount{font-size:10px;color:var(--muted);font-weight:800}
+    .leadListOpen{font-size:11px;font-weight:900}
+    @media (max-width:520px){
+      .leadListCard{grid-template-columns:92px minmax(0,1fr);gap:11px;padding:10px;border-radius:17px}
+      .leadListPhoto{width:92px;height:92px;border-radius:13px}
+      .leadListTitle{font-size:16px}.leadListPrice{font-size:13px}.leadListNotes{font-size:11px}
+    }
+
+    /* PHOTO FIXES — only photo presentation, mobile first */
+    .carHero.heroImageBtn,
+    .garageLeadHero.heroImageBtn{
+      position:relative;
+      overflow:hidden;
+      padding:0;
+    }
+    .carHeroPhoto,
+    .garageLeadHeroPhoto{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      z-index:0;
+    }
+    .carHero.heroImageBtn > .pill,
+    .garageLeadHero.heroImageBtn > .leadPill{
+      position:relative;
+      z-index:2;
+    }
+    .mobileGallery .galleryMain{
+      background:var(--surface-2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .mobileGallery .galleryMain img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      background:var(--surface-2);
+    }
+    .galleryCounter{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+    }
+    .mobileGallery .galleryThumbs button{
+      border:2px solid transparent;
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .mobileGallery .galleryThumbs button.active{
+      border-color:var(--accent);
+    }
+
+  </style>
 </head>
 <body>
 <div class="app">
@@ -1671,13 +1747,18 @@
     </div>
 
     <div class="section">
-      <div class="panel pad">
+      <button class="btn" id="showAddCarFormBtn" type="button" style="width:100%;background:var(--success);color:#fff;border-color:var(--success)">➕ Pridėti automobilį</button>
+      <div class="panel pad" id="addCarPanel" style="display:none;margin-top:10px">
+        <div class="sectionHead" style="margin-bottom:10px">
+          <h2>Naujas automobilis</h2>
+          <button class="btn secondary" id="cancelAddCarBtn" type="button">Uždaryti</button>
+        </div>
         <div class="field"><label>Pavadinimas</label><input class="input" id="carName" placeholder="Nissan X-Trail" /></div>
         <div class="grid2">
           <div class="field"><label>Pirkimo kaina</label><input class="input" id="carBuyPrice" type="number" min="0" step="1" placeholder="4500" /></div>
           <div class="field"><label>Nuotraukos</label><input class="input" id="carPhoto" type="file" accept="image/*" multiple /></div>
         </div>
-        <button class="btn" id="addCarBtn" type="button" style="width:100%">Pridėti automobilį</button>
+        <button class="btn" id="addCarBtn" type="button" style="width:100%;background:var(--success);color:#fff;border-color:var(--success)">Išsaugoti automobilį</button>
       </div>
     </div>
 
@@ -1686,9 +1767,12 @@
       <div class="carGrid" id="activeCarGrid"></div>
     </div>
 
-    <div class="section">
-      <div class="sectionHead"><h2>Parduoti automobiliai</h2><span id="soldCarCount">0 auto</span></div>
-      <div class="carGrid" id="soldCarGrid"></div>
+    <div class="section" id="soldCarsSection">
+      <button class="btn danger" id="toggleSoldCarsBtn" type="button" style="width:100%">Parduoti automobiliai (<span id="soldCarCount">0</span>)</button>
+      <div id="soldCarsPanel" style="display:none;margin-top:10px">
+        <div class="sectionHead"><h2>Parduoti automobiliai</h2><span id="soldCarCountLabel">0 auto</span></div>
+        <div class="carGrid" id="soldCarGrid"></div>
+      </div>
     </div>
   </div>
 
@@ -2668,10 +2752,12 @@ function addDaysISO(baseISO, days){
   }
 
   function openGarageAddCar(){
-    const el = document.getElementById('carName');
+    const btn=document.getElementById('showAddCarFormBtn');
+    if(btn) btn.click();
+    const el=document.getElementById('carName');
     if(el) el.focus({preventScroll:false});
-    const sec = document.querySelector('#view-garage .panel.pad');
-    if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
+    const sec=document.getElementById('addCarPanel');
+    if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   function openGarageStats(){
@@ -2869,7 +2955,8 @@ function addDaysISO(baseISO, days){
         <button class="closeBtn" id="closeLeadSheet">✕</button>
       </div>
       <div class="garageLeadCard" style="margin:0">
-        <button type="button" class="garageLeadHero heroImageBtn" data-managed-photo-kind="lead" data-managed-photo-index="0" style="${photos[0] ? photoCssUrl(photoUrlCache[photos[0]] || photos[0]) : ''}">
+        <button type="button" class="garageLeadHero heroImageBtn" data-managed-photo-kind="lead" data-managed-photo-index="0">
+          ${photos[0] ? `<img class="garageLeadHeroPhoto" src="${photoUrlCache[photos[0]] || photos[0]}" alt="${escapeHTML(lead.make || '')} ${escapeHTML(lead.model || '')}">` : ''}
           <div class="leadPill">${garageLeadDaysText(lead)}</div>
           <div class="leadPill">${escapeHTML(lead.city || 'Be miesto')}</div>
         </button>
@@ -2967,30 +3054,62 @@ function addDaysISO(baseISO, days){
   async function openLeadGallery(leadId, startIndex=0){
     const lead = state.leadVariants.find(v => v.id === leadId);
     if(!lead) return;
+
     const photos = (lead.photos || []).filter(Boolean);
-    if(!photos.length) return;
-    const photoUrls = await photoRefsToUrls(photos);
-    const idx = clamp(Number(startIndex) || 0, 0, photos.length - 1);
-    const active = photoUrls[idx] || '';
+    if(!photos.length){
+      toast('Nuotraukų nėra','📷');
+      return;
+    }
+
+    let photoUrls = [];
+    try{
+      photoUrls = await photoRefsToUrls(photos);
+    }catch(e){
+      console.warn('Lead gallery load failed', e);
+    }
+
+    const usable = photoUrls.map((u,i) => u || photos[i] || '');
+    let idx = clamp(Number(startIndex) || 0, 0, usable.length - 1);
+
     const html = `
       <div class="sheetHead">
         <h3>${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</h3>
-        <button class="closeBtn" id="closeGallerySheet">✕</button>
+        <button class="closeBtn" id="closeGallerySheet" type="button">✕</button>
       </div>
-      <div class="gallerySheet">
-        <div class="galleryMain" style="${photoCssUrl(active)}"></div>
+      <div class="gallerySheet mobileGallery">
+        <div class="galleryMain">
+          <img id="leadGalleryMainImg" src="${usable[idx] || ''}" alt="Nuotrauka ${idx+1}">
+        </div>
+        <div class="galleryCounter" id="leadGalleryCounter">${idx+1} / ${photos.length}</div>
         <div class="garageLeadTags">
           <span class="garageLeadTag good">${photos.length} nuotraukos</span>
           <span class="garageLeadTag">${escapeHTML(lead.city || 'Be miesto')}</span>
         </div>
-        <div class="galleryThumbs">
-          ${photos.map((src, i) => `<button type="button" data-gallery-index="${i}"><img class="img" src="${photoUrls[i] || ''}" alt="Nuotrauka ${i+1}" /></button>`).join('')}
+        <div class="galleryThumbs" id="leadGalleryThumbs">
+          ${usable.map((src,i)=>`
+            <button type="button" data-lead-gallery-index="${i}" class="${i===idx?'active':''}">
+              <img class="img" src="${src || ''}" alt="Nuotrauka ${i+1}">
+            </button>
+          `).join('')}
         </div>
       </div>
     `;
+
     openSheet(html);
+
     document.getElementById('closeGallerySheet').onclick = closeSheet;
-    document.querySelectorAll('[data-gallery-index]').forEach(btn => btn.onclick = () => openLeadGallery(leadId, Number(btn.dataset.galleryIndex)));
+    const mainImg = document.getElementById('leadGalleryMainImg');
+    const counter = document.getElementById('leadGalleryCounter');
+
+    document.querySelectorAll('[data-lead-gallery-index]').forEach(btn=>{
+      btn.onclick = ()=>{
+        idx = clamp(Number(btn.dataset.leadGalleryIndex)||0, 0, usable.length-1);
+        if(mainImg) mainImg.src = usable[idx] || '';
+        if(counter) counter.textContent = `${idx+1} / ${photos.length}`;
+        document.querySelectorAll('[data-lead-gallery-index]').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+    });
   }
 
   const defaultState = () => ({
@@ -3701,7 +3820,10 @@ function addDaysISO(baseISO, days){
         <button class="closeBtn" id="closeSheet">✕</button>
       </div>
       <div class="carCard">
-        <button type="button" class="carHero heroImageBtn" data-managed-photo-kind="car" data-managed-photo-index="0" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
+        <button type="button" class="carHero heroImageBtn" data-managed-photo-kind="car" data-managed-photo-index="0">
+          ${((car.photos||[])[0] || car.imageSrc)
+            ? `<img class="carHeroPhoto" src="${photoUrlCache[(car.photos||[])[0]] || (car.photos||[])[0] || car.imageSrc || ''}" alt="${escapeHTML(car.name || 'Automobilis')}">`
+            : ''}
           <div class="pill">${isSold ? 'Parduotas' : pct === 100 ? 'Paruoštas pardavimui' : pct >= 50 ? 'Beveik paruoštas' : 'Ruošiamas'}</div>
           <div class="pill">${pct}%</div>
         </button>
@@ -3723,37 +3845,35 @@ function addDaysISO(baseISO, days){
           <div class="miniBar"><div class="fill" style="width:${pct}%"></div></div>
           <div class="sectionHead" style="margin:14px 0 8px"><h2>Užduočių sąrašas</h2><span>XP + monetos + išlaidos</span></div>
           <div class="list" id="carChecklist"></div>
+          ${isSold ? `
           <div class="grid2" style="margin-top:12px">
             <div class="smallStatBox">
               <div class="label">Grynas pelnas</div>
-              <div class="value">${isSold ? (netProfit >= 0 ? '+' : '') + moneyFmt(netProfit) : moneyFmt(0)}</div>
-              <div class="hint">${isSold ? 'Galutinis rezultatas' : 'Atsiras pardavus'}</div>
+              <div class="value">${netProfit >= 0 ? '+' : ''}${moneyFmt(netProfit)}</div>
             </div>
             <div class="smallStatBox">
               <div class="label">Pardavimo kaina</div>
-              <div class="value">${isSold ? moneyFmt(soldPrice) : '—'}</div>
-              <div class="hint">${isSold ? 'Jau parduota' : 'Įrašyk prieš parduodant'}</div>
+              <div class="value">${moneyFmt(soldPrice)}</div>
             </div>
           </div>
+          ` : ''}
           ${isSold ? `
-            <div class="cardNotice" style="margin-top:12px">
-              Automobilis parduotas ${escapeHTML(car.soldAt || '')}. Grynasis pelnas: <strong>${(netProfit >= 0 ? '+' : '') + moneyFmt(netProfit)}</strong>.
-            </div>
+            <div class="cardNotice" style="margin-top:12px">Parduota ${escapeHTML(car.soldAt || '')}.</div>
             <div class="btnRow">
-              <button class="btn danger" id="deleteCarBtn">Ištrinti automobilį</button>
+              <button class="btn danger" id="deleteCarBtn" type="button">Ištrinti automobilį</button>
             </div>
           ` : `
-            <div class="field" style="margin-top:12px">
-              <label>Pardavimo kaina</label>
-              <input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="Įrašyk pardavimo kainą" value="${car.soldPrice || ''}" />
+            <div id="sellCarForm" style="display:none;margin-top:12px">
+              <div class="field">
+                <label>Pardavimo kaina</label>
+                <input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="Įrašyk pardavimo kainą" />
+              </div>
+              <button class="btn" id="confirmSellCarBtn" type="button" style="width:100%;background:var(--success);color:#fff;border-color:var(--success)">Patvirtinti pardavimą</button>
             </div>
             <div class="btnRow">
-              <button class="btn secondary" id="addChecklistBtn">+ Pridėti punktą</button>
-              <button class="btn" id="sellCarBtn" ${pct===100 ? '' : 'disabled'} style="opacity:${pct===100 ? 1 : .45};cursor:${pct===100 ? 'pointer' : 'not-allowed'}">Parduoti automobilį</button>
-              <button class="btn danger" id="deleteCarBtn">Ištrinti automobilį</button>
-            </div>
-            <div class="cardNotice" style="margin-top:12px">
-              Kai visi punktai atlikti ir įrašysi pardavimo kainą, sistema automatiškai paskaičiuos grynąjį pelną.
+              <button class="btn secondary" id="addChecklistBtn" type="button">+ Pridėti punktą</button>
+              <button class="btn" id="sellCarBtn" type="button" style="background:var(--success);color:#fff;border-color:var(--success)">Parduoti automobilį</button>
+              <button class="btn danger" id="deleteCarBtn" type="button">Ištrinti automobilį</button>
             </div>
           `}
           <div class="photoManageBox"><div class="sectionHead" style="margin:14px 0 8px"><h2>Nuotraukos</h2><span>${(car.photos||[]).length} vnt.</span></div><div class="field"><label>Pridėti nuotraukų</label><input class="input" id="carAddPhotos" type="file" accept="image/*" multiple></div><div class="photoManageGrid">${(car.photos||[]).map((ref,i)=>`<div class="photoManageItem"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}" data-managed-photo-kind="car" data-managed-photo-index="${i}"><div class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</div><button type="button" class="photoX" data-car-photo-delete="${i}">×</button></div>`).join('')||'<div class="photoManageEmpty" style="grid-column:1/-1">Nuotraukų nėra.</div>'}</div><div class="btnRow"><button class="btn secondary" type="button" id="downloadCarPhotos">⬇️ Atsisiųsti visas</button><button class="btn secondary" type="button" id="editCarInfoBtn">✏️ Redaguoti automobilį</button></div></div>
@@ -3774,7 +3894,16 @@ function addDaysISO(baseISO, days){
       btn.onclick = () => openEntityPhotoGallery('car', parts[1], Number(parts[2] || 0));
     });
     const sellBtn = document.getElementById('sellCarBtn');
-    if(sellBtn) sellBtn.onclick = () => sellCar(car.id);
+    const sellCarForm = document.getElementById('sellCarForm');
+    const confirmSellCarBtn = document.getElementById('confirmSellCarBtn');
+    if(sellBtn) sellBtn.onclick = () => {
+      if(sellCarForm){
+        sellCarForm.style.display = 'block';
+        sellBtn.style.display = 'none';
+        setTimeout(()=>document.getElementById('sellPriceInput')?.focus(),60);
+      }
+    };
+    if(confirmSellCarBtn) confirmSellCarBtn.onclick = () => sellCar(car.id);
     const addBtn = document.getElementById('addChecklistBtn');
     if(addBtn) addBtn.onclick = () => openAddChecklistForm(car.id);
     const deleteCarBtn = document.getElementById('deleteCarBtn');
@@ -3787,10 +3916,10 @@ function addDaysISO(baseISO, days){
 
   function openCarEditSheet(carId){
     const car=state.cars.find(c=>c.id===carId);if(!car)return;const refs=Array.isArray(car.photos)?car.photos:[];
-    openSheet(`<div class="sheetHead"><h3>Redaguoti automobilį</h3><button class="closeBtn" id="closeCarEdit">✕</button></div><div class="panel pad"><div class="field"><label>Pavadinimas</label><input class="input" id="editCarName" value="${escapeHTML(car.name||'')}"></div><div class="field"><label>Pirkimo kaina</label><input class="input" id="editCarBuyPrice" type="number" min="0" value="${Number(car.buyPrice||0)}"></div><div class="field"><label>Pastabos / papildoma informacija</label><textarea class="input" id="editCarNotes" rows="3">${escapeHTML(car.notes||'')}</textarea></div><div class="field"><label>Pardavimo kaina</label><input class="input" id="editCarSoldPrice" type="number" min="0" value="${car.soldPrice==null?'':Number(car.soldPrice||0)}"></div><div class="field"><label>Pridėti nuotraukų</label><input class="input" id="editCarPhotos" type="file" accept="image/*" multiple></div><div class="subtle">Pirma nuotrauka yra pagrindinė. X pašalina nuotrauką.</div><div class="photoManageGrid">${refs.map((ref,i)=>`<div class="photoManageItem"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}" data-managed-photo-kind="car" data-managed-photo-index="${i}"><div class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</div><button type="button" class="photoX" data-edit-car-photo="${i}">×</button></div>`).join('')||'<div class="photoManageEmpty" style="grid-column:1/-1">Nuotraukų nėra.</div>'}</div><div class="btnRow"><button class="btn" id="saveCarEdit">Išsaugoti</button><button class="btn secondary" id="backCarEdit">Atgal</button></div></div>`);
+    openSheet(`<div class="sheetHead"><h3>Redaguoti automobilį</h3><button class="closeBtn" id="closeCarEdit">✕</button></div><div class="panel pad"><div class="field"><label>Pavadinimas</label><input class="input" id="editCarName" value="${escapeHTML(car.name||'')}"></div><div class="field"><label>Pirkimo kaina</label><input class="input" id="editCarBuyPrice" type="number" min="0" value="${Number(car.buyPrice||0)}"></div><div class="field"><label>Pastabos / papildoma informacija</label><textarea class="input" id="editCarNotes" rows="3">${escapeHTML(car.notes||'')}</textarea></div>${car.status==='parduotas' ? `<div class="field"><label>Pardavimo kaina</label><input class="input" id="editCarSoldPrice" type="number" min="0" value="${Number(car.soldPrice||0)}"></div>` : ''}<div class="field"><label>Pridėti nuotraukų</label><input class="input" id="editCarPhotos" type="file" accept="image/*" multiple></div><div class="subtle">Pirma nuotrauka yra pagrindinė. X pašalina nuotrauką.</div><div class="photoManageGrid">${refs.map((ref,i)=>`<div class="photoManageItem"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}" data-managed-photo-kind="car" data-managed-photo-index="${i}"><div class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</div><button type="button" class="photoX" data-edit-car-photo="${i}">×</button></div>`).join('')||'<div class="photoManageEmpty" style="grid-column:1/-1">Nuotraukų nėra.</div>'}</div><div class="btnRow"><button class="btn" id="saveCarEdit">Išsaugoti</button><button class="btn secondary" id="backCarEdit">Atgal</button></div></div>`);
     document.getElementById('closeCarEdit').onclick=()=>renderCarSheet(car);document.getElementById('backCarEdit').onclick=()=>renderCarSheet(car);
     document.querySelectorAll('[data-edit-car-photo]').forEach(btn=>btn.onclick=async()=>{const i=Number(btn.dataset.editCarPhoto),ref=(car.photos||[])[i];if(!ref||!confirm('Ištrinti šią nuotrauką?'))return;car.photos=car.photos.filter((_,x)=>x!==i);car.imageSrc=car.photos[0]||'';await photoDelete(ref);saveState();render();openCarEditSheet(car.id)});
-    document.getElementById('saveCarEdit').onclick=async()=>{const name=document.getElementById('editCarName').value.trim();if(!name){toast('Įrašyk pavadinimą','✍️');return}car.name=name;car.buyPrice=Math.max(0,Number(document.getElementById('editCarBuyPrice').value)||0);car.notes=document.getElementById('editCarNotes').value.trim();const sold=document.getElementById('editCarSoldPrice').value;car.soldPrice=sold===''?null:Math.max(0,Number(sold)||0);const fs=Array.from(document.getElementById('editCarPhotos').files||[]).filter(f=>/^image\//i.test(f.type));for(const f of fs){try{const k=await storeImageFile(f);if(k){car.photos=car.photos||[];car.photos.push(k);await photoGet(k)}}catch(e){}}car.imageSrc=car.photos?.[0]||'';saveState();render();openCar(car.id);toast('Automobilis atnaujintas','✏️')};
+    document.getElementById('saveCarEdit').onclick=async()=>{const name=document.getElementById('editCarName').value.trim();if(!name){toast('Įrašyk pavadinimą','✍️');return}car.name=name;car.buyPrice=Math.max(0,Number(document.getElementById('editCarBuyPrice').value)||0);car.notes=document.getElementById('editCarNotes').value.trim();const soldEl=document.getElementById('editCarSoldPrice');if(soldEl){const sold=soldEl.value;car.soldPrice=sold===''?null:Math.max(0,Number(sold)||0);}const fs=Array.from(document.getElementById('editCarPhotos').files||[]).filter(f=>/^image\//i.test(f.type));for(const f of fs){try{const k=await storeImageFile(f);if(k){car.photos=car.photos||[];car.photos.push(k);await photoGet(k)}}catch(e){}}car.imageSrc=car.photos?.[0]||'';saveState();render();openCar(car.id);toast('Automobilis atnaujintas','✏️')};
   }
 
   function openAddChecklistForm(carId){
@@ -4179,7 +4308,10 @@ function addDaysISO(baseISO, days){
     const soldCars = state.cars.filter(car => car.status === 'parduotas');
     document.getElementById('carCount').textContent = `${activeCars.length} aktyvūs / ${soldCars.length} parduoti`;
     document.getElementById('activeCarCount').textContent = `${activeCars.length} auto`;
-    document.getElementById('soldCarCount').textContent = `${soldCars.length} auto`;
+    document.getElementById('soldCarCount').textContent = soldCars.length;
+    document.getElementById('soldCarCountLabel').textContent = `${soldCars.length} auto`;
+    const soldCarsPanel=document.getElementById('soldCarsPanel');
+    if(soldCarsPanel) soldCarsPanel.style.display = state.ui?.soldCarsOpen ? 'block' : 'none';
     document.getElementById('garageMenuBadge').textContent = `${activeCars.length} aktyvių / ${soldCars.length} parduotų`;
 
     const garageTaskGroups = state.ui?.garageTaskGroups || {autos:false, custom:false};
@@ -4312,63 +4444,44 @@ function addDaysISO(baseISO, days){
     document.getElementById('activeCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
     document.getElementById('soldCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
 
-    const leadRoot = document.getElementById('garageLeadRoot');
+    const leadRoot = document.getElementById('garageLeadList');
     if(leadRoot){
-      const allLeads = (state.leadVariants || []).slice().sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
-      const leadCount = document.getElementById('garageLeadCount');
-      if(leadCount) leadCount.textContent = `${allLeads.length} variantų`;
-
-      leadRoot.innerHTML = allLeads.length ? allLeads.map(lead => {
-        const days = garageLeadDaysLeft(lead);
-        const daysClass = days < 0 ? 'danger' : days === 0 ? 'warn' : 'good';
-        const heroStyle = lead.photos?.[0] ? photoCssUrl(photoUrlCache[lead.photos[0]] || lead.photos[0]) : '';
-        const contactLine = [lead.city || 'Be miesto', lead.fuel || '—', lead.phone || '—'].filter(Boolean).join(' • ');
-        const notesText = String(lead.notes || lead.defects || '—').trim();
+      const leads = state.leadVariants || [];
+      leadRoot.innerHTML = leads.length ? leads.map(lead => {
+        const photos = Array.isArray(lead.photos) ? lead.photos.filter(Boolean) : [];
+        const mainPhoto = photos[0] || lead.imageSrc || '';
+        const price = Number(lead.targetPrice || lead.initialPrice || 0);
+        const notes = lead.notes || '';
         return `
-          <div class="garageLeadCard" data-lead-id="${lead.id}">
-            <div class="garageLeadHero" style="${heroStyle}">
-              <div class="leadPill">${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</div>
-              <div class="leadPill">${garageLeadDaysText(lead)}</div>
+          <button type="button" class="leadListCard" data-open-lead-card="${lead.id}">
+            <div class="leadListPhoto">
+              ${mainPhoto
+                ? `<img src="${photoUrlCache[mainPhoto] || mainPhoto}" alt="${escapeHTML(lead.make || '')} ${escapeHTML(lead.model || '')}">`
+                : `<div style="width:100%;height:100%;display:grid;place-items:center;color:var(--muted);font-size:11px;font-weight:800">Nėra foto</div>`}
             </div>
-            <div class="garageLeadBody">
-              <h4>${escapeHTML(lead.make)} ${escapeHTML(lead.model)}${lead.year ? ' ' + escapeHTML(String(lead.year)) : ''}</h4>
-              <div class="garageLeadLine"><span>${escapeHTML(contactLine)}</span><span>${escapeHTML(lead.lastCalledAt || 'dar ne skambinta')}</span></div>
-              <div class="garageLeadTags">
-                <span class="garageLeadTag good">Pradinė ${moneyFmt(lead.initialPrice)}</span>
-                <span class="garageLeadTag">Mūsų kaina ${moneyFmt(lead.targetPrice)}</span>
-                <span class="garageLeadTag ${daysClass}">${garageLeadDaysText(lead)}</span>
+            <div class="leadListInfo">
+              <div class="leadListTop">
+                <div class="leadListTitle">${escapeHTML(lead.make || '')} ${escapeHTML(lead.model || '')}</div>
+                ${price ? `<div class="leadListPrice">${moneyFmt(price)}</div>` : ''}
               </div>
-              <div class="leadDetailBox" style="margin-top:12px">
-                <strong style="color:var(--text);display:block;margin-bottom:6px">Defektai ir pastabos</strong>
-                ${escapeHTML(notesText)}
+              <div class="leadListMeta">
+                ${lead.year ? `<span class="leadListChip">${escapeHTML(String(lead.year))} m.</span>` : ''}
+                ${lead.fuel ? `<span class="leadListChip">${escapeHTML(lead.fuel)}</span>` : ''}
+                ${lead.city ? `<span class="leadListChip">${escapeHTML(lead.city)}</span>` : ''}
+                <span class="leadListChip">${photos.length} foto</span>
               </div>
-              <div class="garageLeadLine"><span>Skambinti po: ${Number(lead.followUpDays || 0)} d.</span><span>Atnaujinta: ${escapeHTML(lead.updatedAt || lead.createdAt || '')}</span></div>
-              <div class="leadGallery">
-                ${(lead.photos && lead.photos.length) ? `
-                  <button type="button" class="leadGalleryMain" data-open-lead-gallery="${lead.id}" data-photo-index="0" aria-label="Atidaryti pagrindinę nuotrauką">
-                    <img src="${photoUrlCache[lead.photos[0]] || lead.photos[0] || ''}" alt="Pagrindinė ${escapeHTML(lead.make)} ${escapeHTML(lead.model)}">
-                    <span class="leadPhotoBadge">${lead.photos.length} nuotrauk${lead.photos.length===1?'a':'os'} • Pagrindinė</span>
-                  </button>
-                  ${(lead.photos.slice(1)).map((src, i) => `
-                    <button type="button" class="leadGalleryThumb" data-open-lead-gallery="${lead.id}" data-photo-index="${i+1}" aria-label="Atidaryti nuotrauką ${i+2}">
-                      <img src="${photoUrlCache[src] || src || ''}" alt="Nuotrauka ${i+2}">
-                    </button>
-                  `).join('')}
-                ` : '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}
-              </div>
-              <div class="garageLeadActions">
-                <button class="btn secondary" type="button" data-call-lead="${lead.id}">📞 Skambinta</button>
-                <button class="btn secondary" type="button" data-edit-lead="${lead.id}">Redaguoti</button>
-                <button class="btn danger" type="button" data-delete-lead="${lead.id}">Ištrinti</button>
+              ${notes ? `<div class="leadListNotes">${escapeHTML(notes)}</div>` : ''}
+              <div class="leadListBottom">
+                <span class="leadListPhotoCount">${garageLeadDaysText(lead)}${lead.followUpDays ? ` • skambinti po ${Number(lead.followUpDays)} d.` : ''}</span>
+                <span class="leadListOpen">Atidaryti →</span>
               </div>
             </div>
-          </div>
-        `;
-      }).join('') : `<div class="emptyState">Dar nėra įkeltų variantų. Įkelk pirmą pasiūlymą ir jis atsiras čia viršuje.</div>`;
-      leadRoot.querySelectorAll('[data-call-lead]').forEach(btn => btn.onclick = () => callGarageLead(btn.dataset.callLead));
-      leadRoot.querySelectorAll('[data-delete-lead]').forEach(btn => btn.onclick = () => deleteGarageLead(btn.dataset.deleteLead));
-      leadRoot.querySelectorAll('[data-edit-lead]').forEach(btn => btn.onclick = () => openGarageLeadSheet(btn.dataset.editLead));
-      leadRoot.querySelectorAll('[data-open-lead-gallery]').forEach(btn => btn.onclick = () => openLeadGallery(btn.dataset.openLeadGallery, Number(btn.dataset.photoIndex || 0)));
+          </button>`;
+      }).join('') : `<div class="emptyState">${needle}.</div>`;
+
+      leadRoot.querySelectorAll('[data-open-lead-card]').forEach(btn => {
+        btn.onclick = () => openGarageLeadSheet(btn.dataset.openLeadCard);
+      });
     }
 
     // įgūdžiai
@@ -4508,6 +4621,14 @@ function addDaysISO(baseISO, days){
       render();
       return;
     }
+    const soldToggle=e.target.closest('#toggleSoldCarsBtn');
+    if(soldToggle){
+      state.ui=state.ui||{};
+      state.ui.soldCarsOpen=!state.ui.soldCarsOpen;
+      saveState();
+      render();
+      return;
+    }
     const actionBtn = e.target.closest('[data-garage-action]');
     if(actionBtn){
       const action = actionBtn.dataset.garageAction;
@@ -4572,6 +4693,19 @@ function addDaysISO(baseISO, days){
       document.getElementById('garageTaskCoins').value = '5';
     });
   }
+
+  const showAddCarFormBtn=document.getElementById('showAddCarFormBtn');
+  const cancelAddCarBtn=document.getElementById('cancelAddCarBtn');
+  const addCarPanel=document.getElementById('addCarPanel');
+  if(showAddCarFormBtn) showAddCarFormBtn.onclick=()=>{
+    if(addCarPanel) addCarPanel.style.display='block';
+    showAddCarFormBtn.style.display='none';
+    document.getElementById('carName')?.focus();
+  };
+  if(cancelAddCarBtn) cancelAddCarBtn.onclick=()=>{
+    if(addCarPanel) addCarPanel.style.display='none';
+    if(showAddCarFormBtn) showAddCarFormBtn.style.display='block';
+  };
 
   document.getElementById('addCarBtn').onclick = () => {
     const name = document.getElementById('carName').value.trim();
