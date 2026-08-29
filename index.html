@@ -5828,6 +5828,127 @@ body{font-size:16px!important;color:var(--text)!important}
   background-position:center!important;
 }
 </style>
+
+<style id="sale-modal-and-profit-ui">
+.saleModal{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(15,23,42,.42);
+  backdrop-filter:blur(7px);
+}
+.saleModalCard{
+  width:min(100%,390px);
+  padding:20px;
+  border-radius:24px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  box-shadow:0 26px 80px rgba(15,23,42,.24);
+}
+.saleModalHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+.saleModalEyebrow{
+  display:block;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.09em;
+  color:#64748b;
+}
+.saleModalHead h3{
+  margin:5px 0 0;
+  font-size:20px;
+}
+.saleModalCarName{
+  margin-top:12px;
+  padding:11px 12px;
+  border-radius:13px;
+  background:var(--surface-2);
+  font-weight:900;
+  font-size:14px;
+}
+.salePriceField{margin-top:14px}
+.salePriceField label{
+  display:block;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.saleModalConfirm{
+  width:100%;
+  margin-top:4px;
+}
+.saleModalConfirm:disabled{
+  opacity:.42!important;
+  cursor:not-allowed!important;
+}
+.saleProfitToast{
+  position:fixed;
+  inset:0;
+  z-index:10001;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  background:rgba(15,23,42,.08);
+  animation:saleToastBgIn .15s ease;
+}
+.saleToastCard{
+  width:min(82vw,330px);
+  padding:24px 22px;
+  border-radius:25px;
+  background:var(--surface);
+  border:1px solid rgba(15,118,110,.16);
+  box-shadow:0 28px 85px rgba(15,23,42,.25);
+  text-align:center;
+  animation:saleToastPop .36s cubic-bezier(.2,.9,.2,1);
+}
+.saleToastIcon{font-size:34px;line-height:1;margin-bottom:8px}
+.saleToastTitle{
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.1em;
+  color:#52646b;
+}
+.saleToastCar{
+  margin-top:5px;
+  font-size:13px;
+  font-weight:800;
+}
+.saleToastProfit{
+  margin-top:6px;
+  font-size:34px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-.045em;
+}
+.saleToastProfit.positive{color:#16806a}
+.saleToastProfit.negative{color:#c63f4b}
+.saleToastCaption{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:700;
+  color:#73808c;
+}
+.saleProfitToast.hide{
+  opacity:0;
+  transition:opacity .35s ease;
+}
+@keyframes saleToastPop{
+  from{opacity:0;transform:translateY(13px) scale(.9)}
+  to{opacity:1;transform:none}
+}
+@keyframes saleToastBgIn{
+  from{opacity:0}to{opacity:1}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -8283,6 +8404,115 @@ function addDaysISO(baseISO, days){
     render();
   }
 
+
+  function closeSaleModal(){
+    const modal = document.getElementById('saleModal');
+    if(modal) modal.remove();
+  }
+
+  function playCashRegisterSound(){
+    try{
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if(!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.18, now + 0.015);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+      master.connect(ctx.destination);
+
+      [520, 740, 1040, 1380].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = i === 3 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(freq, now + i*0.075);
+        gain.gain.setValueAtTime(0.0001, now + i*0.075);
+        gain.gain.exponentialRampToValueAtTime(0.24, now + i*0.075 + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + i*0.075 + 0.13);
+        osc.connect(gain);
+        gain.connect(master);
+        osc.start(now + i*0.075);
+        osc.stop(now + i*0.075 + 0.15);
+      });
+
+      setTimeout(()=>{ try{ctx.close();}catch(e){} },700);
+    }catch(e){}
+  }
+
+  function showSaleProfitToast(profit, carName){
+    const old=document.getElementById('saleProfitToast');
+    if(old) old.remove();
+    const el=document.createElement('div');
+    el.id='saleProfitToast';
+    el.className='saleProfitToast';
+    const positive=Number(profit||0)>=0;
+    el.innerHTML=`
+      <div class="saleToastCard">
+        <div class="saleToastIcon">💰</div>
+        <div class="saleToastTitle">PARDUOTA</div>
+        <div class="saleToastCar">${escapeHTML(carName||'Automobilis')}</div>
+        <div class="saleToastProfit ${positive?'positive':'negative'}">${positive?'+':''}${moneyFmt(profit)}</div>
+        <div class="saleToastCaption">grynasis pelnas</div>
+      </div>`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.classList.add('hide'),3400);
+    setTimeout(()=>el.remove(),3850);
+  }
+
+  function openSaleModal(carId){
+    const car=state.cars.find(c=>c.id===carId);
+    if(!car || car.status==='parduotas') return;
+
+    closeSaleModal();
+    const modal=document.createElement('div');
+    modal.id='saleModal';
+    modal.className='saleModal';
+    modal.innerHTML=`
+      <div class="saleModalCard" role="dialog" aria-modal="true" aria-labelledby="saleModalTitle">
+        <div class="saleModalHead">
+          <div>
+            <span class="saleModalEyebrow">AUTOMOBILIO PARDAVIMAS</span>
+            <h3 id="saleModalTitle">Parduoti automobilį?</h3>
+          </div>
+          <button type="button" class="closeBtn saleModalClose" aria-label="Uždaryti">✕</button>
+        </div>
+        <div class="saleModalCarName">${escapeHTML(car.name||'Automobilis')}</div>
+        <div class="field salePriceField">
+          <label for="saleModalPrice">Pardavimo suma</label>
+          <input class="input" id="saleModalPrice" type="number" min="0.01" step="1" inputmode="decimal" placeholder="Įvesk sumą">
+        </div>
+        <button type="button" class="btn premiumPrimaryBtn saleModalConfirm" id="saleModalConfirm" disabled>Parduoti</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const input=modal.querySelector('#saleModalPrice');
+    const confirm=modal.querySelector('#saleModalConfirm');
+    const sync=()=>{
+      const value=Number(input.value||0);
+      confirm.disabled=!(Number.isFinite(value)&&value>0);
+    };
+    input.addEventListener('input',sync);
+    input.addEventListener('keydown',e=>{
+      if(e.key==='Enter' && !confirm.disabled){
+        e.preventDefault();
+        confirm.click();
+      }
+    });
+    modal.querySelector('.saleModalClose').onclick=closeSaleModal;
+    modal.addEventListener('click',e=>{
+      if(e.target===modal) closeSaleModal();
+    });
+    confirm.onclick=()=>{
+      const value=Number(input.value||0);
+      if(!(Number.isFinite(value)&&value>0)) return;
+      closeSaleModal();
+      sellCar(car.id,value);
+    };
+    setTimeout(()=>input.focus(),80);
+  }
+
   function deleteCar(carId){
     const car = state.cars.find(c => c.id === carId);
     if(!car) return;
@@ -8430,17 +8660,13 @@ function addDaysISO(baseISO, days){
               </div>
             </div>
             <div class="premiumActionRow carDetailActions">
-              <button class="carDeleteReal" id="deleteCarBtn" type="button">🗑️ Ištrinti automobilį</button>
+              <button class="carDeleteReal" id="deleteCarBtn" type="button" data-delete-car="${car.id}">🗑️ Ištrinti automobilį</button>
               <button class="btn secondary premiumSmallBtn" id="addChecklistBtn" type="button">+ Užduotis</button>
             </div>
           ` : `
             <div class="premiumActionRow carDetailActions">
-              <button class="carDeleteReal" id="deleteCarBtn" type="button">🗑️ Ištrinti automobilį</button>
-              <button class="btn secondary premiumSmallBtn carSellInlineBtn" id="sellCarBtn" type="button">Parduoti automobilį</button>
-            </div>
-            <div id="sellCarForm" class="premiumSellForm carSellInlineForm" style="display:none">
-              <div class="field"><label>Pardavimo kaina</label><input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="0 €" inputmode="decimal"></div>
-              <button class="btn premiumPrimaryBtn" id="confirmSellCarBtn" type="button">Patvirtinti pardavimą</button>
+              <button class="carDeleteReal" id="deleteCarBtn" type="button" data-delete-car="${car.id}">🗑️ Ištrinti automobilį</button>
+              <button class="btn secondary premiumSmallBtn carSellInlineBtn" id="sellCarBtn" type="button" data-open-sell="${car.id}">Parduoti automobilį</button>
             </div>
           `}
 
@@ -8490,20 +8716,15 @@ function addDaysISO(baseISO, days){
       btn.onclick = () => openEntityPhotoGallery('car', parts[1], Number(parts[2] || 0));
     });
     const sellBtn = document.getElementById('sellCarBtn');
-    const sellCarForm = document.getElementById('sellCarForm');
-    const confirmSellCarBtn = document.getElementById('confirmSellCarBtn');
-    if(sellBtn) sellBtn.onclick = () => {
-      if(sellCarForm){
-        sellCarForm.style.display = 'block';
-        sellBtn.disabled = true;
-        setTimeout(()=>document.getElementById('sellPriceInput')?.focus(),60);
-      }
-    };
-    if(confirmSellCarBtn) confirmSellCarBtn.onclick = () => sellCar(car.id);
+    if(sellBtn) sellBtn.onclick = () => openSaleModal(car.id);
     const addBtn = document.getElementById('addChecklistBtn');
     if(addBtn) addBtn.onclick = () => openAddChecklistForm(car.id);
     const deleteCarBtn = document.getElementById('deleteCarBtn');
-    if(deleteCarBtn) deleteCarBtn.onclick = () => deleteCar(car.id);    const downloadCarPhotos=document.getElementById('downloadCarPhotos');if(downloadCarPhotos)downloadCarPhotos.onclick=()=>downloadAllEntityPhotos('car',car.id);
+    if(deleteCarBtn) deleteCarBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      deleteCar(car.id);
+    };    const downloadCarPhotos=document.getElementById('downloadCarPhotos');if(downloadCarPhotos)downloadCarPhotos.onclick=()=>downloadAllEntityPhotos('car',car.id);
     const editCarInfoBtn=document.getElementById('editCarInfoBtn');if(editCarInfoBtn)editCarInfoBtn.onclick=()=>openCarEditSheet(car.id);
     document.querySelectorAll('[data-car-photo-delete]').forEach(btn=>btn.onclick=async()=>{const i=Number(btn.dataset.carPhotoDelete),ref=(car.photos||[])[i];if(!ref||!confirm('Ištrinti šią nuotrauką?'))return;car.photos=car.photos.filter((_,x)=>x!==i);car.imageSrc=car.photos[0]||'';await photoDelete(ref);saveState();render();openCar(car.id)});
     const carAddPhotos=document.getElementById('carAddPhotos');if(carAddPhotos)carAddPhotos.onchange=async()=>{const fs=Array.from(carAddPhotos.files||[]).filter(f=>/^image\//i.test(f.type)),a=[];for(const f of fs){try{const k=await storeImageFile(f);if(k){a.push(k);await photoGet(k)}}catch(e){}}if(a.length){car.photos=[...(car.photos||[]),...a];car.imageSrc=car.photos[0]||'';saveState();render();openCar(car.id);toast(`Pridėta ${a.length} nuotraukų`,'🖼️')}};
@@ -8656,24 +8877,34 @@ function addDaysISO(baseISO, days){
   }
 
 
-  function sellCar(carId){
+  function sellCar(carId, explicitSellPrice=null){
     const car = state.cars.find(c => c.id === carId);
-    if(!car) return;
+    if(!car || car.status==='parduotas') return;
+
     if(!car.checklist.every(i => i.done)){
       toast('Visos užduotys turi būti atliktos', '⚠️');
       return;
     }
-    const sellPriceInput = document.getElementById('sellPriceInput');
-    const sellPrice = Number(sellPriceInput?.value || car.soldPrice || 0);
-    if(!sellPrice || sellPrice <= 0){
+
+    const sellPrice = Number(
+      explicitSellPrice ??
+      document.getElementById('sellPriceInput')?.value ??
+      0
+    );
+    if(!Number.isFinite(sellPrice) || sellPrice<=0){
       toast('Įrašyk pardavimo kainą', '💰');
       return;
     }
+
+    const realCost = carTotalCost(car);
+    const netProfit = sellPrice - realCost;
+
     car.soldPrice = sellPrice;
     car.soldAt = nowLabel();
     car.soldDateISO = todayISO();
     car.status = 'parduotas';
-    car.netProfit = sellPrice - carTotalCost(car);
+    car.netProfit = netProfit;
+
     state.stats.carsSold += 1;
     state.stats.tasksCompleted += 1;
     state.coins += 90;
@@ -8681,23 +8912,32 @@ function addDaysISO(baseISO, days){
     state.stats.lifetimeXp += 120;
     updateSkills('Business', 120);
     state.finances.monthlyRevenue += sellPrice;
-    state.finances.monthlyExpenses += carTotalCost(car);
+    state.finances.monthlyExpenses += realCost;
     ensureFinanceCollections();
     state.finances.budgetBalance += sellPrice;
-    state.finances.monthlyNetProfit += car.netProfit;
-    state.finances.lifetimeNetProfit += car.netProfit;
-    addHistory('Automobilis parduotas', `${car.name} • savikaina ${moneyFmt(carTotalCost(car))} • parduota už ${moneyFmt(sellPrice)} • grynasis pelnas ${(car.netProfit>=0?'+':'')+moneyFmt(car.netProfit)}`, '💸', {kind:'car',id:car.id,label:'Atidaryti automobilį'});
-    toast(`Parduota! +${moneyFmt(car.netProfit)}`, '💸');
-    spark('🏁');
-    playTone(920, 0.12);
-    vibrate([25,35,25]);
+    state.finances.monthlyNetProfit += netProfit;
+    state.finances.lifetimeNetProfit += netProfit;
+
+    addHistory(
+      'Automobilis parduotas',
+      `${car.name} • savikaina ${moneyFmt(realCost)} • parduota už ${moneyFmt(sellPrice)} • grynasis pelnas ${netProfit>=0?'+':''}${moneyFmt(netProfit)}`,
+      '💸',
+      {kind:'car',id:car.id,label:'Atidaryti automobilį'}
+    );
+
+    playCashRegisterSound();
+    try{ spark('🪙'); }catch(e){}
+    showSaleProfitToast(netProfit, car.name);
+
     levelUpCheck();
     checkWorldUnlocks();
     checkAchievements();
     saveState();
-    render();
     closeSheet();
+    render();
   }
+
+
 
   function openSheet(html){
 
@@ -9737,6 +9977,14 @@ async function render(){
     saveState();render();
     if(state.ui.menuHistoryOpen)requestAnimationFrame(()=>document.getElementById('menu-history')?.scrollIntoView({behavior:'smooth',block:'start'}));
   });
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-delete-car]');
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(typeof deleteCar === 'function') deleteCar(btn.dataset.deleteCar);
+  }, true);
 
   // events
   document.addEventListener('click', (e) => {
