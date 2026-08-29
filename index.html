@@ -4994,318 +4994,204 @@ body{font-size:16px!important;color:var(--text)!important}
 }
 </style>
 
-<style id="latest-mobile-balance-only">
-/* Pagrindinis: truputį kompaktiškesnis XP / lygio blokas */
+<style id="final-mobile-ux-balance">
+/* PAGRINDINIS — truputį kompaktiškesnis lygio/XP blokas. */
 #view-home .heroCard{
   padding:13px!important;
-  gap:12px!important;
-  border-radius:21px!important;
+  gap:11px!important;
+  border-radius:20px!important;
 }
 #view-home .topStats{gap:9px!important}
-#view-home .miniStat{
-  padding:11px!important;
-  border-radius:16px!important;
-}
+#view-home .miniStat{padding:11px!important;border-radius:16px!important}
 #view-home .miniStat .label{font-size:10px!important;margin-bottom:7px!important}
 #view-home .miniStat .value{font-size:22px!important}
-#view-home .xpLine{font-size:10.5px!important;margin-top:9px!important}
+#view-home .xpLine{font-size:10.5px!important;margin-top:8px!important}
 #view-home .xpLine strong,
 #view-home #levelValue,
 #view-home #xpToNext{font-size:22px!important}
 #view-home .bar{height:11px!important}
 
-/* Pagrindinis: Šiandienos užduočių temos šiek tiek didesnės */
-#view-home #todayTasksRoot .taskGroupHead h3{
-  font-size:13px!important;
+/* PAGRINDINIS — šiandienos kategorijų pavadinimai šiek tiek didesni. */
+#view-home #tasksRoot .taskGroup{
+  border-radius:21px!important;
 }
-#view-home #todayTasksRoot .taskCard{
-  padding:12px 13px!important;
+#view-home #tasksRoot .taskGroupHead{
+  padding:17px 18px!important;
 }
-#view-home #todayTasksRoot .taskMain strong{
-  font-size:16px!important;
+#view-home #tasksRoot .taskGroupHead h3{
+  font-size:17px!important;
+  line-height:1.18!important;
+  font-weight:900!important;
 }
-#view-home #todayTasksRoot .taskMeta{
-  font-size:11.5px!important;
-}
-#view-home #todayTasksRoot .rewardPills .xp,
-#view-home #todayTasksRoot .rewardPills .coins{
-  font-size:11.5px!important;
+#view-home #tasksRoot .taskCard{
+  padding:13px 14px!important;
 }
 
-/* Auto kortelės: pilnai matomos telefone, nebekarpomos */
+/* AKTYVŪS + PARDUOTI AUTO — daugiau vietos nuotraukai ir jokio kraštų karpymo. */
 #activeCarGrid .carListCard,
 #soldCarGrid .carListCard{
-  grid-template-columns:92px minmax(0,1fr)!important;
+  grid-template-columns:106px minmax(0,1fr)!important;
   width:100%!important;
   min-width:0!important;
-  box-sizing:border-box!important;
+  gap:10px!important;
+  padding:9px!important;
   overflow:hidden!important;
-  gap:9px!important;
-  padding:8px!important;
 }
 #activeCarGrid .carListPhoto,
 #soldCarGrid .carListPhoto{
-  width:92px!important;
-  height:92px!important;
-  min-width:92px!important;
-  flex:none!important;
-  border-radius:12px!important;
+  width:106px!important;
+  height:106px!important;
+  min-width:106px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  background:var(--surface-2)!important;
+}
+#activeCarGrid .carListPhoto img,
+#soldCarGrid .carListPhoto img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
 }
 #activeCarGrid .carListInfo,
 #soldCarGrid .carListInfo{
   min-width:0!important;
   overflow:hidden!important;
 }
-#activeCarGrid .carListTop,
-#soldCarGrid .carListTop{
-  min-width:0!important;
-}
 #activeCarGrid .carListTitle,
 #soldCarGrid .carListTitle{
-  min-width:0!important;
-  max-width:100%!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-}
-#activeCarGrid .carListFacts,
-#soldCarGrid .carListFacts{
-  min-width:0!important;
-  gap:6px!important;
-}
-#activeCarGrid .carListFacts>div,
-#soldCarGrid .carListFacts>div{
-  min-width:0!important;
-  padding:6px 7px!important;
-}
-
-/* Variantai: truputį didesnės, bet dar patogiai telpančios */
-#garageLeadRoot .leadListCard{
-  grid-template-columns:102px minmax(0,1fr)!important;
-  gap:11px!important;
-  padding:10px!important;
-  min-width:0!important;
-}
-#garageLeadRoot .leadListPhoto{
-  width:102px!important;
-  height:102px!important;
-  min-width:102px!important;
-  border-radius:14px!important;
-}
-#garageLeadRoot .leadListInfo{
-  min-width:0!important;
-}
-#garageLeadRoot .leadListTitle{
   font-size:18px!important;
-  line-height:1.15!important;
 }
-#garageLeadRoot .leadListPrice{
+#activeCarGrid .carListFacts strong,
+#soldCarGrid .carListFacts strong{
   font-size:14px!important;
 }
-#garageLeadRoot .leadListChip{
-  font-size:11px!important;
-  padding:5px 8px!important;
-}
-#garageLeadRoot .leadListBottom,
-#garageLeadRoot .leadNoPhone{
-  font-size:12px!important;
-}
-#garageLeadRoot .leadCallBtn{
-  min-height:42px!important;
-  padding:9px 11px!important;
-  font-size:12px!important;
-}
 
-/* Garažo statistika: perpus mažiau smulkaus triukšmo */
+/* VARIANTAI — kortelės ir turinys truputį didesni. */
+#garageLeadRoot .leadListCard{
+  grid-template-columns:108px minmax(0,1fr)!important;
+  width:100%!important;
+  min-width:0!important;
+  gap:11px!important;
+  padding:10px!important;
+}
+#garageLeadRoot .leadListPhoto{
+  width:108px!important;
+  height:108px!important;
+  min-width:108px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+#garageLeadRoot .leadListPhoto img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+#garageLeadRoot .leadListInfo{min-width:0!important}
+#garageLeadRoot .leadListTitle{font-size:18px!important}
+#garageLeadRoot .leadListPrice{font-size:14px!important}
+#garageLeadRoot .leadListChip{font-size:11px!important;padding:5px 8px!important}
+#garageLeadRoot .leadListBottom,
+#garageLeadRoot .leadNoPhone{font-size:12.5px!important}
+#garageLeadRoot .leadCallBtn{min-height:42px!important;font-size:12.5px!important}
+
+/* GARAŽO STATISTIKA — konkretesnė, mažiau smulkaus teksto, tik naudingi rodikliai. */
+#view-garage-stats .statsSection{
+  padding:12px!important;
+  margin-top:10px!important;
+}
 #view-garage-stats .statsSectionHead .pageEyebrow{
-  font-size:9px!important;
+  display:none!important;
 }
 #view-garage-stats .statsSectionHead h3{
-  font-size:18px!important;
+  font-size:19px!important;
 }
+#view-garage-stats .garageStatsGrid{
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+#view-garage-stats .garageStatsGrid .garageOverviewStat:nth-child(5),
+#view-garage-stats .garageStatsGrid .garageOverviewStat:nth-child(6){
+  display:none!important;
+}
+#view-garage-stats .garageOverviewStat{
+  min-height:82px!important;
+  padding:11px!important;
+}
+#view-garage-stats .garageOverviewStat .label{
+  font-size:10px!important;
+}
+#view-garage-stats .garageOverviewStat .value{
+  font-size:20px!important;
+}
+#view-garage-stats .businessResultSub,
 #view-garage-stats .statsSectionHead>span{
   display:none!important;
 }
-#view-garage-stats .statsSection{
-  padding:11px!important;
-  margin-top:10px!important;
-}
-#view-garage-stats .garageStatsGrid,
-#view-garage-stats .metricsGrid{
-  gap:7px!important;
-}
-#view-garage-stats .garageOverviewStat{
-  min-height:76px!important;
-  padding:9px!important;
-}
-#view-garage-stats .garageOverviewStat .label{
-  font-size:9px!important;
-  color:var(--muted)!important;
-}
-#view-garage-stats .garageOverviewStat .value{
-  font-size:18px!important;
-  margin-top:5px!important;
-}
-#view-garage-stats .businessResultSub,
-#view-garage-stats .businessResultHead .businessResultSub{
-  display:none!important;
-}
 #view-garage-stats .businessResultHero{
-  padding:10px!important;
-  margin-bottom:7px!important;
+  padding:11px!important;
+  margin-bottom:8px!important;
 }
 #view-garage-stats .businessResultHero span{
   font-size:10px!important;
 }
 #view-garage-stats .businessResultHero strong{
-  font-size:21px!important;
+  font-size:22px!important;
+}
+#view-garage-stats .businessResultGrid{
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+#view-garage-stats .businessResultGrid .businessMetric:nth-child(5),
+#view-garage-stats .businessResultGrid .businessMetric:nth-child(6){
+  display:none!important;
 }
 #view-garage-stats .businessMetric{
-  min-height:60px!important;
-  padding:8px!important;
+  min-height:64px!important;
+  padding:9px!important;
 }
 #view-garage-stats .businessMetric .k{
-  font-size:9px!important;
+  font-size:10px!important;
 }
 #view-garage-stats .businessMetric .v{
-  font-size:14px!important;
-  margin-top:4px!important;
+  font-size:15px!important;
+}
+#view-garage-stats .metricsGrid{
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+#view-garage-stats .metricsGrid .garageTempoStat:nth-child(5){
+  display:none!important;
 }
 #view-garage-stats .garageTempoStat{
-  min-height:64px!important;
-  padding:8px!important;
+  min-height:70px!important;
+  padding:9px!important;
 }
-#view-garage-stats .garageTempoStat .label,
-#view-garage-stats .garageTempoStat .hint{
-  font-size:9px!important;
+#view-garage-stats .garageTempoStat .label{
+  font-size:10px!important;
 }
 #view-garage-stats .garageTempoStat .value{
-  font-size:16px!important;
+  font-size:17px!important;
 }
-#view-garage-stats .garageStatsBackBtn{
-  min-height:40px!important;
-  padding:8px 10px!important;
-  font-size:11px!important;
+#view-garage-stats .garageTempoStat .hint{
+  display:none!important;
 }
 @media(max-width:380px){
-  #activeCarGrid .carListCard,
-  #soldCarGrid .carListCard{
-    grid-template-columns:86px minmax(0,1fr)!important;
+  #activeCarGrid .carListCard,#soldCarGrid .carListCard{
+    grid-template-columns:92px minmax(0,1fr)!important;
   }
-  #activeCarGrid .carListPhoto,
-  #soldCarGrid .carListPhoto{
-    width:86px!important;
-    height:86px!important;
-    min-width:86px!important;
+  #activeCarGrid .carListPhoto,#soldCarGrid .carListPhoto{
+    width:92px!important;height:92px!important;min-width:92px!important;
   }
   #garageLeadRoot .leadListCard{
-    grid-template-columns:96px minmax(0,1fr)!important;
+    grid-template-columns:100px minmax(0,1fr)!important;
   }
   #garageLeadRoot .leadListPhoto{
-    width:96px!important;
-    height:96px!important;
-    min-width:96px!important;
-  }
-}
-</style>
-
-<style id="home-today-block-plus-v6">
-/* Tik Pagrindinio puslapio „Šiandienos užduotys“ blokas — didesnis. */
-#view-home #todayTasksRoot{
-  width:100%!important;
-}
-#view-home #todayTasksRoot .taskGroup{
-  padding:0!important;
-  border-radius:22px!important;
-}
-#view-home #todayTasksRoot .taskGroupHead{
-  padding:17px 18px 16px!important;
-  min-height:58px!important;
-}
-#view-home #todayTasksRoot .taskGroupHead h3{
-  font-size:14px!important;
-  line-height:1.15!important;
-}
-#view-home #todayTasksRoot .taskGroupBody{
-  padding:0 18px 17px!important;
-}
-#view-home #todayTasksRoot .taskCard{
-  padding:14px 15px!important;
-  min-height:67px!important;
-  border-radius:18px!important;
-  gap:12px!important;
-}
-#view-home #todayTasksRoot .taskMain strong{
-  font-size:16.5px!important;
-  line-height:1.25!important;
-}
-#view-home #todayTasksRoot .taskMeta{
-  font-size:12px!important;
-  line-height:1.3!important;
-}
-#view-home #todayTasksRoot .check{
-  width:29px!important;
-  height:29px!important;
-  border-radius:10px!important;
-}
-#view-home #todayTasksRoot .rewardPills .xp,
-#view-home #todayTasksRoot .rewardPills .coins{
-  font-size:12px!important;
-}
-@media(max-width:380px){
-  #view-home #todayTasksRoot .taskGroupHead{
-    padding-left:16px!important;
-    padding-right:16px!important;
-  }
-  #view-home #todayTasksRoot .taskGroupBody{
-    padding-left:16px!important;
-    padding-right:16px!important;
-  }
-  #view-home #todayTasksRoot .taskCard{
-    padding:13px!important;
-  }
-}
-</style>
-
-<style id="home-task-topic-blocks-bigger-only">
-/* Tik trys Pagrindinio puslapio „Šiandienos užduotys“ temos blokai. */
-#view-home #todayTasksRoot .taskGroup{
-  min-height:76px!important;
-  border-radius:23px!important;
-}
-#view-home #todayTasksRoot .taskGroupHead{
-  min-height:76px!important;
-  padding:21px 20px!important;
-}
-#view-home #todayTasksRoot .taskGroupHead h3{
-  font-size:15px!important;
-  line-height:1.2!important;
-  letter-spacing:.01em!important;
-}
-@media(max-width:380px){
-  #view-home #todayTasksRoot .taskGroup{
-    min-height:72px!important;
-  }
-  #view-home #todayTasksRoot .taskGroupHead{
-    min-height:72px!important;
-    padding:19px 17px!important;
-  }
-  #view-home #todayTasksRoot .taskGroupHead h3{
-    font-size:14.5px!important;
-  }
-}
-</style>
-
-<style id="home-task-topic-fonts-only-v2">
-/* Tik trijų Pagrindinio puslapio „Šiandienos užduotys“ blokų pavadinimai. */
-#view-home #todayTasksRoot .taskGroupHead h3{
-  font-size:18px!important;
-  line-height:1.2!important;
-  font-weight:900!important;
-}
-@media(max-width:380px){
-  #view-home #todayTasksRoot .taskGroupHead h3{
-    font-size:17px!important;
+    width:100px!important;height:100px!important;min-width:100px!important;
   }
 }
 </style>
