@@ -727,7 +727,7 @@
     .heroImageBtn{display:block;border:none;background:transparent;padding:0;width:100%;appearance:none}
     .heroImageBtn .carHero{min-height:160px}
     .gallerySheet{display:grid;gap:12px}
-    .galleryMain{width:100%;aspect-ratio:4/3;border-radius:20px;background:var(--surface-2);background-size:cover;background-position:center;border:1px solid var(--line)}
+    .galleryMain{width:100%;aspect-ratio:4/3;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center}.galleryMain img{width:100%;height:100%;object-fit:contain;display:block}.galleryThumbs .img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px}
     .galleryThumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
     .galleryThumbs button{border:none;padding:0;background:transparent;appearance:none}
     .galleryThumbs .img{aspect-ratio:1/1;border-radius:14px;background-size:cover;background-position:center;border:1px solid var(--line)}
@@ -2200,6 +2200,7 @@ function addDaysISO(baseISO, days){
   const PHOTO_DB_VERSION = 1;
   const PHOTO_STORE_NAME = 'photos';
   const photoUrlCache = Object.create(null);
+  const PHOTO_FALLBACK_PREFIX = 'zaisk_photo_fallback_';
   let photoDbPromise = null;
 
   function openPhotoDB(){
@@ -2222,40 +2223,83 @@ function addDaysISO(baseISO, days){
     return photoDbPromise;
   }
 
-  function photoPut(blob){
-    return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
-      const key = 'photo_' + uid();
-      const tx = db.transaction(PHOTO_STORE_NAME,'readwrite');
-      tx.objectStore(PHOTO_STORE_NAME).put(blob,key);
-      tx.oncomplete = () => resolve(key);
-      tx.onerror = () => reject(tx.error || new Error('Nuotraukos saugojimo klaida'));
-      tx.onabort = () => reject(tx.error || new Error('Nuotraukos saugojimo klaida'));
-    }));
+  async function blobToDataUrl(blob){
+    return await new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onload=()=>resolve(String(r.result||''));
+      r.onerror=()=>reject(r.error||new Error('Nuotraukos skaitymo klaida'));
+      r.readAsDataURL(blob);
+    });
+  }
+
+  async function photoPut(blob){
+    const key='photo_'+uid();
+    try{
+      const db=await openPhotoDB();
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(PHOTO_STORE_NAME,'readwrite');
+        tx.objectStore(PHOTO_STORE_NAME).put(blob,key);
+        tx.oncomplete=()=>resolve();
+        tx.onerror=()=>reject(tx.error||new Error('Nuotraukos saugojimo klaida'));
+        tx.onabort=()=>reject(tx.error||new Error('Nuotraukos saugojimo klaida'));
+      });
+      return key;
+    }catch(e){
+      // Important for a downloaded HTML opened from the phone desktop:
+      // file:// can have unreliable IndexedDB support. Keep a compressed
+      // data URL fallback in localStorage so the standalone HTML still works.
+      try{
+        const data=await blobToDataUrl(blob);
+        localStorage.setItem(PHOTO_FALLBACK_PREFIX+key,data);
+        return key;
+      }catch(e2){
+        console.warn('Nuotraukos nepavyko išsaugoti nei IndexedDB, nei localStorage',e2);
+        return '';
+      }
+    }
   }
 
   function photoDelete(key){
     if(!key || !String(key).startsWith('photo_')) return Promise.resolve();
     const cached=photoUrlCache[key];
     if(cached){try{URL.revokeObjectURL(cached)}catch(e){} delete photoUrlCache[key];}
+    try{ localStorage.removeItem(PHOTO_FALLBACK_PREFIX+key); }catch(e){}
     return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
       const tx=db.transaction(PHOTO_STORE_NAME,'readwrite'); tx.objectStore(PHOTO_STORE_NAME).delete(key);
-      tx.oncomplete=()=>resolve(); tx.onerror=()=>reject(tx.error||new Error('Nuotraukos trynimo klaida'));
-    }));
+      tx.oncomplete=()=>resolve(); tx.onerror=()=>resolve();
+    })).catch(()=>{});
   }
 
-  function photoGet(key){
-    if(!key) return Promise.resolve('');
-    if(photoUrlCache[key]) return Promise.resolve(photoUrlCache[key]);
-    return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
-      const req = db.transaction(PHOTO_STORE_NAME,'readonly').objectStore(PHOTO_STORE_NAME).get(key);
-      req.onsuccess = () => {
-        if(!req.result){ resolve(''); return; }
-        const url = URL.createObjectURL(req.result);
-        photoUrlCache[key] = url;
-        resolve(url);
-      };
-      req.onerror = () => reject(req.error || new Error('Nuotraukos nuskaitymo klaida'));
-    }));
+  async function photoGet(key){
+    if(!key) return '';
+    if(photoUrlCache[key]) return photoUrlCache[key];
+
+    // Portable fallback first. Data URLs do not depend on blob: URL lifetime
+    // and work from a standalone local HTML file.
+    try{
+      const fallback=localStorage.getItem(PHOTO_FALLBACK_PREFIX+key);
+      if(fallback){
+        photoUrlCache[key]=fallback;
+        return fallback;
+      }
+    }catch(e){}
+
+    try{
+      const db=await openPhotoDB();
+      const blob=await new Promise((resolve,reject)=>{
+        const req=db.transaction(PHOTO_STORE_NAME,'readonly').objectStore(PHOTO_STORE_NAME).get(key);
+        req.onsuccess=()=>resolve(req.result||null);
+        req.onerror=()=>reject(req.error||new Error('Nuotraukos nuskaitymo klaida'));
+      });
+      if(!blob) return '';
+      // Use a data URL instead of URL.createObjectURL. This is much more
+      // reliable in standalone file:// pages and in the enlarged gallery.
+      const data=await blobToDataUrl(blob);
+      photoUrlCache[key]=data;
+      return data;
+    }catch(e){
+      return '';
+    }
   }
 
   async function compressPhoto(file){
@@ -2788,7 +2832,7 @@ function addDaysISO(baseISO, days){
     const refs=(Array.isArray(e.photos)&&e.photos.length)?e.photos:(e.imageSrc?[e.imageSrc]:[]);if(!refs.length)return;
     const urls=await photoRefsToUrls(refs),idx=clamp(Number(startIndex)||0,0,urls.length-1);
     const title=kind==='car'?e.name:`${e.make} ${e.model}`;
-    openSheet(`<div class="sheetHead"><h3>${escapeHTML(title)} • ${urls.length} nuotrauk${urls.length===1?'a':'os'}</h3><button class="closeBtn" id="closeManagedGallery">✕</button></div><div class="gallerySheet"><div class="galleryMain" style="${photoCssUrl(urls[idx]||'')}"></div><div class="galleryThumbs">${urls.map((u,i)=>`<button type="button" data-managed-gallery-index="${i}"><div class="img" style="${photoCssUrl(u||'')}"></div></button>`).join('')}</div><button class="btn secondary" type="button" id="managedDownloadAll" style="width:100%">⬇️ Atsisiųsti visas</button></div>`);
+    openSheet(`<div class="sheetHead"><h3>${escapeHTML(title)} • ${urls.length} nuotrauk${urls.length===1?'a':'os'}</h3><button class="closeBtn" id="closeManagedGallery">✕</button></div><div class="gallerySheet"><div class="galleryMain"><img src="${urls[idx]||''}" alt="Nuotrauka ${idx+1}"></div><div class="galleryThumbs">${urls.map((u,i)=>`<button type="button" data-managed-gallery-index="${i}"><img class="img" src="${u||''}" alt="Nuotrauka ${i+1}"></button>`).join('')}</div><button class="btn secondary" type="button" id="managedDownloadAll" style="width:100%">⬇️ Atsisiųsti visas</button></div>`);
     document.getElementById('closeManagedGallery').onclick=closeSheet;
     document.getElementById('managedDownloadAll').onclick=()=>downloadAllEntityPhotos(kind,id);
     document.querySelectorAll('[data-managed-gallery-index]').forEach(btn=>btn.onclick=()=>openManagedPhotoGallery(kind,id,Number(btn.dataset.managedGalleryIndex)));
@@ -2920,7 +2964,7 @@ function addDaysISO(baseISO, days){
           <span class="garageLeadTag">${escapeHTML(lead.city || 'Be miesto')}</span>
         </div>
         <div class="galleryThumbs">
-          ${photos.map((src, i) => `<button type="button" data-gallery-index="${i}"><div class="img" style="${photoCssUrl(photoUrls[i] || '')}"></div></button>`).join('')}
+          ${photos.map((src, i) => `<button type="button" data-gallery-index="${i}"><img class="img" src="${photoUrls[i] || ''}" alt="Nuotrauka ${i+1}" /></button>`).join('')}
         </div>
       </div>
     `;
@@ -4280,7 +4324,7 @@ function addDaysISO(baseISO, days){
                 ${escapeHTML(notesText)}
               </div>
               <div class="garageLeadLine"><span>Skambinti po: ${Number(lead.followUpDays || 0)} d.</span><span>Atnaujinta: ${escapeHTML(lead.updatedAt || lead.createdAt || '')}</span></div>
-              <div class="leadGallery">${(lead.photos || []).map((src, i) => `<button type="button" class="leadThumbBtn" data-open-lead-gallery="${lead.id}" data-photo-index="${i}"><div class="img" style="${photoCssUrl(photoUrlCache[src] || src)}"></div></button>`).join('') || '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
+              <div class="leadGallery">${(lead.photos || []).map((src, i) => `<button type="button" class="leadThumbBtn" data-open-lead-gallery="${lead.id}" data-photo-index="${i}"><img class="img" src="${photoUrlCache[src] || src}" alt="Nuotrauka ${i+1}"></button>`).join('') || '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
               <div class="garageLeadActions">
                 <button class="btn secondary" type="button" data-call-lead="${lead.id}">📞 Skambinta</button>
                 <button class="btn secondary" type="button" data-edit-lead="${lead.id}">Redaguoti</button>
