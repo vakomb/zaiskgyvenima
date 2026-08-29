@@ -1624,6 +1624,10 @@
     .leadListChip{padding:4px 7px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);font-size:9px;font-weight:800;color:var(--muted)}
     .leadListBottom{display:flex;justify-content:space-between;align-items:center;gap:7px;font-size:9px;color:var(--muted);font-weight:800}
     .leadListBottom b{color:var(--accent);font-size:10px}
+     .leadCallBtn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:8px 11px;border-radius:12px;background:var(--accent);color:#fff;text-decoration:none;font-size:11px;font-weight:900;white-space:nowrap;box-shadow:0 8px 16px rgba(37,99,235,.18)}
+     .leadCallBtn:active{transform:scale(.97)}
+     .leadNoPhone{font-size:10px;color:var(--muted-2)}
+     .leadListCard:focus-visible{outline:3px solid rgba(37,99,235,.26);outline-offset:2px}
     @media(max-width:430px){
       .leadListCard{grid-template-columns:82px minmax(0,1fr);gap:10px;padding:8px}
       .leadListPhoto{width:82px;height:82px}
@@ -1673,22 +1677,315 @@ html[data-theme="dark"] .todayPriorityBox{background:linear-gradient(180deg,rgba
 .topicTaskForm .grid2{gap:8px}
 .carDueLine{margin-top:7px}
 </style>
-<style id="history-filter-ui">
-.historyFilterPanel{margin-top:10px}
-.historyQuick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
-.historyQuick .smallBtn{min-height:42px;background:var(--surface);border:1px solid var(--line);border-radius:13px;font-weight:800}
-</style><style id="compact-topic-task-ui">
-.topicTaskForm{margin-top:10px}
-.topicTaskFormRow{display:grid;grid-template-columns:minmax(0,1fr) 118px;gap:8px;align-items:end}
-.topicTaskForm .field{margin:0}
-.topicTaskForm .field label{font-size:10px;margin-bottom:5px}
-.topicTaskForm .taskDateCompact{height:42px;min-height:42px;padding:0 9px;font-size:12px;border-radius:12px}
-.topicTaskForm > .btn{margin-top:8px;min-height:42px}
-@media(max-width:360px){.topicTaskFormRow{grid-template-columns:minmax(0,1fr) 108px}}
-</style><style id="lead-call-ui">
-.leadListCard{position:relative}
-.leadCallBtn{display:flex;align-items:center;justify-content:center;min-height:40px;margin-top:9px;padding:8px 12px;border-radius:12px;text-decoration:none;background:var(--success);color:#fff;font-size:12px;font-weight:900;box-shadow:0 6px 16px rgba(15,118,110,.14)}
-.leadCallBtn:active{transform:translateY(1px)}
+<style>
+/* FINAL MOBILE TASK UI */
+.taskFormRow{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) 118px !important;
+  gap:8px !important;
+  align-items:end !important;
+  width:100% !important;
+}
+.taskFormRow > .field{
+  min-width:0 !important;
+  margin-bottom:0 !important;
+}
+.taskFormRow .field label{
+  font-size:10px !important;
+  margin:0 0 4px 2px !important;
+  line-height:1 !important;
+}
+.taskFormRow .input{
+  width:100% !important;
+  min-width:0 !important;
+  min-height:40px !important;
+  height:40px !important;
+  padding:8px 9px !important;
+  border-radius:12px !important;
+  font-size:12px !important;
+}
+.taskFormDate .input{
+  padding-left:8px !important;
+  padding-right:4px !important;
+}
+.taskFormAdd{
+  width:100% !important;
+  min-height:40px !important;
+  height:40px !important;
+  margin-top:7px !important;
+  padding:8px 10px !important;
+  border-radius:12px !important;
+  font-size:12px !important;
+}
+@media(max-width:360px){
+  .taskFormRow{
+    grid-template-columns:minmax(0,1fr) 104px !important;
+    gap:6px !important;
+  }
+  .taskFormRow .input{font-size:11px !important}
+}
+
+/* Requested due-date colors: today red, tomorrow yellow, later date blue */
+.dueChip.today{
+  background:#fee2e2 !important;
+  color:#b91c1c !important;
+  border-color:#fecaca !important;
+}
+.dueChip.tomorrow{
+  background:#fef3c7 !important;
+  color:#a16207 !important;
+  border-color:#fde68a !important;
+}
+.dueChip.future{
+  background:#dbeafe !important;
+  color:#1d4ed8 !important;
+  border-color:#bfdbfe !important;
+}
+
+/* Mobile call button */
+.leadCallBtn{
+  min-height:40px !important;
+  padding:9px 11px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
+  white-space:nowrap !important;
+}
+</style><style>
+/* PERSONAL TASKS — compact, app-like mobile composer */
+.personalTaskComposer{
+  margin-bottom:12px;
+  padding:13px !important;
+  border-radius:20px !important;
+  background:var(--surface) !important;
+}
+.personalTaskComposerHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:11px;
+}
+.personalTaskComposerHead strong{
+  display:block;
+  font-size:15px;
+  font-weight:950;
+}
+.personalTaskComposerHead span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.3;
+}
+.personalTopicPicker{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
+  margin-bottom:10px;
+}
+.personalTopicChip{
+  min-width:0;
+  min-height:39px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--surface-2);
+  color:var(--muted);
+  padding:7px 5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:10px;
+  line-height:1.05;
+  font-weight:900;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.personalTopicChip span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.personalTopicChip.active{
+  background:rgba(15,118,110,.10);
+  color:var(--accent);
+  border-color:rgba(15,118,110,.28);
+  box-shadow:inset 0 0 0 1px rgba(15,118,110,.08);
+}
+.personalTaskComposerFields{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 116px;
+  gap:8px;
+  align-items:end;
+}
+.personalTaskComposerFields .field{
+  min-width:0;
+  margin-bottom:0 !important;
+}
+.personalTaskComposerFields label{
+  font-size:10px !important;
+  margin:0 0 4px 2px !important;
+}
+.personalTaskComposerFields label span{
+  color:var(--muted-2);
+  font-weight:600;
+  margin-left:2px;
+}
+.personalTaskComposerFields .input{
+  width:100% !important;
+  min-width:0 !important;
+  height:40px !important;
+  min-height:40px !important;
+  padding:8px 9px !important;
+  border-radius:12px !important;
+  font-size:12px !important;
+}
+.personalTaskDateField .input{
+  padding-left:8px !important;
+  padding-right:4px !important;
+}
+.personalTaskComposerBottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:8px;
+}
+.selectedTopicHint{
+  min-width:0;
+  color:var(--muted);
+  font-size:10px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.selectedTopicHint b{color:var(--text)}
+.personalTaskAddButton{
+  width:auto !important;
+  min-height:40px !important;
+  height:40px !important;
+  margin:0 !important;
+  padding:8px 13px !important;
+  border-radius:12px !important;
+  font-size:11px !important;
+  white-space:nowrap;
+}
+.personalTaskTopics{
+  display:grid;
+  gap:10px;
+}
+.topicTaskSection{
+  margin:0 !important;
+  padding:13px !important;
+  border-radius:20px !important;
+}
+.topicTaskHead{
+  margin-bottom:9px !important;
+}
+.topicTaskHead > div{
+  min-width:0;
+  display:flex;
+  align-items:baseline;
+  gap:7px;
+}
+.topicTaskHead strong{
+  font-size:14px !important;
+}
+.topicTaskCount{
+  font-size:10px !important;
+  color:var(--muted) !important;
+  font-weight:700;
+}
+.topicQuickAdd{
+  border:0;
+  background:rgba(15,118,110,.09);
+  color:var(--accent);
+  border-radius:10px;
+  min-height:31px;
+  padding:5px 9px;
+  font-size:10px;
+  font-weight:900;
+  cursor:pointer;
+}
+.topicTaskCard{
+  display:flex !important;
+  align-items:center !important;
+  gap:9px !important;
+  min-height:57px;
+  padding:9px 10px !important;
+  border-radius:15px !important;
+}
+.taskCheckButton{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  border:0;
+  border-radius:10px;
+  background:var(--accent);
+  color:#fff;
+  font-size:17px;
+  font-weight:950;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.taskCheckButton:disabled{
+  background:var(--surface-2);
+  color:var(--accent);
+  border:1px solid var(--line);
+}
+.taskDeleteButton{
+  width:31px;
+  height:31px;
+  flex:0 0 31px;
+  border:0;
+  border-radius:9px;
+  background:rgba(239,68,68,.08);
+  color:#dc2626;
+  font-size:21px;
+  line-height:1;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.topicEmpty{
+  padding:14px 10px !important;
+  margin:0 !important;
+  text-align:center;
+}
+@media(max-width:360px){
+  .personalTopicChip{font-size:9px;gap:2px}
+  .personalTaskComposerFields{grid-template-columns:minmax(0,1fr) 104px}
+  .personalTaskAddButton{padding:8px 10px !important}
+  .selectedTopicHint{font-size:9px}
+}
+</style><style>
+/* Three-topic personal tasks — phone first */
+.personalTopicPicker{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:6px !important;
+}
+.personalTopicChip{
+  min-width:0 !important;
+  min-height:40px !important;
+  padding:7px 4px !important;
+  border-radius:12px !important;
+}
+.personalTaskComposerFields{
+  grid-template-columns:minmax(0,1fr) 112px !important;
+  gap:7px !important;
+}
+.personalTaskComposerFields .input{
+  min-width:0 !important;
+  height:40px !important;
+  min-height:40px !important;
+}
+@media(max-width:360px){
+  .personalTaskComposerFields{grid-template-columns:minmax(0,1fr) 101px !important}
+  .personalTopicChip{font-size:9px !important}
+}
 </style></head>
 <body>
 <div class="app">
@@ -2040,33 +2337,20 @@ html[data-theme="dark"] .todayPriorityBox{background:linear-gradient(180deg,rgba
       <div class="grid2" id="statsGrid"></div>
     </div>
     <div class="section menuHistorySection" id="menu-history">
-      <div class="sectionHead"><h2>Istorija</h2><span>Visų dienų žurnalas</span></div>
-      <div class="panel pad historyFilterPanel">
-        <div class="historyQuick">
-          <button class="smallBtn" type="button" id="historyTodayBtn">Šiandien</button>
-          <button class="smallBtn" type="button" id="history7Btn">7 dienos</button>
-          <button class="smallBtn" type="button" id="history30Btn">30 dienų</button>
-          <button class="smallBtn" type="button" id="historyAllBtn">Visa istorija</button>
-        </div>
-        <div class="grid2">
-          <div class="field"><label>Nuo</label><input class="input" id="historyFromDate" type="date"></div>
-          <div class="field"><label>Iki</label><input class="input" id="historyToDate" type="date"></div>
-        </div>
-        <button class="btn" type="button" id="historyApplyBtn" style="width:100%">Rodyti istoriją</button>
-        <div class="subtle" style="margin-top:8px">Visų dienų istorija saugoma. Pasirink laikotarpį ir peržiūrėk išsaugotus veiksmus.</div>
-      </div>
-      <div class="section"><div class="historyList" id="permanentHistoryRoot"></div></div>
+      
+    <div class="section"><div class="historyList" id="permanentHistoryRoot"></div></div>
     </div>
   </div>
 
   <div class="view" id="view-achievements">
-    <div class="sectionHead"><h2>Užduotys</h2><span>Asmeniniai darbai</span></div>
-    <div class="section"><div id="personalTasksRoot"></div></div>
-    <div id="importantTasksRoot" style="display:none"></div>
+    <div class="sectionHead">
+      <h2>Užduotys</h2>
+      <span>Asmeniniai darbai</span>
+    </div>
+    <div id="personalTasksRoot"></div>
     <div id="achievementsRoot" style="display:none"></div>
     <div id="skillsRoot" style="display:none"></div>
   </div>
-
 
   <div class="view" id="view-settings">
     <div class="sectionHead"><h2>Nustatymai</h2><span>Premium valdymas</span></div>
@@ -2323,17 +2607,12 @@ function renderPremiumHomeV3(){
   }
 
   function addPersonalTask(topic,title,dueDate=''){
-    if(!Array.isArray(state.personalTasks)) state.personalTasks=[];
-    title=String(title||'').trim();
-    if(!title) return false;
-    state.personalTasks.unshift({
-      id:'pt_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),
-      topic,title,dueDate:dueDate||'',done:false,createdAt:nowLabel(),completedAt:''
-    });
-    addHistory('Užduotis pridėta',`${topic}: ${title}`,'➕');
-    saveState(); render(); return true;
+    if(!Array.isArray(state.personalTasks))state.personalTasks=[];
+    const task={id:'pt_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),topic,title,dueDate:dueDate||'',done:false,createdAt:nowLabel(),completedAt:''};
+    state.personalTasks.unshift(task);
+    addHistory('Užduotis', `${topic}: ${title}${dueDate?' • '+dueDate:''}`, '📌');
+    saveState(); render();
   }
-
 
   function completePersonalTask(id){
     const task=(state.personalTasks||[]).find(x=>x.id===id);
@@ -2359,45 +2638,129 @@ function renderPremiumHomeV3(){
     const root=document.getElementById('personalTasksRoot');
     if(!root)return;
     if(!Array.isArray(state.personalTasks))state.personalTasks=[];
-    root.innerHTML=USER_TASK_TOPICS.map(topic=>{
-      const key=topic.replace(/[^a-zA-Z0-9]+/g,'_');
-      const tasks=state.personalTasks.filter(t=>t.topic===topic).slice().sort((a,b)=>{
+
+    const activeTopic = state.ui?.personalTaskTopic && USER_TASK_TOPICS.includes(state.ui.personalTaskTopic)
+      ? state.ui.personalTaskTopic
+      : USER_TASK_TOPICS[0];
+
+    const topicCards = USER_TASK_TOPICS.map(topic=>{
+      const tasks=state.personalTasks.filter(x=>x.topic===topic).slice().sort((a,b)=>{
         const ad=a.done?'9999-12-31':(a.dueDate||'9999-12-30');
         const bd=b.done?'9999-12-31':(b.dueDate||'9999-12-30');
-        return ad.localeCompare(bd);
+        if(ad!==bd)return ad.localeCompare(bd);
+        return String(b.createdAt||'').localeCompare(String(a.createdAt||''));
       });
-      return `<div class="topicTaskSection panel pad">
-        <div class="topicTaskHead"><strong>${escapeHTML(topic)}</strong><span>${tasks.filter(t=>!t.done).length} laukia</span></div>
-        <div class="topicTaskList">
-          ${tasks.length?tasks.map(t=>`<div class="topicTaskCard ${t.done?'done':''}">
-            <button type="button" class="smallBtn" data-personal-complete="${t.id}" ${t.done?'disabled':''}>${t.done?'✓':'○'}</button>
-            <div class="topicTaskMain"><strong>${escapeHTML(t.title)}</strong><div class="topicTaskMeta">${taskDueMarkup(t.dueDate||'')}${t.done?`<span class="statChip">Atlikta</span>`:''}</div></div>
-            <button type="button" class="smallBtn danger" data-personal-delete="${t.id}">✕</button>
-          </div>`).join(''):'<div class="emptyState">Kol kas nėra užduočių.</div>'}
-        </div>
-        <div class="topicTaskForm">
-          <div class="topicTaskFormRow">
-            <div class="field"><label>Užduotis</label><input class="input" id="ptTitle_${key}" placeholder="Ką reikia padaryti?"></div>
-            <div class="field"><label>Data <span class="subtle">(nebūtina)</span></label><input class="input taskDateCompact" id="ptDate_${key}" type="date"></div>
+
+      return `<section class="topicTaskSection panel pad">
+        <div class="topicTaskHead">
+          <div>
+            <strong>${escapeHTML(topic)}</strong>
+            <span class="topicTaskCount">${tasks.filter(x=>!x.done).length} laukia</span>
           </div>
-          <button class="btn" type="button" data-personal-add="${escapeHTML(topic)}">+ Pridėti užduotį</button>
+          <button type="button" class="topicQuickAdd" data-topic-select="${escapeHTML(topic)}">+ Pridėti</button>
         </div>
-      </div>`;
+
+        <div class="topicTaskList">
+          ${tasks.length ? tasks.map(task=>`
+            <div class="topicTaskCard ${task.done?'done':''}">
+              <button type="button" class="taskCheckButton" data-personal-complete="${task.id}" ${task.done?'disabled':''} aria-label="${task.done?'Atlikta':'Pažymėti atlikta'}">
+                ${task.done?'✓':''}
+              </button>
+              <div class="topicTaskMain">
+                <strong>${escapeHTML(task.title)}</strong>
+                <div class="topicTaskMeta">
+                  ${taskDueMarkup(task.dueDate||'')}
+                  ${task.done?`<span class="statChip">Atlikta ${escapeHTML(task.completedAt||'')}</span>`:''}
+                </div>
+              </div>
+              <button type="button" class="taskDeleteButton" data-personal-delete="${task.id}" aria-label="Ištrinti">×</button>
+            </div>`).join('')
+          : `<div class="emptyState topicEmpty">Kol kas nėra užduočių.</div>`}
+        </div>
+      </section>`;
     }).join('');
 
-    root.querySelectorAll('[data-personal-add]').forEach(btn=>btn.onclick=()=>{
-      const topic=btn.dataset.personalAdd,key=topic.replace(/[^a-zA-Z0-9]+/g,'_');
-      const title=document.getElementById('ptTitle_'+key)?.value.trim()||'';
-      const date=document.getElementById('ptDate_'+key)?.value||'';
-      if(!title){toast('Įrašyk užduotį','✍️');return;}
-      addPersonalTask(topic,title,date);
-    });
-    root.querySelectorAll('[data-personal-complete]').forEach(btn=>btn.onclick=()=>{
-      completePersonalTask(btn.dataset.personalComplete); saveState(); render();
-    });
-    root.querySelectorAll('[data-personal-delete]').forEach(btn=>btn.onclick=()=>deletePersonalTask(btn.dataset.personalDelete));
-  }
+    root.innerHTML = `
+      <section class="personalTaskComposer panel">
+        <div class="personalTaskComposerHead">
+          <div>
+            <strong>+ Nauja užduotis</strong>
+            <span>Sukurk užduotį pasirinkęs temą ir datą</span>
+          </div>
+        </div>
 
+        <div class="personalTopicPicker" role="tablist" aria-label="Užduoties tema">
+          ${USER_TASK_TOPICS.map(topic=>`
+            <button type="button"
+              class="personalTopicChip ${topic===activeTopic?'active':''}"
+              data-topic-select="${escapeHTML(topic)}"
+              role="tab"
+              aria-selected="${topic===activeTopic?'true':'false'}">
+              ${topic==='Gyvenimas'?'🏠':topic==='Visureigiai, UAB'?'🚙':'🔴'}
+              <span>${escapeHTML(topic)}</span>
+            </button>`).join('')}
+        </div>
+
+        <div class="personalTaskComposerFields">
+          <div class="field personalTaskTitleField">
+            <label for="personalTaskTitleInput">Užduotis</label>
+            <input class="input" id="personalTaskTitleInput" autocomplete="off"
+              placeholder="Ką reikia padaryti?" maxlength="120">
+          </div>
+          <div class="field personalTaskDateField">
+            <label for="personalTaskDateInput">Data <span>nebūtina</span></label>
+            <input class="input" id="personalTaskDateInput" type="date"
+              aria-label="Užduoties data">
+          </div>
+        </div>
+
+        <div class="personalTaskComposerBottom">
+          <span class="selectedTopicHint">Tema: <b>${escapeHTML(activeTopic)}</b></span>
+          <button class="btn personalTaskAddButton" id="personalTaskAddButton" type="button">
+            + Pridėti užduotį
+          </button>
+        </div>
+      </section>
+
+      <div class="personalTaskTopics">
+        ${topicCards}
+      </div>`;
+
+    const selectTopic=(topic)=>{
+      state.ui=state.ui||{};
+      state.ui.personalTaskTopic=topic;
+      saveState();
+      renderPersonalTasks();
+      document.getElementById('personalTaskTitleInput')?.focus();
+    };
+
+    root.querySelectorAll('[data-topic-select]').forEach(btn=>{
+      btn.onclick=()=>selectTopic(btn.dataset.topicSelect);
+    });
+
+    const add=()=>{
+      const title=document.getElementById('personalTaskTitleInput')?.value.trim()||'';
+      const due=document.getElementById('personalTaskDateInput')?.value||'';
+      if(!title){
+        toast('Įrašyk užduotį','✍️');
+        document.getElementById('personalTaskTitleInput')?.focus();
+        return;
+      }
+      addPersonalTask(activeTopic,title,due);
+    };
+
+    document.getElementById('personalTaskAddButton')?.addEventListener('click',add);
+    document.getElementById('personalTaskTitleInput')?.addEventListener('keydown',e=>{
+      if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();add();}
+    });
+
+    root.querySelectorAll('[data-personal-complete]').forEach(btn=>{
+      btn.onclick=()=>completePersonalTask(btn.dataset.personalComplete);
+    });
+    root.querySelectorAll('[data-personal-delete]').forEach(btn=>{
+      btn.onclick=()=>deletePersonalTask(btn.dataset.personalDelete);
+    });
+  }
 
   function taskDueInfo(iso){
     if(!iso)return {label:'Be datos',cls:''};
@@ -3414,7 +3777,7 @@ function addDaysISO(baseISO, days){
       historyOpen:false,
       garageTaskGroups:{autos:false, custom:false},
       leadFilters:{query:'', due:'all', sort:'due'},
-      menuSections:{shop:false, stats:false}, menuHistoryOpen:false
+      menuSections:{shop:false, stats:false}
     }
   });
 
@@ -3456,8 +3819,7 @@ function addDaysISO(baseISO, days){
           taskGroups: {Sveikata:false, Produktyvumas:false, Tobulėjimas:false, ...(parsed.ui?.taskGroups||{})},
           historyOpen: !!parsed.ui?.historyOpen,
           garageTaskGroups: {autos:false, custom:false, ...(parsed.ui?.garageTaskGroups||{})},
-          leadFilters: {query:'', due:'all', sort:'due', ...(parsed.ui?.leadFilters||{})},
-          menuHistoryOpen: !!parsed.ui?.menuHistoryOpen
+          leadFilters: {query:'', due:'all', sort:'due', ...(parsed.ui?.leadFilters||{})}
         }
       };
     }catch(e){
@@ -3499,17 +3861,13 @@ function addDaysISO(baseISO, days){
   }
 
   function ensurePermanentHistory(){
-    if(!Array.isArray(state.historyLog))state.historyLog=[];
+    if(!Array.isArray(state.historyLog)) state.historyLog=[];
     if(state.historyLog.length===0 && Array.isArray(state.history) && state.history.length){
       state.historyLog=state.history.map(h=>({
-        id:h.id||uid(),title:h.title||'',desc:h.desc||'',icon:h.icon||'⚡',
-        time:h.time||'',date:h.date||todayISO()
+        id:h.id||uid(), title:h.title||'', desc:h.desc||'', icon:h.icon||'⚡',
+        time:h.time||'', date:h.date||todayISO()
       }));
     }
-    state.historyLog=state.historyLog.map(h=>({
-      ...h,id:h.id||uid(),title:String(h.title||''),desc:String(h.desc||''),
-      icon:String(h.icon||'⚡'),time:String(h.time||''),date:h.date||todayISO()
-    }));
   }
 
   function logTaskCompletion(label='užduotis', kind='task'){
@@ -4442,16 +4800,10 @@ function addDaysISO(baseISO, days){
     if(debtDate && !debtDate.value) debtDate.value = todayISO();
   }
 
-  function render(){
+  async function render(){
     checkDateReset();
-    // Nuotraukų hidratacija vyksta fone — ji negali užlaikyti pagrindinio ekrano.
-    // Todėl šiandienos užduotys ir visa navigacija atsiranda iškart atidarius app.
-    if(!window.__motivationPhotoHydrationStarted){
-      window.__motivationPhotoHydrationStarted = true;
-      Promise.allSettled([hydrateLeadPhotos(), hydrateCarPhotos()]).then(()=>{
-        try{ render(); }catch(e){ console.warn('Photo refresh failed',e); }
-      });
-    }
+    await hydrateLeadPhotos();
+    await hydrateCarPhotos();
     ensureMonthlyCycle();
     if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
     if(!state.history.length) addHistory('Sveiki atvykę', 'Žaidimas paruoštas startui', '🎮');
@@ -4470,9 +4822,6 @@ function addDaysISO(baseISO, days){
 
     state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}, menuSections:{shop:false, stats:false}};
     state.ui.menuSections = state.ui.menuSections || {shop:false, stats:false};
-    state.ui.menuHistoryOpen = !!state.ui.menuHistoryOpen;
-    const menuHistoryEl=document.getElementById('menu-history');
-    if(menuHistoryEl) menuHistoryEl.classList.toggle('open',state.ui.menuHistoryOpen);
 
     document.getElementById('xpFill').style.width = xpPct + '%';
     document.getElementById('levelValue').textContent = state.level;
@@ -4793,6 +5142,8 @@ function addDaysISO(baseISO, days){
         const title = `${lead.make || ''} ${lead.model || ''}`.trim() || 'Neįvardintas variantas';
         const price = Number(lead.targetPrice || lead.initialPrice || 0);
 
+        const phone = String(lead.phone || '').trim();
+        const telHref = phone ? `tel:${phone.replace(/(?!^\+)\D/g,'')}` : '';
         return `
           <div class="leadListCard" data-open-lead-card="${lead.id}" role="button" tabindex="0">
             <div class="leadListPhoto">
@@ -4813,23 +5164,26 @@ function addDaysISO(baseISO, days){
               </div>
               <div class="leadListBottom">
                 <span>${garageLeadDaysText(lead)}${lead.followUpDays ? ` • po ${Number(lead.followUpDays)} d.` : ''}</span>
-                <b>Atidaryti →</b>
+                ${phone ? `<a class="leadCallBtn" href="${telHref}" data-lead-call="${lead.id}">📞 Skambinti</a>` : `<span class="leadNoPhone">Tel. nr. nėra</span>`}
               </div>
-              ${lead.phone ? `<a class="leadCallBtn" href="tel:${String(lead.phone).replace(/[^0-9+*#]/g,'')}" data-lead-call="${lead.id}">📞 Skambinti</a>` : ''}
             </div>
           </div>`;
       }).join('') : `<div class="emptyState">Kol kas nėra įkeltų variantų. Paspausk „➕ Dominantis variantas“ ir pridėk pirmą.</div>`;
 
       leadRoot.querySelectorAll('[data-open-lead-card]').forEach(card => {
-        const open=()=>openGarageLeadSheet(card.dataset.openLeadCard);
-        card.onclick = (e) => {
-          if(e.target.closest('[data-lead-call]')) return;
-          open();
-        };
-        card.onkeydown = (e) => {
-          if((e.key === 'Enter' || e.key === ' ') && !e.target.closest('[data-lead-call]')){
-            e.preventDefault(); open();
-          }
+        card.onclick = (e) => { if(!e.target.closest('[data-lead-call]')) openGarageLeadSheet(card.dataset.openLeadCard); };
+        card.onkeydown = (e) => { if((e.key === 'Enter' || e.key === ' ') && !e.target.closest('[data-lead-call]')){ e.preventDefault(); openGarageLeadSheet(card.dataset.openLeadCard); } };
+      });
+      leadRoot.querySelectorAll('[data-lead-call]').forEach(link => {
+        link.onclick = (e) => {
+          const lead = state.leadVariants.find(v => v.id === link.dataset.leadCall);
+          if(!lead || !String(lead.phone || '').trim()){ e.preventDefault(); toast('Šiam variantui nėra telefono numerio','📵'); return; }
+          lead.calls = Number(lead.calls || 0) + 1;
+          lead.lastCalledAt = nowLabel();
+          lead.updatedAt = nowLabel();
+          lead.nextCallDate = addDaysISO(todayISO(), lead.followUpDays || 0);
+          addHistory('Skambutis variantui', `${lead.make} ${lead.model}`, '📞');
+          saveState();
         };
       });
     }
@@ -4916,18 +5270,6 @@ function addDaysISO(baseISO, days){
     saveState();
   }
 
-  document.addEventListener('click', (e) => {
-    const historyMenuBtn=e.target.closest('[data-open-history]');
-    if(!historyMenuBtn)return;
-    state.ui=state.ui||{};
-    state.ui.menuHistoryOpen=!state.ui.menuHistoryOpen;
-    saveState();
-    render();
-    if(state.ui.menuHistoryOpen){
-      requestAnimationFrame(()=>document.getElementById('menu-history')?.scrollIntoView({behavior:'smooth',block:'start'}));
-    }
-  });
-
   // events
   document.querySelectorAll('.navBtn').forEach(btn => btn.addEventListener('click', () => {
     state.selectedView = btn.dataset.view;
@@ -4963,28 +5305,8 @@ function addDaysISO(baseISO, days){
 
   const historyApplyBtn=document.getElementById('historyApplyBtn');
   const historyTodayBtn=document.getElementById('historyTodayBtn');
-  const history7Btn=document.getElementById('history7Btn');
-  const history30Btn=document.getElementById('history30Btn');
-  const historyAllBtn=document.getElementById('historyAllBtn');
-
-  function setHistoryRange(days){
-    const a=document.getElementById('historyFromDate'), b=document.getElementById('historyToDate');
-    if(!a||!b)return;
-    if(days===null){a.value='';b.value='';}
-    else if(days===0){a.value=todayISO();b.value=todayISO();}
-    else{
-      const d=parseISODateLocal(todayISO());
-      d.setDate(d.getDate()-days+1);
-      a.value=toISODateLocal(d); b.value=todayISO();
-    }
-    render();
-  }
   if(historyApplyBtn) historyApplyBtn.onclick=()=>render();
-  if(historyTodayBtn) historyTodayBtn.onclick=()=>setHistoryRange(0);
-  if(history7Btn) history7Btn.onclick=()=>setHistoryRange(7);
-  if(history30Btn) history30Btn.onclick=()=>setHistoryRange(30);
-  if(historyAllBtn) historyAllBtn.onclick=()=>setHistoryRange(null);
-
+  if(historyTodayBtn) historyTodayBtn.onclick=()=>{const a=document.getElementById('historyFromDate'),b=document.getElementById('historyToDate');if(a)a.value=todayISO();if(b)b.value=todayISO();render();};
   const claimDailyBtnEl2 = document.getElementById('claimDailyBtn');
   const rerollDailyBtnEl2 = document.getElementById('rerollDailyBtn');
   if(claimDailyBtnEl2) claimDailyBtnEl2.onclick = claimDailyQuest;
@@ -5185,19 +5507,9 @@ function addDaysISO(baseISO, days){
     saveState();
     render();
   };
-  document.getElementById('addImportantBtn').onclick = () => {
-    const title = document.getElementById('importantTitle').value.trim();
-    const xp = Number(document.getElementById('importantXp').value || 0);
-    const coins = Number(document.getElementById('importantCoins').value || 0);
-    if(!title){
-      toast('Įrašyk svarbios užduoties pavadinimą', '✍️');
-      return;
-    }
-    addImportantTask(title, xp, coins);
-    document.getElementById('importantTitle').value = '';
-    document.getElementById('importantXp').value = '20';
-    document.getElementById('importantCoins').value = '10';
-  };
+  // Senas „svarbios užduoties“ formos handleris pašalintas:
+  // Užduočių puslapį dabar pilnai valdo renderPersonalTasks().
+
 
   document.getElementById('themeToggle').onclick = () => {
     state.theme = state.theme === 'light' ? 'dark' : 'light';
@@ -5235,44 +5547,27 @@ function addDaysISO(baseISO, days){
 
   migrateGarageChecklists();
 
-  // init
-  if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
-  if(!state.dailyQuestDate) state.dailyQuestDate = todayISO();
-  if(state.selectedView === 'skills') state.selectedView = 'menu';
-  if(!state.history.length) state.history.push({title:'Sveiki atvykę', desc:'Žaidimas paruoštas startui', icon:'🎮', time: nowLabel(), date: todayISO()});
-  ensurePermanentHistory();
-  state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
-  state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
-  state.ui.leadFilters = state.ui.leadFilters || {query:'', due:'all', sort:'due'};
-  checkDateReset();
-  ensureMonthlyCycle();
-  checkWorldUnlocks();
-  checkAchievements();
-  installMotivationPremiumV3();
-  render();
-
-  // Tik pirmo atidarymo pataisa:
-  // užtikriname, kad dinaminis Pagrindinis ekranas būtų nupieštas
-  // jau po DOM paruošimo, o ne tik po navigacijos į kitą skiltį.
-  const refreshInitialHome = () => {
+  // init — pirmas ekranas turi būti pilnai užkrautas iškart.
+  const bootRender = () => {
     try{
-      if(document.visibilityState !== 'hidden' && state.selectedView === 'home'){
-        render();
-      }
-    }catch(e){
-      console.warn('Initial home render failed', e);
-    }
+      if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
+      if(!state.dailyQuestDate) state.dailyQuestDate = todayISO();
+      if(state.selectedView === 'skills') state.selectedView = 'menu';
+      if(!state.history.length) state.history.push({title:'Sveiki atvykę', desc:'Žaidimas paruoštas startui', icon:'🎮', time: nowLabel(), date: todayISO()});
+      ensurePermanentHistory();
+      state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}, menuSections:{shop:false, stats:false}};
+      state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
+      state.ui.leadFilters = state.ui.leadFilters || {query:'', due:'all', sort:'due'};
+      state.ui.menuSections = state.ui.menuSections || {shop:false, stats:false};
+      checkDateReset(); ensureMonthlyCycle(); checkWorldUnlocks(); checkAchievements(); installMotivationPremiumV3();
+    }catch(e){ console.warn('Initial setup failed; continuing to render:',e); }
+    try{ render(); }catch(e){ console.warn('Initial render failed:',e); }
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{try{render();}catch(e){console.warn('Post-paint render failed:',e);}}));
   };
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', refreshInitialHome, {once:true});
-  }else{
-    refreshInitialHome();
-  }
-  window.addEventListener('pageshow', refreshInitialHome);
-  window.addEventListener('load', refreshInitialHome);
-  requestAnimationFrame(() => requestAnimationFrame(refreshInitialHome));
-  setTimeout(refreshInitialHome, 50);
-
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded',bootRender,{once:true});
+  else bootRender();
+  window.addEventListener('pageshow',()=>{try{render();}catch(e){}});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){try{render();}catch(e){}}});
   // Run migration AFTER all buttons/event handlers are installed.
   // Never block the app UI on photo processing.
   setTimeout(() => {
