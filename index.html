@@ -5115,6 +5115,306 @@ body{font-size:16px!important;color:var(--text)!important}
   .aiMessageBubble{max-width:93%!important;font-size:12.5px!important}
 }
 </style>
+
+<style id="typography-normalize-professional">
+/* Normalizuojami tik akivaizdžiai per dideli elementai; bendro app masto nemažinam. */
+
+/* Meniu kortelės iš foto */
+#view-menu .menuLink strong{
+  font-size:18px!important;
+  line-height:1.18!important;
+}
+#view-menu .menuLink .ico{
+  font-size:22px!important;
+}
+
+/* Naujo automobilio forma */
+#addCarPanel .sectionHead h2{
+  font-size:21px!important;
+}
+#addCarPanel .field label{
+  font-size:13px!important;
+}
+#addCarPanel .input{
+  font-size:16px!important;
+}
+#addCarPanel .btn{
+  font-size:15px!important;
+}
+
+/* Garažo užduoties forma */
+#garageTaskComposer .field label{
+  font-size:13px!important;
+}
+#garageTaskComposer .input{
+  font-size:16px!important;
+}
+#garageTaskComposer .btn{
+  font-size:15px!important;
+}
+
+/* Garažo pagrindiniai veiksmai */
+#view-garage .garageActionText strong{
+  font-size:16px!important;
+}
+#view-garage .garageActionPro .ico{
+  font-size:20px!important;
+}
+
+/* Bendri modal / formų antraščių dydžiai */
+.sheetHead h3{
+  font-size:20px!important;
+}
+.carSheetHeading h3{
+  font-size:21px!important;
+}
+.carSectionTitle h4{
+  font-size:19px!important;
+}
+.carEditSection .carSectionEyebrow,
+.carSheetEyebrow{
+  font-size:11px!important;
+}
+
+/* Tikrai maži antraščių tekstai nepaverčiami dideliais. */
+#view-menu .sectionHead h2,
+#view-garage .sectionHead h2{
+  font-size:19px!important;
+}
+</style>
+
+<style id="car-card-fonts-plus-only">
+/* Tik automobilių kortelių tekstai ir skaičiai — šiek tiek didesni. */
+#activeCarGrid .carListTitle,
+#soldCarGrid .carListTitle{
+  font-size:20px!important;
+  line-height:1.14!important;
+}
+#activeCarGrid .carListFacts strong,
+#soldCarGrid .carListFacts strong{
+  font-size:16px!important;
+}
+#activeCarGrid .carListFacts small,
+#soldCarGrid .carListFacts small{
+  font-size:12px!important;
+}
+#activeCarGrid .carListChip,
+#soldCarGrid .carListChip{
+  font-size:12.5px!important;
+}
+#activeCarGrid .carListProgress,
+#soldCarGrid .carListDate{
+  font-size:12.5px!important;
+}
+</style>
+
+<style id="home-today-category-fonts-plus-only">
+/* Tik Pagrindinio puslapio 3 „Šiandienos užduotys“ kategorijų pavadinimai. */
+#view-home #tasksRoot .taskGroupHead h3{
+  font-size:21px!important;
+  line-height:1.18!important;
+  font-weight:900!important;
+}
+</style>
+
+<style id="today-priority-fonts-plus-only">
+/* Tik pagrindinio „ŠIANDIEN — SVARBIAUSIA“ bloko tekstai. */
+#todayPriorityRoot .todayPriorityTitle strong{
+  font-size:19px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+}
+#todayPriorityRoot .todayPriorityHead > span{
+  font-size:14px!important;
+  font-weight:900!important;
+}
+#todayPriorityRoot .todayTaskItem .todayTaskKind{
+  font-size:12px!important;
+  font-weight:900!important;
+}
+#todayPriorityRoot .todayTaskItem .todayTaskLabel{
+  font-size:16px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+}
+#todayPriorityRoot .todayTaskItem .todayTaskIcon{
+  font-size:19px!important;
+}
+#todayPriorityRoot .todayTaskItem .todayTaskArrow{
+  font-size:16px!important;
+}
+</style>
+
+<style id="screenshot-font-normalization-only">
+/* Pagal prisegtus vaizdus: tik šiose vietose per dideli tekstai grąžinami į bendrą app dydį. */
+
+/* „Atidaryti“ mygtukas garažo automobilių užduočių kortelėje */
+.garageCarTaskHead .btn.secondary[data-open-car]{
+  font-size:13px!important;
+  line-height:1.15!important;
+  min-height:42px!important;
+  padding:9px 13px!important;
+}
+
+/* Garažo užduoties formos laukų tekstai */
+#garageTaskForm .field label{
+  font-size:12.5px!important;
+  line-height:1.2!important;
+}
+#garageTaskForm .input{
+  font-size:15px!important;
+  line-height:1.2!important;
+}
+#garageTaskForm .garageRewardCompact span{
+  font-size:11px!important;
+}
+#garageTaskForm .garageRewardCompact .input{
+  font-size:14px!important;
+  min-height:42px!important;
+  height:42px!important;
+}
+#garageTaskForm #addGarageTaskBtn{
+  font-size:15px!important;
+}
+
+/* Data laukelio tekstas telefono vaizde */
+#garageTaskForm #garageTaskDueDate{
+  font-size:15px!important;
+}
+
+/* Jei modalas rodo tokį pat formos variantą */
+#addCarPanel .field label{
+  font-size:12.5px!important;
+}
+#addCarPanel .input{
+  font-size:15px!important;
+}
+#addCarPanel .sectionHead h2{
+  font-size:20px!important;
+}
+#addCarPanel .btn{
+  font-size:15px!important;
+}
+</style>
+
+<style id="auto-task-open-nav-only">
+/* Auto užduočių kortelės „Atidaryti“ — mažesnis, normalesnis šriftas. */
+.garageCarTaskHead .btn.secondary[data-open-car]{
+  font-size:12px!important;
+  line-height:1.15!important;
+  min-height:40px!important;
+  padding:8px 12px!important;
+}
+
+/* Apatinis nav — tik šiek tiek didesnis ir patogesnis telefone. */
+.nav{
+  padding:9px!important;
+  gap:7px!important;
+}
+.navBtn{
+  min-height:70px!important;
+  padding:10px 7px!important;
+  gap:6px!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  border-radius:17px!important;
+}
+.navBtn .ico{
+  font-size:26px!important;
+}
+@media(max-width:380px){
+  .navBtn{
+    min-height:68px!important;
+    font-size:13.5px!important;
+  }
+  .navBtn .ico{font-size:25px!important}
+}
+</style>
+
+<style id="daily-actions-card">
+#dailyActionsValue{font-size:24px!important;letter-spacing:-.03em}
+#dailyActionsHint{font-size:11px!important}
+</style>
+
+<style id="vehicle-cards-all-elements-plus">
+/* Automobilių kortelės: šiek tiek didesnės nuotraukos ir visa vidinė informacija. */
+#activeCarGrid .carListCard,
+#soldCarGrid .carListCard{
+  grid-template-columns:146px minmax(0,1fr)!important;
+  gap:13px!important;
+  padding:11px!important;
+  min-width:0!important;
+}
+#activeCarGrid .carListPhoto,
+#soldCarGrid .carListPhoto{
+  width:146px!important;
+  height:146px!important;
+  min-width:146px!important;
+  border-radius:17px!important;
+  overflow:hidden!important;
+}
+#activeCarGrid .carListPhoto img,
+#soldCarGrid .carListPhoto img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+}
+#activeCarGrid .carListTitle,
+#soldCarGrid .carListTitle{
+  font-size:21px!important;
+  line-height:1.12!important;
+  font-weight:950!important;
+}
+#activeCarGrid .carListFacts strong,
+#soldCarGrid .carListFacts strong{
+  font-size:17px!important;
+}
+#activeCarGrid .carListFacts small,
+#soldCarGrid .carListFacts small{
+  font-size:12.5px!important;
+}
+#activeCarGrid .carListChip,
+#soldCarGrid .carListChip{
+  font-size:13px!important;
+  padding:6px 9px!important;
+}
+#activeCarGrid .carListProgress,
+#soldCarGrid .carListDate{
+  font-size:13px!important;
+}
+#activeCarGrid .carListInfo,
+#soldCarGrid .carListInfo{
+  min-width:0!important;
+}
+
+/* Telefone: didesnės, bet telpančios kortelės. */
+@media(max-width:430px){
+  #activeCarGrid .carListCard,
+  #soldCarGrid .carListCard{
+    grid-template-columns:132px minmax(0,1fr)!important;
+  }
+  #activeCarGrid .carListPhoto,
+  #soldCarGrid .carListPhoto{
+    width:132px!important;
+    height:132px!important;
+    min-width:132px!important;
+  }
+}
+@media(max-width:360px){
+  #activeCarGrid .carListCard,
+  #soldCarGrid .carListCard{
+    grid-template-columns:120px minmax(0,1fr)!important;
+  }
+  #activeCarGrid .carListPhoto,
+  #soldCarGrid .carListPhoto{
+    width:120px!important;
+    height:120px!important;
+    min-width:120px!important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -5143,9 +5443,9 @@ body{font-size:16px!important;color:var(--text)!important}
         </div>
         <div class="topStats">
           <div class="miniStat">
-            <div class="label">🔥 Serija</div>
-            <div class="value" id="streakValue">0</div>
-            <div class="hint" id="streakHint">Judėk į priekį</div>
+            <div class="label">✅ Veiksmai šiandien</div>
+            <div class="value" id="dailyActionsValue">0/10</div>
+            <div class="hint" id="dailyActionsHint">Bent 10 per dieną</div>
           </div>
           <div class="miniStat">
             <div class="label">🪙 Monetos</div>
@@ -8509,9 +8809,12 @@ async function render(){
     document.getElementById('xpFill').style.width = xpPct + '%';
     document.getElementById('levelValue').textContent = state.level;
     document.getElementById('xpToNext').textContent = `${Math.max(0, xpNeeded - state.xp)} XP iki lygio`;
-    document.getElementById('streakValue').textContent = state.streak;
+    const dailyActionsCount = stateDailyTaskCount(state);
+    const dailyActionsValueEl = document.getElementById('dailyActionsValue');
+    const dailyActionsHintEl = document.getElementById('dailyActionsHint');
+    if(dailyActionsValueEl) dailyActionsValueEl.textContent = `${Math.min(dailyActionsCount,10)}/10`;
+    if(dailyActionsHintEl) dailyActionsHintEl.textContent = dailyActionsCount >= 10 ? 'Tikslas pasiektas' : 'Bent 10 per dieną';
     document.getElementById('coinsValue').textContent = state.coins;
-    document.getElementById('streakHint').textContent = state.streak >= 7 ? 'Karšta serija' : state.streak >= 3 ? 'Puikus ritmas' : 'Judėk toliau';
 
 
 
