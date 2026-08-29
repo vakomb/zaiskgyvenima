@@ -5949,6 +5949,35 @@ body{font-size:16px!important;color:var(--text)!important}
   from{opacity:0}to{opacity:1}
 }
 </style>
+
+<style id="car-bottom-action-layout-v2">
+.carTasksAddWide{
+  width:100%!important;
+  display:block!important;
+  min-height:44px!important;
+  height:44px!important;
+  margin:10px 0 12px!important;
+  border-radius:14px!important;
+}
+.carBottomActions{
+  width:100%!important;
+  margin-top:14px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+}
+.carSellBottom,.carSellBottomBtn,.carDeleteBottomBtn{
+  width:100%!important;
+}
+.carSellBottomBtn,.carDeleteBottomBtn{
+  min-height:44px!important;
+  height:44px!important;
+  border-radius:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -8644,11 +8673,10 @@ function addDaysISO(baseISO, days){
           ${car.notes ? `<div class="premiumInfo"><span>Pastabos</span><p>${escapeHTML(car.notes)}</p></div>`:''}
 
           <div class="premiumSectionHead carTasksSectionHead">
-            <div class="carTasksSectionTitle">
-              <button class="btn secondary premiumSmallBtn carTasksAddTop" id="addChecklistBtn" type="button">+ Užduotis</button>
-            </div>
+            <div class="carTasksSectionTitle"><h4>Užduotys</h4></div>
           </div>
           <div class="premiumChecklist" id="carChecklist"></div>
+          <button class="btn secondary carTasksAddWide" id="addChecklistBtn" type="button">+ Užduotis</button>
 
           ${isSold ? `
             <div class="premiumResult">
@@ -8659,15 +8687,7 @@ function addDaysISO(baseISO, days){
                 <div><span>Grynas</span><strong class="${netProfit>=0?'positiveText':'negativeText'}">${netProfit>=0?'+':''}${moneyFmt(netProfit)}</strong></div>
               </div>
             </div>
-            <div class="premiumActionRow carDetailActions">
-              <button class="carDeleteReal" id="deleteCarBtn" type="button" data-delete-car="${car.id}">🗑️ Ištrinti automobilį</button>
-              <button class="btn secondary premiumSmallBtn" id="addChecklistBtn" type="button">+ Užduotis</button>
-            </div>
           ` : `
-            <div class="premiumActionRow carDetailActions">
-              <button class="carDeleteReal" id="deleteCarBtn" type="button" data-delete-car="${car.id}">🗑️ Ištrinti automobilį</button>
-              <button class="btn secondary premiumSmallBtn carSellInlineBtn" id="sellCarBtn" type="button" data-open-sell="${car.id}">Parduoti automobilį</button>
-            </div>
           `}
 
           <div class="premiumMedia">
@@ -8696,6 +8716,15 @@ function addDaysISO(baseISO, days){
           <div class="premiumStatGrid carBottomCostGrid">
             <div class="premiumStat"><span>Pirkimo kaina</span><strong>${moneyFmt(car.buyPrice)}</strong></div>
             <div class="premiumStat"><span>Savikaina</span><strong>${moneyFmt(currentCost)}</strong></div>
+          </div>
+
+          <div class="carBottomActions">
+            ${!isSold ? `
+            <div class="carSellBottom">
+              <button class="btn secondary carSellBottomBtn" id="sellCarBtn" type="button" data-open-sell="${car.id}">Parduoti automobilį</button>
+            </div>
+            ` : ''}
+            <button class="carDeleteReal carDeleteBottomBtn" id="deleteCarBtn" type="button" data-delete-car="${car.id}">🗑️ Ištrinti automobilį</button>
           </div>
 
         </div>
