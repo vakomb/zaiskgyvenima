@@ -2975,6 +2975,147 @@ body{font-size:16px!important}
   .personalTaskComposerFields{grid-template-columns:minmax(0,1fr) 104px!important}
 }
 </style>
+
+<style id="only-home-priority-gap">
+/* ONLY CHANGE: visual gap between the top white block and red priority block */
+#todayPriorityRoot{
+  margin-top:20px !important;
+}
+</style>
+
+
+<style id="full-app-ux-polish">
+:root{
+  --brand:#0f766e;
+  --brand-strong:#0b5f59;
+  --brand-soft:#e8f7f4;
+  --brand-line:#bfe7df;
+  --focus:#1d7a73;
+  --bg2:#f4f7fb;
+}
+html,body{background:var(--bg2)!important;color:var(--text)!important}
+body{font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.app{max-width:520px!important;padding:14px 12px calc(112px + env(safe-area-inset-bottom))!important}
+/* One visual language for primary actions */
+.btn{min-height:48px!important;padding:12px 16px!important;border-radius:14px!important;font-size:14px!important;font-weight:900!important;background:linear-gradient(180deg,var(--brand) 0%,var(--brand-strong) 100%)!important;border-color:var(--brand)!important;color:#fff!important;box-shadow:0 7px 16px rgba(15,118,110,.14)!important}
+.btn.secondary,.btn.ghost{background:#fff!important;color:var(--text)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+.btn.danger{background:linear-gradient(180deg,#e0525e 0%,#c93644 100%)!important;border-color:#c93644!important}
+.btn:active,.navBtn:active,.taskCard:active,.carCard:active,.zoneCard:active,.rewardCard:active,.smallBtn:active,.achievement:active,.garageAction:active,.menuLink:active{transform:scale(.985)!important}
+.input,.select,.textarea{min-height:50px!important;padding:12px 14px!important;border-radius:13px!important;font-size:15px!important;border-color:var(--line)!important;background:#fff!important;box-shadow:none!important}
+.input:focus,.select:focus,.textarea:focus{outline:none!important;border-color:var(--brand)!important;box-shadow:0 0 0 3px rgba(15,118,110,.10)!important}
+.field label{font-size:12px!important;font-weight:850!important;color:var(--muted)!important}
+.panel,.taskCard,.carCard,.rewardCard,.smallStatBox,.zoneCard,.achievement,.switch,.listItem,.financeRow,.historyItem,.garageAction,.menuLink,.garageCarTaskCard,.garageLeadCard{border-color:var(--line)!important;box-shadow:0 8px 24px rgba(15,23,42,.05)!important}
+.panel{border-radius:20px!important}.heroCard{border-radius:22px!important;padding:16px!important}
+.xpLine strong{font-size:25px!important}.miniStat{padding:14px!important;border-radius:18px!important}.miniStat .value{font-size:26px!important}
+.section{margin-top:16px!important}.sectionHead{margin:0 2px 10px!important}.sectionHead h2{font-size:20px!important;font-weight:950!important}
+/* Home priority block */
+#todayPriorityRoot{margin-top:18px!important;margin-bottom:18px!important}
+.todayPriorityBox{padding:16px!important;border-radius:22px!important;border:1px solid #fec6ce!important;background:linear-gradient(180deg,#fffafb,#fff2f4)!important;box-shadow:0 12px 28px rgba(185,28,28,.07)!important}
+.todayPriorityHead{min-height:34px!important}.todayPriorityTitle strong{font-size:17px!important}.todayTaskItem{min-height:62px!important}.todayTaskMain strong{font-size:16px!important}.todayTaskKind{background:#fee2e2!important;color:#b91c1c!important}
+/* Categories */
+.taskGroup{border-radius:18px!important;overflow:hidden!important;margin-bottom:10px!important;background:#fff!important}
+.taskGroupHead{min-height:58px!important;padding:14px 15px!important;background:#fff!important}
+.taskGroupHead h3{font-size:16px!important;letter-spacing:0!important;text-transform:none!important;color:var(--text)!important}
+.taskGroupHead .sub{display:none!important}
+.taskCard{min-height:66px!important;padding:12px!important;border-radius:15px!important;background:#f8fafc!important}
+.taskMain strong{font-size:15px!important}.taskMeta{font-size:11px!important}
+.check{width:28px!important;height:28px!important;border-radius:10px!important}
+/* Garage */
+.garageMenuPanel{padding:14px!important;border-radius:20px!important}.garageMenuTitle strong{font-size:18px!important}
+.garageMenuGrid{gap:10px!important}.garageAction{min-height:92px!important;padding:13px!important;border-radius:18px!important}
+.garageAction .ico{background:var(--brand-soft)!important;border-radius:12px!important}.garageAction strong{font-size:14px!important}
+.garageCarTaskCard{border-radius:18px!important;overflow:hidden!important}.garageCarTaskHead{padding:14px!important;background:#f8fafc!important}.garageCarTaskHead strong{font-size:16px!important}
+/* Leads / photos */
+.garageLeadCard{border-radius:20px!important}.garageLeadBody h4{font-size:17px!important}.garageLeadLine{font-size:13px!important}.leadCallBtn{min-height:44px!important;border-radius:11px!important;background:var(--brand)!important;border-color:var(--brand)!important;color:#fff!important;font-size:12px!important}
+.leadGalleryMain,.galleryMain{border-radius:18px!important}.leadGalleryThumb,.galleryThumbs button{border-radius:12px!important}
+/* Menu */
+.menuIntro{padding:16px!important;border-radius:20px!important}.menuLinks{gap:10px!important}.menuLink{min-height:104px!important;padding:14px!important;border-radius:18px!important}.menuLink .ico{background:var(--brand-soft)!important}.menuLink strong{font-size:15px!important}.menuLink span{display:none!important}
+/* Finance / stats */
+.smallStatBox{border-radius:18px!important;padding:14px!important}.smallStatBox .label{font-size:11px!important}.smallStatBox .value{font-size:22px!important}.financeRow strong{font-size:15px!important}.financeRow span{font-size:12px!important}
+/* Settings */
+.switch{border-radius:18px!important;padding:14px!important}.switch strong{font-size:14px!important}.switch .sub{font-size:12px!important}
+/* Bottom nav: actual touch target, consistent brand */
+.navWrap{pointer-events:auto!important;z-index:99999!important;background:rgba(244,247,251,.90)!important;padding:7px 8px calc(9px + env(safe-area-inset-bottom))!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+.nav{pointer-events:auto!important;max-width:520px!important;padding:6px!important;gap:3px!important;border:1px solid var(--line)!important;border-radius:20px!important;box-shadow:0 12px 34px rgba(15,23,42,.10)!important}
+.navBtn{pointer-events:auto!important;touch-action:manipulation!important;min-height:60px!important;border-radius:15px!important;font-size:11px!important;font-weight:900!important;color:#667892!important}
+.navBtn .ico{font-size:22px!important}.navBtn.active{background:var(--brand-soft)!important;border-color:var(--brand-line)!important;color:var(--brand)!important}
+/* Sheets / modals */
+.modalBackdrop{z-index:100000!important;background:rgba(15,23,42,.46)!important}.sheet{border-radius:24px 24px 0 0!important;padding:16px!important}.sheetHead h3{font-size:18px!important}.closeBtn{width:42px!important;height:42px!important;border-radius:13px!important}
+/* Avoid overly empty cards */
+.emptyState{padding:15px!important;font-size:13px!important;line-height:1.45!important}
+@media(max-width:370px){
+  .app{padding-left:9px!important;padding-right:9px!important}.navBtn{font-size:10px!important}.navBtn .ico{font-size:20px!important}
+  .garageAction strong{font-size:12px!important}
+}
+</style>
+
+<style id="garage-car-list-card-polish">
+#activeCarGrid,#soldCarGrid{display:flex!important;flex-direction:column!important;gap:10px!important}
+.carListCard{
+  width:100%;display:grid;grid-template-columns:108px minmax(0,1fr);gap:12px;
+  padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:20px;
+  background:var(--surface);color:var(--text);text-align:left;
+  box-shadow:0 10px 28px rgba(15,23,42,.07);cursor:pointer;
+  appearance:none;overflow:hidden;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
+}
+.carListCard:active{transform:scale(.988)}
+.carListCard:focus-visible{outline:3px solid rgba(37,99,235,.22);outline-offset:2px}
+.carListPhoto{
+  position:relative;width:108px;height:108px;border-radius:15px;overflow:hidden;
+  background:var(--surface-2);border:1px solid var(--line);flex:0 0 108px;
+}
+.carListPhoto img{width:100%;height:100%;display:block;object-fit:cover}
+.carListNoPhoto{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--muted)}
+.carListNoPhoto span{font-size:9px;font-weight:800}
+.carListStatus{
+  position:absolute;left:7px;bottom:7px;padding:5px 7px;border-radius:8px;
+  color:#fff;font-size:9px;font-weight:950;line-height:1;letter-spacing:.04em;
+  background:rgba(15,23,42,.78);backdrop-filter:blur(7px)
+}
+.carListStatus.active{background:rgba(15,118,110,.90)}
+.carListStatus.sold{background:rgba(71,85,105,.92)}
+.carListProfit{
+  position:absolute;right:7px;top:7px;padding:5px 7px;border-radius:8px;
+  font-size:9px;font-weight:950;line-height:1;color:#fff;background:rgba(15,23,42,.78);backdrop-filter:blur(7px)
+}
+.carListProfit.positive{background:rgba(22,163,74,.94)}
+.carListProfit.negative{background:rgba(220,63,75,.94)}
+.carListInfo{min-width:0;display:flex;flex-direction:column;gap:8px}
+.carListTop{display:flex;justify-content:space-between;align-items:flex-start;gap:7px}
+.carListTitle{font-size:17px;font-weight:950;line-height:1.15;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.carListProgress,.carListDate{
+  flex:0 0 auto;font-size:10px;font-weight:900;color:var(--muted);
+  white-space:nowrap
+}
+.carListProgress{color:var(--app-brand,#0f766e)}
+.carListMeta{display:flex;flex-wrap:wrap;gap:5px}
+.carListChip{
+  padding:5px 8px;border-radius:999px;background:var(--surface-2);
+  border:1px solid var(--line);font-size:10px;font-weight:850;color:var(--muted);
+}
+.carListFacts{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto
+}
+.carListFacts>div{
+  min-width:0;display:flex;flex-direction:column;gap:3px;padding:7px 8px;
+  border-radius:10px;background:var(--surface-2)
+}
+.carListFacts small{font-size:9px;color:var(--muted);font-weight:800}
+.carListFacts strong{font-size:12px;line-height:1.1}
+.carListProgressTrack{
+  height:6px;border-radius:999px;background:#e8eef4;overflow:hidden;border:1px solid var(--line)
+}
+.carListProgressTrack span{display:block;height:100%;border-radius:inherit;background:var(--app-brand,#0f766e)}
+.soldFacts{grid-template-columns:repeat(3,1fr)}
+.positiveText{color:#15803d}.negativeText{color:#c62838}
+@media(max-width:370px){
+  .carListCard{grid-template-columns:94px minmax(0,1fr);gap:9px;padding:9px}
+  .carListPhoto{width:94px;height:94px;flex-basis:94px;border-radius:13px}
+  .carListTitle{font-size:15px}
+  .carListChip{font-size:9px;padding:5px 7px}
+  .carListFacts strong{font-size:11px}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -6308,40 +6449,79 @@ function addDaysISO(baseISO, days){
       const done = carDoneCount(car);
       const pct = carProgress(car);
       const totalCost = carTotalCost(car);
+      const expenses = carChecklistExpenses(car);
       return `
-        <div class="carCard" data-open-car="${car.id}">
-          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
-            <div class="pill">Aktyvus</div>
-            <div class="pill">${pct}%</div>
+        <article class="carListCard" data-open-car="${car.id}" role="button" tabindex="0">
+          <div class="carListPhoto">
+            ${(() => {
+              const src = photoUrlCache[car.imageSrc] || car.imageSrc || '';
+              return src
+                ? `<img src="${src}" alt="${escapeHTML(car.name)}" loading="lazy">`
+                : `<div class="carListNoPhoto">🚗<span>Nėra foto</span></div>`;
+            })()}
+            <span class="carListStatus active">AKTYVUS</span>
           </div>
-          <div class="carBody">
-            <h4>${escapeHTML(car.name)}</h4>
-            <div class="carLine"><span>${done}/${car.checklist.length} punktų</span><span>Stovi: ${moneyFmt(totalCost)}</span></div>
-            <div class="miniBar"><div class="fill" style="width:${pct}%"></div></div>
-            <div class="carLine"><span>Pirkta už ${moneyFmt(car.buyPrice)}</span><span>Išlaidos: ${moneyFmt(carChecklistExpenses(car))}</span></div>
+          <div class="carListInfo">
+            <div class="carListTop">
+              <div class="carListTitle">${escapeHTML(car.name)}</div>
+              <span class="carListProgress">${pct}%</span>
+            </div>
+            <div class="carListMeta">
+              <span class="carListChip">✅ ${done}/${car.checklist.length} punktų</span>
+              <span class="carListChip">💸 ${moneyFmt(totalCost)}</span>
+            </div>
+            <div class="carListFacts">
+              <div><small>Pirkta</small><strong>${moneyFmt(car.buyPrice)}</strong></div>
+              <div><small>Išlaidos</small><strong>${moneyFmt(expenses)}</strong></div>
+            </div>
+            <div class="carListProgressTrack"><span style="width:${pct}%"></span></div>
           </div>
-        </div>
+        </article>
       `;
     }).join('') : `<div class="emptyState">Kol kas nėra aktyvių automobilių. Pridėk pirmą auto ir pradėk Garažo misiją.</div>`;
     document.getElementById('soldCarGrid').innerHTML = soldCars.length ? soldCars.map(car => {
-      const pct = carProgress(car);
+      const profit = car.netProfit != null ? Number(car.netProfit || 0) : carNetProfit(car);
+      const totalCost = carTotalCost(car);
+      const soldPrice = Number(car.soldPrice || 0);
       return `
-        <div class="carCard" data-open-car="${car.id}">
-          <div class="carHero" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
-            <div class="pill">Parduotas</div>
-            <div class="pill">${pct}%</div>
+        <article class="carListCard sold" data-open-car="${car.id}" role="button" tabindex="0">
+          <div class="carListPhoto">
+            ${(() => {
+              const src = photoUrlCache[car.imageSrc] || car.imageSrc || '';
+              return src
+                ? `<img src="${src}" alt="${escapeHTML(car.name)}" loading="lazy">`
+                : `<div class="carListNoPhoto">🚗<span>Nėra foto</span></div>`;
+            })()}
+            <span class="carListStatus sold">PARDUOTAS</span>
+            <span class="carListProfit ${profit >= 0 ? 'positive' : 'negative'}">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</span>
           </div>
-          <div class="carBody">
-            <h4>${escapeHTML(car.name)}</h4>
-            <div class="carLine"><span>Pardavimo kaina: ${moneyFmt(car.soldPrice)}</span><span>Grynasis pelnas: ${(car.netProfit >= 0 ? '+' : '') + moneyFmt(car.netProfit)}</span></div>
-            <div class="miniBar"><div class="fill" style="width:100%"></div></div>
-            <div class="carLine"><span>Stovėjo: ${moneyFmt(carTotalCost(car))}</span><span>${escapeHTML(car.soldAt || '')}</span></div>
+          <div class="carListInfo">
+            <div class="carListTop">
+              <div class="carListTitle">${escapeHTML(car.name)}</div>
+              <span class="carListDate">${escapeHTML(car.soldDateISO || car.soldAt || '—')}</span>
+            </div>
+            <div class="carListMeta">
+              <span class="carListChip">💰 ${moneyFmt(soldPrice)}</span>
+              <span class="carListChip">📦 ${moneyFmt(totalCost)}</span>
+            </div>
+            <div class="carListFacts soldFacts">
+              <div><small>Savikaina</small><strong>${moneyFmt(totalCost)}</strong></div>
+              <div><small>Parduota</small><strong>${moneyFmt(soldPrice)}</strong></div>
+              <div><small>Grynas</small><strong class="${profit >= 0 ? 'positiveText' : 'negativeText'}">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</strong></div>
+            </div>
           </div>
-        </div>
+        </article>
       `;
     }).join('') : `<div class="emptyState">Dar nėra parduotų automobilių. Kai parduosi pirmą, jis čia atsiras atskirai.</div>`;
-    document.getElementById('activeCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
-    document.getElementById('soldCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
+    document.querySelectorAll('#activeCarGrid [data-open-car], #soldCarGrid [data-open-car]').forEach(el => {
+      el.onclick = () => openCar(el.dataset.openCar);
+      el.onkeydown = (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          openCar(el.dataset.openCar);
+        }
+      };
+    });
 
     const leadRoot = document.getElementById('garageLeadRoot');
     if(leadRoot){
@@ -6382,7 +6562,7 @@ function addDaysISO(baseISO, days){
               </div>
             </div>
           </div>`;
-      }).join('') : `<div class="emptyState">Kol kas nėra įkeltų variantų. Paspausk „➕ Dominantis variantas“ ir pridėk pirmą.</div>`;
+      }).join('') : `<div class="emptyState">Kol kas nėra įkeltų variantų.</div>`;
 
       leadRoot.querySelectorAll('[data-open-lead-card]').forEach(card => {
         card.onclick = (e) => {
@@ -6511,7 +6691,10 @@ function addDaysISO(baseISO, days){
   });
 
   // events
-  document.querySelectorAll('.navBtn').forEach(btn => btn.addEventListener('click', () => {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.navBtn[data-view]');
+    if(!btn) return;
+    e.preventDefault();
     state.selectedView = btn.dataset.view;
     state.ui = state.ui || {};
     state.ui.taskGroups = {Sveikata:false, Produktyvumas:false, Tobulėjimas:false};
@@ -6520,7 +6703,7 @@ function addDaysISO(baseISO, days){
     state.ui.soldCarsOpen = false;
     saveState();
     render();
-  }));
+  });
 
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-jump]');
