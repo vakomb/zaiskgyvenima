@@ -3703,6 +3703,50 @@ label,.field label{font-size:13px!important}
 /* Empty state is intentionally quiet; no extra explanatory text. */
 .emptyState:empty{display:none!important}
 </style>
+
+<style id="task-detail-type-polish">
+/* Enlarge small text inside Garage task rows and other task list panels. */
+#view-garage .garageCarTaskCard .listItem,
+#view-garage .garageCarTaskCard .listItem *{
+  font-size:115%!important;
+}
+#view-garage .garageCarTaskCard .listItem .small,
+#view-garage .garageCarTaskCard .listItem .badge{
+  font-size:12px!important;
+}
+#view-garage .garageCarTaskCard .listItem strong{
+  font-size:15px!important;
+}
+#view-garage .garageCarTaskCard .listItem input[type="number"]{
+  font-size:13px!important;
+}
+#view-garage .garageCarTaskCard .listItem .taskDue,
+#view-garage .garageCarTaskCard .listItem [class*="due"]{
+  font-size:12px!important;
+}
+
+/* General list text consistency where older inline styles were smaller. */
+.taskCard strong,.topicTaskCard strong,.listItem strong{font-size:16px!important}
+.taskCard .small,.topicTaskCard .small,.listItem .small{font-size:12px!important}
+.taskCard .taskMeta,.topicTaskCard .topicTaskMeta,.listItem .taskMeta{font-size:12px!important}
+.garageCarTaskHead strong{font-size:18px!important}
+.garageCarTaskHead span{font-size:12px!important}
+</style>
+
+<style id="home-priority-plus-5">
+.homePriorityMount .todayPriorityBox{
+  transform:scale(1.05)!important;
+  transform-origin:top center!important;
+  width:calc(100% / 1.05)!important;
+}
+.homePriorityMount .todayPriorityTitle strong,
+.homePriorityMount .todayPriorityHead>span,
+.homePriorityMount .todayTaskKind,
+.homePriorityMount .todayTaskMain strong,
+.homePriorityMount .todayTaskArrow{
+  font-size:105%!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3774,7 +3818,7 @@ label,.field label{font-size:13px!important}
         <button class="garageAction garageActionPro" type="button" data-garage-action="tasks">
           <div class="left">
             <div class="ico">✅</div>
-            <div class="garageActionText"><strong>Automobilių užduotys</strong></div>
+            <div class="garageActionText"><strong>Auto užduotys</strong></div>
           </div>
           <div class="garageTaskBadges">
             <span class="garageTaskCountBadge" id="garageAutoTaskCountBadge">0</span>
@@ -3784,7 +3828,7 @@ label,.field label{font-size:13px!important}
         <button class="garageAction garageActionPro" type="button" data-garage-action="leads">
           <div class="left">
             <div class="ico">📋</div>
-            <div class="garageActionText"><strong>Dominantys variantai</strong></div>
+            <div class="garageActionText"><strong>Variantai</strong></div>
           </div>
         </button>
         <button class="garageAction garageActionPro" type="button" data-garage-action="customtasks">
@@ -3807,7 +3851,7 @@ label,.field label{font-size:13px!important}
     </div>
 
     <div class="section" id="garageTasksSection">
-      <div class="sectionHead"><h2>Automobilių užduotys</h2><span id="garageTaskSummary">0 automobilių užduočių / 0 kitų užduočių</span></div>
+      <div class="sectionHead"><h2>Auto užduotys</h2><span id="garageTaskSummary">0 automobilių užduočių / 0 kitų užduočių</span></div>
 
       <div class="panel taskGroup">
         <div class="taskGroupBody" id="garageAutosBody">
@@ -3824,7 +3868,7 @@ label,.field label{font-size:13px!important}
               <div class="field"><label>Atlygis</label><div class="garageRewardCompact"><span>+<input class="input" id="garageTaskXp" type="number" min="0" step="1" value="10" aria-label="XP"> XP</span><span>+<input class="input" id="garageTaskCoins" type="number" min="0" step="1" value="5" aria-label="Monetos"> 🪙</span></div></div>
             </div>
             <button class="btn" id="addGarageTaskBtn" type="submit" style="width:100%">Pridėti garažo užduotį</button>
-            <div class="leadEditNote">Patogiausia: įrašyk pavadinimą, pasirink XP / monetas ir spausk Enter arba mygtuką.</div>
+            <div class="leadEditNote"></div>
           </form>
           <div class="taskList" id="garageCustomTasksRoot"></div>
         </div>
@@ -3862,7 +3906,7 @@ label,.field label{font-size:13px!important}
   </div>
 
   <div class="view" id="view-garage-leads">
-    <div class="sectionHead"><h2>Dominantys variantai</h2><span>Įkelti variantai</span></div>
+    <div class="sectionHead"><h2>Variantai</h2><span>Įkelti variantai</span></div>
 
     <div class="section">
       <div class="panel pad">
@@ -7103,7 +7147,7 @@ function addDaysISO(baseISO, days){
             <button class="smallBtn danger" data-garage-task-delete="${task.id}">✕</button>
           </div>
         </div>
-      `).join('') : `<div class="emptyState" style="margin:0 16px 16px">Kol kas nėra kitų užduočių. Pridėk pirmą darbą — jis iškart atsiras viršuje, tvarkingai atskirtas nuo atliktų.</div>`;
+      `).join('') : `<div class="emptyState" style="margin:0 16px 16px"></div>`;
       garageCustomRoot.querySelectorAll('[data-garage-task-complete]').forEach(btn => {
         btn.onclick = () => completeGarageTask(btn.dataset.garageTaskComplete);
       });
