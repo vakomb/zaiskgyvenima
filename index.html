@@ -591,17 +591,59 @@
     }
     .leadGallery{
       display:grid;
-      grid-template-columns:repeat(3,1fr);
+      grid-template-columns:repeat(5,minmax(0,1fr));
       gap:8px;
       margin-top:12px;
+      align-items:stretch;
     }
-    .leadGallery .img{
-      aspect-ratio:1/1;
-      border-radius:14px;
-      background:var(--surface-2);
-      background-size:cover;
-      background-position:center;
+    .leadGalleryMain{
+      grid-column:1/-1;
+      position:relative;
+      display:block;
+      width:100%;
+      aspect-ratio:16/9;
+      overflow:hidden;
       border:1px solid var(--line);
+      border-radius:18px;
+      background:var(--surface-2);
+      padding:0;
+      appearance:none;
+      cursor:pointer;
+    }
+    .leadGalleryMain img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+    .leadGalleryMain .leadPhotoBadge{
+      position:absolute;
+      left:10px;
+      bottom:10px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:rgba(15,23,42,.78);
+      color:#fff;
+      font-size:10px;
+      font-weight:900;
+    }
+    .leadGalleryThumb{
+      position:relative;
+      min-width:0;
+      aspect-ratio:1/1;
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      padding:0;
+      background:var(--surface-2);
+      appearance:none;
+      cursor:pointer;
+    }
+    .leadGalleryThumb img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
     }
 
     .photoGalleryBox{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2)}
@@ -719,12 +761,7 @@
     .financeRow{padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-soft);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
     .financeRow strong{display:block;font-size:14px}
     .financeRow span{font-size:12px;color:var(--muted)}
-    .financeList{display:grid;gap:10px}
-    .leadGallery .img,
-    .leadThumbBtn{cursor:pointer}
-    .leadThumbBtn{border:none;background:transparent;padding:0;appearance:none}
-    .leadThumbBtn .img{width:100%;height:100%;display:block}
-    .heroImageBtn{display:block;border:none;background:transparent;padding:0;width:100%;appearance:none}
+    .financeList{display:grid;gap:10px}    .heroImageBtn{display:block;border:none;background:transparent;padding:0;width:100%;appearance:none}
     .heroImageBtn .carHero{min-height:160px}
     .gallerySheet{display:grid;gap:12px}
     .galleryMain{width:100%;aspect-ratio:4/3;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center}.galleryMain img{width:100%;height:100%;object-fit:contain;display:block}.galleryThumbs .img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px}
@@ -1481,7 +1518,15 @@
 :root{--bg:#f6f8fb;--surface:#ffffff;--surface-2:#f1f5f9;--surface-3:#e8eef5;--text:#142033;--muted:#64748b;--muted-2:#8a97a8;--line:#dbe4ee;--shadow:0 10px 28px rgba(15,23,42,.07);--shadow-soft:0 5px 16px rgba(15,23,42,.045);--accent:#2563eb;--accent-2:#0f766e;--success:#16803c;--warn:#b7791f;--danger:#dc2626;--radius:14px;--radius2:10px;--nav:#ffffff;--navBorder:#dbe4ee}html[data-theme="dark"]{--radius:14px;--radius2:10px}.app{max-width:470px;padding:12px 12px 112px}.topbar{justify-content:flex-start;text-align:left;margin:0 0 10px;padding:8px 2px 0}.topbar h1{font-size:22px!important;letter-spacing:0!important;line-height:1;font-weight:950;color:var(--text)}.panel,.miniStat,.taskCard,.rewardCard,.achievement,.zoneCard,.carCard,.garageCarTaskCard,.historyItem,.statBox,.smallStatBox{border-radius:14px!important;box-shadow:var(--shadow-soft)!important}.panel{border-color:var(--line)!important}.panel.pad{padding:13px}.hero{gap:10px}.heroCard{padding:14px;border-radius:16px!important;border:1px solid var(--line);box-shadow:var(--shadow)!important}.topStats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.miniStat{padding:11px;background:#fff;border:1px solid var(--line)}.miniStat .label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;margin-bottom:7px}.miniStat .value{font-size:22px}.miniStat .hint{display:none}.xpLine{margin-top:8px}.xpLine strong{font-size:17px}.bar{height:10px;border-radius:999px;background:#e8eef5;border:1px solid #dbe4ee;overflow:hidden}.fill{background:#2563eb!important;background-image:none!important;border-radius:999px}.btn,.smallBtn{border-radius:10px!important;background:#0f766e!important;background-image:none!important;border:1px solid #0f766e!important;box-shadow:none!important;font-weight:900}.btn.secondary,.smallBtn.secondary{background:#fff!important;color:var(--text)!important;border-color:var(--line)!important}.btn.warn{background:#b7791f!important;border-color:#b7791f!important}.btn.danger{background:#dc2626!important;border-color:#dc2626!important}.section{margin-top:14px}.sectionHead{margin:0 2px 8px;align-items:center}.sectionHead h2{font-size:17px;letter-spacing:0}.sectionHead span,.subtle,.taskGroupHead .sub,.rewardCard p,.switch .sub,.smallStatBox .hint{display:none!important}.taskList{gap:9px}.taskCard{padding:12px;border:1px solid var(--line);background:#fff;align-items:center}.taskMain strong{font-size:15px}.taskMeta{font-size:12px}.check{width:34px!important;height:34px!important;border-radius:10px!important}.rewardPills{gap:5px}.rewardPills .xp,.rewardPills .coins{font-size:13px;padding:4px 7px;border-radius:999px;background:#f1f5f9}.rewardPills .xp{color:#2563eb}.rewardPills .coins{color:#a16207}.shopGrid{display:grid;grid-template-columns:1fr;gap:10px}.rewardCard{border:1px solid var(--line);padding:13px;background:#fff;display:grid;gap:10px}.rewardCard .top{align-items:center}.rewardCard .ico{width:42px;height:42px;border-radius:12px;background:#f1f5f9;border:1px solid var(--line);font-size:20px}.rewardCard .cost{font-size:14px;background:#fff7e6;color:#92400e;border-color:#f6dba8}.rewardCard .buy{min-height:40px}.grid2{gap:9px}.input,.select,.textarea{border-radius:10px!important;background:#fff!important;border-color:var(--line)!important}.navWrap{padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:rgba(246,248,251,.94)!important;backdrop-filter:blur(16px)}.nav{border-radius:18px!important;padding:7px!important;gap:4px;box-shadow:0 14px 34px rgba(15,23,42,.14)!important}.navBtn{min-height:60px!important;border-radius:13px!important;font-size:11px!important;gap:3px!important}.navBtn .ico{font-size:23px!important}.navBtn.active{background:#e8f7f4!important;border-color:#bfe6dc!important;color:#0f766e!important}.navBtn:nth-child(1) .ico{color:#0f766e}.navBtn:nth-child(2) .ico{color:#2563eb}.navBtn:nth-child(3) .ico{color:#7c3aed}.navBtn:nth-child(4) .ico{color:#b7791f}.navBtn:nth-child(5) .ico{color:#dc2626}.toast{border-radius:12px!important}.premiumHome2{display:grid;gap:12px}.missionCard{border:1px solid #cfe1dc;background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px;display:grid;gap:12px}.missionTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.missionTop span{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase}.missionTop strong{display:block;font-size:25px;line-height:1.05;margin-top:4px}.missionPill{border:1px solid #dbe4ee;background:#f8fafc;border-radius:999px;padding:7px 9px;font-size:12px;font-weight:900;white-space:nowrap}.scoreGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.scoreBox{border:1px solid var(--line);background:#f8fafc;border-radius:12px;padding:10px}.scoreIcon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;margin-bottom:8px;font-size:17px}.scoreBox:nth-child(1) .scoreIcon{background:#e8f0ff;color:#2563eb}.scoreBox:nth-child(2) .scoreIcon{background:#fff4dc;color:#b7791f}.scoreBox:nth-child(3) .scoreIcon{background:#e8f7f4;color:#0f766e}.scoreBox span{display:block;font-size:10px;color:var(--muted);font-weight:900;text-transform:uppercase}.scoreBox strong{display:block;margin-top:4px;font-size:20px;line-height:1}.focusGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.focusBtn{border:1px solid var(--line);background:#fff;border-radius:14px;box-shadow:var(--shadow-soft);padding:12px;display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:center;text-align:left;color:var(--text)}.focusIcon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:18px}.focusBtn:nth-child(1) .focusIcon{background:#e8f7f4;color:#0f766e}.focusBtn:nth-child(2) .focusIcon{background:#e8f0ff;color:#2563eb}.focusBtn:nth-child(3) .focusIcon{background:#fff4dc;color:#b7791f}.focusBtn:nth-child(4) .focusIcon{background:#feecec;color:#dc2626}.focusBtn strong{display:block;font-size:14px}.focusBtn span{display:block;font-size:12px;color:var(--muted);margin-top:2px}.dailyPremium{border:1px solid var(--line);background:#fff;border-radius:16px;box-shadow:var(--shadow-soft);padding:13px;display:grid;gap:10px}.dailyPremiumHead{display:flex;justify-content:space-between;align-items:center}.dailyPremium h3{margin:0;font-size:16px}.dailyPremium .badge{background:#e8f0ff;color:#1d4ed8;border-color:#ccdcff}.economyStrip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.economyStrip div{border:1px solid var(--line);background:#f8fafc;border-radius:12px;padding:9px;text-align:center}.economyStrip span{display:block;font-size:10px;color:var(--muted);font-weight:900;text-transform:uppercase}.economyStrip strong{display:block;margin-top:4px;font-size:16px}.premiumHistory{display:grid;gap:8px}.premiumHistory .historyItem{box-shadow:none!important}@media(max-width:370px){.focusGrid{grid-template-columns:1fr}.topStats,.scoreGrid{gap:6px}.scoreBox strong,.miniStat .value{font-size:18px}.navBtn .ico{font-size:21px!important}.navBtn{min-height:56px!important}}
 
 
-.photoManageGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.photoManageItem{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}.photoManageItem img{width:100%;height:100%;object-fit:cover;display:block}.photoManageItem .photoX{position:absolute;top:4px;right:4px;width:28px;height:28px;border:0;border-radius:9px;background:rgba(15,23,42,.82);color:#fff;font-weight:900;cursor:pointer}.photoManageItem .photoMain{position:absolute;left:4px;bottom:4px;padding:4px 7px;border-radius:8px;background:rgba(15,23,42,.82);color:#fff;font-size:9px;font-weight:800}.photoManageEmpty{padding:12px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:12px}
+.photoManageGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.photoManageItem{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}.photoManageItem img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}.photoManageItem .photoX{position:absolute;top:4px;right:4px;width:28px;height:28px;border:0;border-radius:9px;background:rgba(15,23,42,.82);color:#fff;font-weight:900;cursor:pointer}.photoManageItem .photoMain{position:absolute;left:4px;bottom:4px;padding:4px 7px;border-radius:8px;background:rgba(15,23,42,.82);color:#fff;font-size:9px;font-weight:800}.photoManageEmpty{padding:12px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:12px}
+
+    /* Final photo gallery polish */
+    .galleryMain img{object-fit:contain !important;background:var(--surface-2)}
+    .galleryThumbs button{aspect-ratio:1/1;overflow:hidden;border-radius:14px;cursor:pointer}
+    .galleryThumbs .img{width:100% !important;height:100% !important;object-fit:cover !important;background:var(--surface-2);display:block}
+    .photoManageItem img{object-fit:cover !important}
+    .leadGalleryMain,.leadGalleryThumb{box-sizing:border-box}
+    
 </style>
 </head>
 <body>
@@ -2761,30 +2806,6 @@ function addDaysISO(baseISO, days){
     }
   }
 
-  function renderPhotoGallery(kind, entity){
-    const refs = Array.isArray(entity.photos) && entity.photos.length
-      ? entity.photos.filter(Boolean)
-      : (entity.imageSrc ? [entity.imageSrc] : []);
-    if(!refs.length) return '';
-
-    const label = refs.length === 1 ? '1 nuotrauka' : `${refs.length} nuotraukos`;
-    return `
-      <div class="photoGalleryBox">
-        <div class="photoGalleryHead">
-          <strong>Nuotraukos • ${label}</strong>
-          <button class="btn secondary" type="button" data-download-photos="${kind}:${entity.id}" style="padding:8px 10px;font-size:11px">⬇️ Atsisiųsti visas</button>
-        </div>
-        <div class="photoGalleryGrid">
-          ${refs.map((ref,i)=>`
-            <button type="button" data-entity-photo="${kind}:${entity.id}:${i}" aria-label="Atidaryti nuotrauką ${i+1}">
-              <div class="img" style="${photoCssUrl(photoUrlCache[ref] || ref)}"></div>
-            </button>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
-
   async function openEntityPhotoGallery(kind, id, startIndex=0){
     const entity = kind === 'car'
       ? state.cars.find(c=>c.id===id)
@@ -2848,10 +2869,10 @@ function addDaysISO(baseISO, days){
         <button class="closeBtn" id="closeLeadSheet">✕</button>
       </div>
       <div class="garageLeadCard" style="margin:0">
-        <div class="garageLeadHero" style="${photos[0] ? photoCssUrl(photoUrlCache[photos[0]] || photos[0]) : ''}">
+        <button type="button" class="garageLeadHero heroImageBtn" data-managed-photo-kind="lead" data-managed-photo-index="0" style="${photos[0] ? photoCssUrl(photoUrlCache[photos[0]] || photos[0]) : ''}">
           <div class="leadPill">${garageLeadDaysText(lead)}</div>
           <div class="leadPill">${escapeHTML(lead.city || 'Be miesto')}</div>
-        </div>
+        </button>
         <div class="garageLeadBody">
           <div class="garageLeadTags">
             <span class="garageLeadTag good">Pradinė ${moneyFmt(lead.initialPrice)}</span>
@@ -2891,7 +2912,6 @@ function addDaysISO(baseISO, days){
             <button class="btn secondary" id="leadCallNowBtn">📞 Paskambinta</button>
             <button class="btn danger" id="leadDeleteBtn">Ištrinti variantą</button>
           </div>
-          ${renderPhotoGallery('lead', lead)}
 
         </div>
       </div>
@@ -3681,10 +3701,10 @@ function addDaysISO(baseISO, days){
         <button class="closeBtn" id="closeSheet">✕</button>
       </div>
       <div class="carCard">
-        <div class="carHero" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
+        <button type="button" class="carHero heroImageBtn" data-managed-photo-kind="car" data-managed-photo-index="0" style="background-color:var(--surface-2);background-image:url('${photoUrlCache[car.imageSrc] || car.imageSrc || ''}')">
           <div class="pill">${isSold ? 'Parduotas' : pct === 100 ? 'Paruoštas pardavimui' : pct >= 50 ? 'Beveik paruoštas' : 'Ruošiamas'}</div>
           <div class="pill">${pct}%</div>
-        </div>
+        </button>
         <div class="carBody">
           <div class="grid2" style="margin-bottom:10px">
             <div class="smallStatBox">
@@ -3736,7 +3756,6 @@ function addDaysISO(baseISO, days){
               Kai visi punktai atlikti ir įrašysi pardavimo kainą, sistema automatiškai paskaičiuos grynąjį pelną.
             </div>
           `}
-          ${renderPhotoGallery('car', car)}
           <div class="photoManageBox"><div class="sectionHead" style="margin:14px 0 8px"><h2>Nuotraukos</h2><span>${(car.photos||[]).length} vnt.</span></div><div class="field"><label>Pridėti nuotraukų</label><input class="input" id="carAddPhotos" type="file" accept="image/*" multiple></div><div class="photoManageGrid">${(car.photos||[]).map((ref,i)=>`<div class="photoManageItem"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}" data-managed-photo-kind="car" data-managed-photo-index="${i}"><div class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</div><button type="button" class="photoX" data-car-photo-delete="${i}">×</button></div>`).join('')||'<div class="photoManageEmpty" style="grid-column:1/-1">Nuotraukų nėra.</div>'}</div><div class="btnRow"><button class="btn secondary" type="button" id="downloadCarPhotos">⬇️ Atsisiųsti visas</button><button class="btn secondary" type="button" id="editCarInfoBtn">✏️ Redaguoti automobilį</button></div></div>
         </div>
       </div>
@@ -4324,7 +4343,19 @@ function addDaysISO(baseISO, days){
                 ${escapeHTML(notesText)}
               </div>
               <div class="garageLeadLine"><span>Skambinti po: ${Number(lead.followUpDays || 0)} d.</span><span>Atnaujinta: ${escapeHTML(lead.updatedAt || lead.createdAt || '')}</span></div>
-              <div class="leadGallery">${(lead.photos || []).map((src, i) => `<button type="button" class="leadThumbBtn" data-open-lead-gallery="${lead.id}" data-photo-index="${i}"><img class="img" src="${photoUrlCache[src] || src}" alt="Nuotrauka ${i+1}"></button>`).join('') || '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}</div>
+              <div class="leadGallery">
+                ${(lead.photos && lead.photos.length) ? `
+                  <button type="button" class="leadGalleryMain" data-open-lead-gallery="${lead.id}" data-photo-index="0" aria-label="Atidaryti pagrindinę nuotrauką">
+                    <img src="${photoUrlCache[lead.photos[0]] || lead.photos[0] || ''}" alt="Pagrindinė ${escapeHTML(lead.make)} ${escapeHTML(lead.model)}">
+                    <span class="leadPhotoBadge">${lead.photos.length} nuotrauk${lead.photos.length===1?'a':'os'} • Pagrindinė</span>
+                  </button>
+                  ${(lead.photos.slice(1)).map((src, i) => `
+                    <button type="button" class="leadGalleryThumb" data-open-lead-gallery="${lead.id}" data-photo-index="${i+1}" aria-label="Atidaryti nuotrauką ${i+2}">
+                      <img src="${photoUrlCache[src] || src || ''}" alt="Nuotrauka ${i+2}">
+                    </button>
+                  `).join('')}
+                ` : '<div class="leadDetailBox" style="grid-column:1/-1">Nuotraukų dar nėra.</div>'}
+              </div>
               <div class="garageLeadActions">
                 <button class="btn secondary" type="button" data-call-lead="${lead.id}">📞 Skambinta</button>
                 <button class="btn secondary" type="button" data-edit-lead="${lead.id}">Redaguoti</button>
