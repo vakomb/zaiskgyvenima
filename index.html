@@ -2452,6 +2452,146 @@ body{min-height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeL
   .soldCarNumbers span{padding:7px 5px}
 }
 </style>
+<style id="final-type">
+body{font-size:15px!important}
+.topbar h1{font-size:22px!important;letter-spacing:.04em!important}
+.sectionHead h2{font-size:18px!important}.sectionHead span{font-size:12px!important}
+.subtle{font-size:13px!important}.field label{font-size:13px!important}
+.btn{min-height:48px!important;padding:13px 16px!important;font-size:14px!important}
+.smallBtn{width:40px!important;height:40px!important;font-size:16px!important}
+.input,.select,.textarea{min-height:50px!important;padding:13px 14px!important;font-size:15px!important}
+.taskMain strong{font-size:16px!important}.taskMeta{font-size:12px!important}
+.carBody h4{font-size:19px!important}.carLine{font-size:13px!important}
+.menuLink strong,.garageAction strong{font-size:16px!important}
+.historyItem strong{font-size:15px!important}.historyItem span{font-size:13px!important;line-height:1.45}
+.topicTaskMain strong{font-size:15px!important}.leadListTitle{font-size:16px!important}.leadListNotes{font-size:12px!important}
+</style><style id="today-important-ui">
+.homePriorityMount:empty{display:none}
+.homePriorityMount{margin:0 0 12px}
+.homePriorityMount .todayPriorityBox{margin:0!important;padding:14px!important;border-radius:20px!important}
+.homePriorityMount .todayTaskItem{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important}
+</style><style id="garage-task-ui">
+.garageCarTaskCard{padding:0!important;overflow:hidden!important;border-radius:20px!important}
+.garageCarTaskHead{padding:14px 15px!important;margin:0!important;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.garageCarTaskHead strong{font-size:16px!important}
+.garageCarTaskCard .taskList{padding:8px 10px 11px!important;gap:7px!important}
+.garageCarTaskCard .taskCard{border-radius:15px!important;padding:11px 12px!important;min-height:62px}
+.garageCarTaskCard .taskMain strong{font-size:15px!important}
+.garageCarTaskCard .taskMeta{font-size:11px!important}
+</style><style id="history-ui">
+.menuHistorySection{display:none!important}.menuHistorySection.open{display:block!important}
+.historyProPanel{padding:15px;border:1px solid var(--line);border-radius:22px;background:var(--surface);box-shadow:var(--shadow-soft)}
+.historyProHead h2{margin:0;font-size:20px!important}.historyProHead p{margin:4px 0 12px;color:var(--muted);font-size:12px}
+.historyDateRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.historyDateRow label{display:grid;gap:5px}
+.historyDateRow label>span{font-size:11px;font-weight:800;color:var(--muted)}
+.historyDateRow .input{height:44px;min-height:44px!important;padding:8px 9px!important;font-size:12px!important}
+.historyQuickRow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.historyQuickRow .smallBtn{width:100%!important;height:38px!important;min-height:38px!important;font-size:10px!important}
+.historyProList{display:grid;gap:12px}.historyDayBlock{overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:var(--shadow-soft)}
+.historyDayHead{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.historyDayHead strong{font-size:15px}.historyDayHead span{font-size:10px;color:var(--muted);font-weight:800}
+.historyProEntry{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:10px;padding:13px}
+.historyProEntry+.historyProEntry{border-top:1px solid var(--line)}
+.historyProIcon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--surface-2)}
+.historyProMain strong{display:block;font-size:14px}.historyProMain p{margin:3px 0 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.historyProTime{font-size:10px;color:var(--muted-2);white-space:nowrap}
+.historyProLink{margin-top:6px;border:0;border-radius:9px;padding:6px 9px;background:rgba(37,99,235,.08);color:#1d4ed8;font-size:10px;font-weight:900}
+.historyEmpty{padding:18px;text-align:center;border:1px dashed var(--line);border-radius:16px;color:var(--muted);font-size:13px}
+</style><style id="clean-task-meta">
+.taskMeta:has(span:only-child:empty){display:none!important}
+</style>
+<style id="garage-due-highlight">
+.garageCarTaskCard .dueChip{
+  font-size:11px!important;
+  font-weight:900!important;
+  padding:6px 9px!important;
+  border-radius:10px!important;
+}
+.garageCarTaskCard .dueChip.today{
+  background:#fee2e2!important;
+  color:#b91c1c!important;
+  border-color:#fecaca!important;
+}
+.garageCarTaskCard .dueChip.tomorrow{
+  background:#fef3c7!important;
+  color:#a16207!important;
+  border-color:#fde68a!important;
+}
+.garageCarTaskCard .dueChip.future{
+  background:#dbeafe!important;
+  color:#1d4ed8!important;
+  border-color:#bfdbfe!important;
+}
+.garageCarTaskCard .taskMeta{
+  align-items:center!important;
+}
+.homePrioritySection{
+  margin:12px 0 14px;
+}
+.homePriorityMount{
+  width:100%;
+}
+.homePriorityMount .todayPriorityBox{
+  margin:0!important;
+}
+</style>
+
+<style id="garage-menu-pro">
+.garageMenuGridPro{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.garageActionPro{
+  min-height:82px!important;
+  padding:12px!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  border-radius:18px!important;
+  position:relative!important;
+}
+.garageActionPro .left{min-width:0!important;display:flex!important;align-items:center!important;gap:9px!important}
+.garageActionPro .ico{width:37px!important;height:37px!important;display:grid!important;place-items:center!important;border-radius:11px!important;background:var(--surface-2)!important;font-size:19px!important;flex:0 0 37px}
+.garageActionText{min-width:0}.garageActionText strong{font-size:13px!important;line-height:1.15!important}
+.garageTaskBadges{display:flex!important;align-items:center!important;gap:5px!important;justify-content:flex-end!important}
+.garageTaskCountBadge,.garageTaskTodayBadge{
+  min-width:25px;height:25px;padding:0 7px;border-radius:999px;display:inline-flex;
+  align-items:center;justify-content:center;font-size:11px;font-weight:950;line-height:1;
+}
+.garageTaskCountBadge{background:var(--surface-2);color:var(--text);border:1px solid var(--line)}
+.garageTaskTodayBadge{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
+.garageCustomTaskFormRow{display:grid;grid-template-columns:minmax(0,1fr) 1.2fr;gap:8px;align-items:end}
+.garageCustomTaskFormRow .field{margin-bottom:0}
+.garageRewardCompact{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.garageRewardCompact span{display:flex;align-items:center;gap:3px;font-size:11px;font-weight:900}
+.garageRewardCompact .input{width:100%!important;min-width:0!important;height:42px!important;min-height:42px!important;padding:8px!important}
+@media(max-width:370px){
+  .garageActionPro{min-height:78px!important;padding:10px!important}
+  .garageActionText strong{font-size:12px!important}
+  .garageCustomTaskFormRow{grid-template-columns:1fr 1fr}
+}
+</style>
+
+<style id="final-app-polish">
+/* Final UX pass: one accordion at a time + phone-first typography */
+.topbar{display:none!important}
+.view > .sectionHead{display:none!important}
+body{font-size:16px}
+.sectionHead h2{font-size:18px!important}
+.sectionHead span{font-size:13px!important}
+.taskGroupHead h3{font-size:15px!important;letter-spacing:.04em!important}
+.taskMain strong{font-size:16px!important}
+.taskMeta{font-size:13px!important}
+.btn{font-size:15px!important;min-height:48px}
+.input,.select,.textarea{font-size:16px!important}
+.navBtn{min-height:64px!important;font-size:13px!important;font-weight:800!important}
+.navBtn .ico{font-size:24px!important}
+.garageAction strong{font-size:16px!important}
+.garageActionPro{min-height:116px!important}
+.garageCarTaskHead strong{font-size:16px!important}
+.garageCarTaskHead span{font-size:13px!important}
+.garageLeadBody h4,.carBody h4{font-size:19px!important}
+/* The outer garage task heading duplicated the action tile; keep only the two useful accordions. */
+#garageTasksSection > .sectionHead{display:none!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2493,9 +2633,12 @@ body{min-height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeL
       </div>
     </div>
 
+    <div class="homePrioritySection">
+      <div id="todayPriorityRoot" class="homePriorityMount"></div>
+    </div>
+
     <div class="section">
       <div class="sectionHead"><h2>Šiandienos užduotys</h2><span id="taskProgressLabel">0/0 atlikta</span></div>
-      <div id="todayPriorityRoot"></div>
     <div id="tasksRoot"></div>
     </div>
 
@@ -2532,60 +2675,58 @@ body{min-height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeL
         <strong id="monthlyProfitValue"></strong>
         <div id="monthlyProfitFill"></div>
       </div>
-      <div class="garageMenuGrid">
-        <button class="garageAction" type="button" data-garage-action="tasks">
+      <div class="garageMenuGrid garageMenuGridPro">
+        <button class="garageAction garageActionPro" type="button" data-garage-action="tasks">
           <div class="left">
             <div class="ico">✅</div>
-            <div><strong>Užduotys</strong></div>
+            <div class="garageActionText"><strong>Automobilių užduotys</strong></div>
+          </div>
+          <div class="garageTaskBadges">
+            <span class="garageTaskCountBadge" id="garageAutoTaskCountBadge">0</span>
+            <span class="garageTaskTodayBadge" id="garageAutoTodayBadge">0</span>
           </div>
         </button>
-        <button class="garageAction" type="button" data-garage-action="leads">
+        <button class="garageAction garageActionPro" type="button" data-garage-action="leads">
           <div class="left">
             <div class="ico">📋</div>
-            <div><strong>Dominantys variantai</strong></div>
+            <div class="garageActionText"><strong>Dominantys variantai</strong></div>
           </div>
         </button>
-        <button class="garageAction" type="button" data-garage-action="addcar">
+        <button class="garageAction garageActionPro" type="button" data-garage-action="customtasks">
           <div class="left">
-            <div class="ico">➕</div>
-            <div><strong>Pridėti automobilį</strong></div>
+            <div class="ico">📝</div>
+            <div class="garageActionText"><strong>Kitos užduotys</strong></div>
+          </div>
+          <div class="garageTaskBadges">
+            <span class="garageTaskCountBadge" id="garageCustomTaskCountBadge">0</span>
+            <span class="garageTaskTodayBadge" id="garageCustomTodayBadge">0</span>
           </div>
         </button>
-        <button class="garageAction" type="button" data-garage-action="stats">
+        <button class="garageAction garageActionPro" type="button" data-garage-action="stats">
           <div class="left">
             <div class="ico">📊</div>
-            <div><strong>Statistika</strong></div>
+            <div class="garageActionText"><strong>Statistika</strong></div>
           </div>
         </button>
       </div>
     </div>
 
     <div class="section" id="garageTasksSection">
-      <div class="sectionHead"><h2>Užduotys</h2><span id="garageTaskSummary">0 automobilių užduočių / 0 kitų užduočių</span></div>
+      <div class="sectionHead"><h2>Automobilių užduotys</h2><span id="garageTaskSummary">0 automobilių užduočių / 0 kitų užduočių</span></div>
 
       <div class="panel taskGroup">
-        <button class="taskGroupHead" type="button" data-garage-toggle="autos">
-          <div>
-            <h3>Automobilių užduotys</h3>
-          </div>
-        </button>
         <div class="taskGroupBody" id="garageAutosBody">
           <div class="taskList" id="garageAutoTasksRoot"></div>
         </div>
       </div>
 
       <div class="panel taskGroup">
-        <button class="taskGroupHead" type="button" data-garage-toggle="custom">
-          <div>
-            <h3>Kitos užduotys</h3>
-          </div>
-        </button>
         <div class="taskGroupBody" id="garageCustomBody">
           <form class="panel pad" style="margin:0 16px 16px" id="garageTaskForm">
-            <div class="field"><label>Užduoties pavadinimas</label><input class="input" id="garageTaskTitle" placeholder="Pvz. Nuplauti saloną" /></div>
-            <div class="grid2">
-              <div class="field"><label>XP</label><input class="input" id="garageTaskXp" type="number" min="0" step="1" value="10" /></div>
-              <div class="field"><label>Monetos</label><input class="input" id="garageTaskCoins" type="number" min="0" step="1" value="5" /></div>
+            <div class="field"><label>Užduotis</label><input class="input" id="garageTaskTitle" placeholder="Pvz. Nuvežti automobilį į servisą" /></div>
+            <div class="garageCustomTaskFormRow">
+              <div class="field"><label>Data <span class="subtle">(nebūtina)</span></label><input class="input" id="garageTaskDueDate" type="date" /></div>
+              <div class="field"><label>Atlygis</label><div class="garageRewardCompact"><span>+<input class="input" id="garageTaskXp" type="number" min="0" step="1" value="10" aria-label="XP"> XP</span><span>+<input class="input" id="garageTaskCoins" type="number" min="0" step="1" value="5" aria-label="Monetos"> 🪙</span></div></div>
             </div>
             <button class="btn" id="addGarageTaskBtn" type="submit" style="width:100%">Pridėti garažo užduotį</button>
             <div class="leadEditNote">Patogiausia: įrašyk pavadinimą, pasirink XP / monetas ir spausk Enter arba mygtuką.</div>
@@ -2803,8 +2944,21 @@ body{min-height:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeL
       <div class="grid2" id="statsGrid"></div>
     </div>
     <div class="section menuHistorySection" id="menu-history">
-      
-    <div class="section"><div class="historyList" id="permanentHistoryRoot"></div></div>
+      <div class="historyProPanel">
+        <div class="historyProHead"><div><h2>Veiksmų istorija</h2><p>Visi svarbūs veiksmai saugomi pagal datą.</p></div></div>
+        <div class="historyDateRow">
+          <label><span>Nuo</span><input class="input" id="historyFromDate" type="date"></label>
+          <label><span>Iki</span><input class="input" id="historyToDate" type="date"></label>
+        </div>
+        <div class="historyQuickRow">
+          <button class="smallBtn" id="historyTodayBtn" type="button">Šiandien</button>
+          <button class="smallBtn" id="history7Btn" type="button">7 d.</button>
+          <button class="smallBtn" id="history30Btn" type="button">30 d.</button>
+          <button class="smallBtn" id="historyAllBtn" type="button">Visa</button>
+        </div>
+        <button class="btn" id="historyApplyBtn" type="button">Rodyti istoriją</button>
+      </div>
+      <div class="section"><div class="historyProList" id="permanentHistoryRoot"></div></div>
     </div>
   </div>
 
@@ -3067,7 +3221,7 @@ function renderPremiumHomeV3(){
               <span class="todayTaskKind">${escapeHTML(x.kind)}</span>
               <span class="todayTaskMain">
                 <strong>${x.icon} ${escapeHTML(x.label)}</strong>
-                <small>Reikia padaryti šiandien</small>
+                
               </span>
               <span class="todayTaskArrow">›</span>
             </button>`).join('')}
@@ -3359,12 +3513,13 @@ function addDaysISO(baseISO, days){
     addXpAndCoins(task.xp, task.coins, 'Garažo užduotis', 'Discipline', '🧩');
   }
 
-  function addGarageTask(title, xp, coins){
+  function addGarageTask(title, xp, coins, dueDate=''){
     const task = {
       id: uid(),
       title: String(title || '').trim(),
       xp: Math.max(0, Number(xp) || 0),
       coins: Math.max(0, Number(coins) || 0),
+      dueDate: String(dueDate || ''),
       done:false,
       doneDate:'',
       createdAt: nowLabel(),
@@ -3755,7 +3910,7 @@ function addDaysISO(baseISO, days){
     };
 
     state.leadVariants.unshift(lead);
-    addHistory('Dominantis variantas', `${lead.make} ${lead.model} įkeltas`, '📋');
+    addHistory('Dominantis variantas įkeltas', `${lead.make} ${lead.model} • pradinė ${moneyFmt(lead.initialPrice)} • mūsų kaina ${moneyFmt(lead.targetPrice)} • tel. ${lead.phone||'—'}`, '📋', {kind:'lead',id:lead.id,label:'Atidaryti variantą'});
     toast('Variantas įkeltas', '📋');
     saveState();
     render();
@@ -3797,7 +3952,7 @@ function addDaysISO(baseISO, days){
     lead.lastCalledAt = nowLabel();
     lead.updatedAt = nowLabel();
     lead.nextCallDate = addDaysISO(todayISO(), lead.followUpDays || 0);
-    addHistory('Skambutis variantui', `${lead.make} ${lead.model} — kitas skambutis po ${lead.followUpDays || 0} d.`, '📞');
+    addHistory('Skambutis dėl varianto', `${lead.make} ${lead.model} • tel. ${lead.phone||'—'} • kitas skambutis po ${lead.followUpDays||0} d.`, '📞', {kind:'lead',id:lead.id,label:'Atidaryti variantą'});
     saveState();
     toast(`Paskambinta. Kitas skambutis po ${lead.followUpDays || 0} d.`, '📞');
     if(shouldRender) render();
@@ -3847,7 +4002,7 @@ function addDaysISO(baseISO, days){
     state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
     state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
     state.ui.garageTaskGroups.autos = true;
-    state.ui.garageTaskGroups.custom = true;
+    state.ui.garageTaskGroups.custom = false;
     saveState();
     render();
     const sec = document.getElementById('garageTasksSection');
@@ -4336,8 +4491,12 @@ function addDaysISO(baseISO, days){
     }
   }
 
-  function addHistory(title, desc, icon='⚡'){
-    const entry={id:uid(),title:String(title||''),desc:String(desc||''),icon:String(icon||'⚡'),time:nowLabel(),date:todayISO()};
+  function addHistory(title, desc, icon='⚡', link=null){
+    const entry={
+      id:uid(),title:String(title||''),desc:String(desc||''),icon:String(icon||'⚡'),
+      time:nowLabel(),date:todayISO(),
+      link:link&&typeof link==='object'?{kind:String(link.kind||''),id:String(link.id||''),label:String(link.label||'Atidaryti')}:null
+    };
     state.history.unshift(entry);
     state.history=state.history.slice(0,12);
     if(!Array.isArray(state.historyLog)) state.historyLog=[];
@@ -4345,13 +4504,18 @@ function addDaysISO(baseISO, days){
   }
 
   function ensurePermanentHistory(){
-    if(!Array.isArray(state.historyLog)) state.historyLog=[];
-    if(state.historyLog.length===0 && Array.isArray(state.history) && state.history.length){
+    if(!Array.isArray(state.historyLog))state.historyLog=[];
+    if(state.historyLog.length===0&&Array.isArray(state.history)&&state.history.length){
       state.historyLog=state.history.map(h=>({
-        id:h.id||uid(), title:h.title||'', desc:h.desc||'', icon:h.icon||'⚡',
-        time:h.time||'', date:h.date||todayISO()
+        id:h.id||uid(),title:h.title||'',desc:h.desc||'',icon:h.icon||'⚡',
+        time:h.time||'',date:h.date||todayISO(),link:h.link||null
       }));
     }
+    state.historyLog=state.historyLog.map(h=>({
+      ...h,id:h.id||uid(),title:String(h.title||''),desc:String(h.desc||''),
+      icon:String(h.icon||'⚡'),time:String(h.time||''),date:h.date||todayISO(),
+      link:h.link&&typeof h.link==='object'?h.link:null
+    }));
   }
 
   function logTaskCompletion(label='užduotis', kind='task'){
@@ -4913,7 +5077,7 @@ function addDaysISO(baseISO, days){
     state.cars.unshift(car);
     ensureFinanceCollections();
     state.finances.budgetBalance -= Number(buyPrice) || 0;
-    addHistory('Garažas', `${name} pridėtas į garažą`, '🚗');
+    addHistory('Automobilis nupirktas', `${name} • pirkimo kaina ${moneyFmt(Number(buyPrice)||0)}`, '🚗', {kind:'car',id:car.id,label:'Atidaryti automobilį'});
     toast('Automobilis pridėtas', '🚗');
     saveState();
     render();
@@ -5158,7 +5322,7 @@ function addDaysISO(baseISO, days){
     state.finances.budgetBalance += sellPrice;
     state.finances.monthlyNetProfit += car.netProfit;
     state.finances.lifetimeNetProfit += car.netProfit;
-    addHistory('Automobilis parduotas', `${car.name} parduotas už ${moneyFmt(sellPrice)}. Grynasis pelnas: ${(car.netProfit >= 0 ? '+' : '') + moneyFmt(car.netProfit)}`, '💸');
+    addHistory('Automobilis parduotas', `${car.name} • savikaina ${moneyFmt(carTotalCost(car))} • parduota už ${moneyFmt(sellPrice)} • grynasis pelnas ${(car.netProfit>=0?'+':'')+moneyFmt(car.netProfit)}`, '💸', {kind:'car',id:car.id,label:'Atidaryti automobilį'});
     toast(`Parduota! +${moneyFmt(car.netProfit)}`, '💸');
     spark('🏁');
     playTone(920, 0.12);
@@ -5481,6 +5645,8 @@ function addDaysISO(baseISO, days){
 
     state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}, menuSections:{shop:false, stats:false}};
     state.ui.menuSections = state.ui.menuSections || {shop:false, stats:false};
+    state.ui.menuHistoryOpen=!!state.ui.menuHistoryOpen;
+    const menuHistoryEl=document.getElementById('menu-history'); if(menuHistoryEl)menuHistoryEl.classList.toggle('open',state.ui.menuHistoryOpen);
     state.ui.garageSalesPage = Math.max(1, Number(state.ui.garageSalesPage) || 1);
 
     document.getElementById('xpFill').style.width = xpPct + '%';
@@ -5523,7 +5689,6 @@ function addDaysISO(baseISO, days){
           <button class="taskGroupHead" type="button" data-toggle-cat="${cat}">
             <div>
               <h3>${cat}</h3>
-              <span class="sub">${tasks.length} užduočių • ${open ? 'Paliesk, kad suskleistum' : 'Paliesk, kad išskleistum'}</span>
             </div>
           </button>
           <div class="taskGroupBody ${open ? 'open' : ''}">
@@ -5536,8 +5701,7 @@ function addDaysISO(baseISO, days){
                     <div class="taskMain">
                       <strong>${t.icon} ${escapeHTML(t.title)}</strong>
                       <div class="taskMeta">
-                        <span>${t.difficulty}</span>
-                        <span>${done ? 'Atlikta šiandien' : 'Paspausk ir gauk atlygį'}</span>
+                        <span>${done ? 'Atlikta šiandien' : ''}</span>
                       </div>
                     </div>
                     <div class="rewardPills">
@@ -5558,7 +5722,9 @@ function addDaysISO(baseISO, days){
       const cat = btn.dataset.toggleCat;
       state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
       state.ui.taskGroups = state.ui.taskGroups || {Sveikata:false, Produktyvumas:false, Tobulėjimas:false};
-      state.ui.taskGroups[cat] = !state.ui.taskGroups[cat];
+      const nextOpen = !state.ui.taskGroups[cat];
+      Object.keys(state.ui.taskGroups).forEach(key => state.ui.taskGroups[key] = false);
+      state.ui.taskGroups[cat] = nextOpen;
       saveState();
       render();
     }));
@@ -5620,26 +5786,34 @@ function addDaysISO(baseISO, days){
 
 
     ensurePermanentHistory();
-    const hFrom=document.getElementById('historyFromDate'), hTo=document.getElementById('historyToDate');
-    if(hFrom && !hFrom.value) hFrom.value=todayISO();
-    if(hTo && !hTo.value) hTo.value=todayISO();
+    const hFrom=document.getElementById('historyFromDate');
+    const hTo=document.getElementById('historyToDate');
+    if(hFrom&&!hFrom.value)hFrom.value=todayISO();
+    if(hTo&&!hTo.value)hTo.value=todayISO();
     const ph=document.getElementById('permanentHistoryRoot');
     if(ph){
-      const from=hFrom?.value||'', to=hTo?.value||'';
+      const from=hFrom?.value||'',to=hTo?.value||'';
       const entries=(state.historyLog||[]).filter(x=>{
         const d=x.date||todayISO();
         return (!from||d>=from)&&(!to||d<=to);
       });
-      if(!entries.length) ph.innerHTML='<div class="emptyState">Šiuo laikotarpiu istorijos įrašų nėra.</div>';
+      if(!entries.length)ph.innerHTML='<div class="historyEmpty">Šiuo laikotarpiu istorijos įrašų nėra.</div>';
       else{
         const groups={};
-        entries.forEach(x=>(groups[x.date||'Nežinoma data'] ||= []).push(x));
+        entries.forEach(x=>{const d=x.date||todayISO();(groups[d] ||= []).push(x);});
         ph.innerHTML=Object.keys(groups).sort().reverse().map(d=>{
           const dd=parseISODateLocal(d);
-          const label=dd?dd.toLocaleDateString('lt-LT',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):d;
-          return `<div class="historyDay"><div class="historyDayHead"><strong>${escapeHTML(label)}</strong><span>${groups[d].length} įraš.</span></div><div class="historyList">${groups[d].map(x=>`<div class="historyItem"><div class="histIcon">${escapeHTML(x.icon||'⚡')}</div><div><strong>${escapeHTML(x.title||'')}</strong><span>${escapeHTML(x.desc||'')}</span><span style="font-size:11px;opacity:.78">${escapeHTML(x.time||'')}</span></div></div>`).join('')}</div></div>`;
+          const day=dd?dd.toLocaleDateString('lt-LT',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):d;
+          return `<section class="historyDayBlock"><div class="historyDayHead"><strong>${escapeHTML(day)}</strong><span>${groups[d].length} įraš.</span></div><div>${groups[d].map(x=>{
+            const link=x.link?.kind&&x.link?.id?`<button type="button" class="historyProLink" data-history-kind="${escapeHTML(x.link.kind)}" data-history-id="${escapeHTML(x.link.id)}">↗ ${escapeHTML(x.link.label||'Atidaryti')}</button>`:'';
+            return `<article class="historyProEntry"><div class="historyProIcon">${escapeHTML(x.icon||'⚡')}</div><div class="historyProMain"><strong>${escapeHTML(x.title||'Veiksmas')}</strong><p>${escapeHTML(x.desc||'')}</p>${link}</div><time class="historyProTime">${escapeHTML(x.time||'')}</time></article>`;
+          }).join('')}</div></section>`;
         }).join('');
       }
+      ph.querySelectorAll('[data-history-kind]').forEach(btn=>btn.onclick=()=>{
+        if(btn.dataset.historyKind==='car')openCar(btn.dataset.historyId);
+        else if(btn.dataset.historyKind==='lead')openGarageLeadSheet(btn.dataset.historyId);
+      });
     }
 
 
@@ -5664,7 +5838,15 @@ function addDaysISO(baseISO, days){
     document.getElementById('garageCustomBody')?.classList.toggle('open', !!garageTaskGroups.custom);
 
     const garageCustomActive = state.garageTasks || [];
-    document.getElementById('garageTaskSummary').textContent = `${activeCars.reduce((sum, car) => sum + car.checklist.length, 0)} automobilių užduočių / ${garageCustomActive.length} kitų užduočių`;
+    const autoTaskCount = activeCars.reduce((sum,car)=>sum+(car.checklist||[]).filter(item=>!item.done).length,0);
+    const autoTaskToday = activeCars.reduce((sum,car)=>sum+(car.checklist||[]).filter(item=>!item.done && item.dueDate===todayISO()).length,0);
+    const customTaskCount = garageCustomActive.filter(t=>!t.done).length;
+    const customTaskToday = garageCustomActive.filter(t=>!t.done && t.dueDate===todayISO()).length;
+    document.getElementById('garageTaskSummary').textContent = `${autoTaskCount} laukia • ${customTaskCount} kitos`;
+    const autoCountEl=document.getElementById('garageAutoTaskCountBadge'); if(autoCountEl)autoCountEl.textContent=autoTaskCount;
+    const autoTodayEl=document.getElementById('garageAutoTodayBadge'); if(autoTodayEl){autoTodayEl.textContent=autoTaskToday;autoTodayEl.style.display=autoTaskToday?'inline-flex':'none';}
+    const customCountEl=document.getElementById('garageCustomTaskCountBadge'); if(customCountEl)customCountEl.textContent=customTaskCount;
+    const customTodayEl=document.getElementById('garageCustomTodayBadge'); if(customTodayEl){customTodayEl.textContent=customTaskToday;customTodayEl.style.display=customTaskToday?'inline-flex':'none';}
     const autoTasksRoot = document.getElementById('garageAutoTasksRoot');
     if(autoTasksRoot){
       autoTasksRoot.innerHTML = activeCars.length ? activeCars.map(car => `
@@ -5717,7 +5899,7 @@ function addDaysISO(baseISO, days){
     if(garageCustomRoot){
       garageCustomRoot.innerHTML = garageCustomActive.length ? garageCustomActive
         .slice()
-        .sort((a, b) => Number(!!a.done) - Number(!!b.done) || (b.createdAt || '').localeCompare(a.createdAt || ''))
+        .sort((a, b) => Number(!!a.done) - Number(!!b.done) || (a.dueDate||'9999-12-31').localeCompare(b.dueDate||'9999-12-31') || (b.createdAt || '').localeCompare(a.createdAt || ''))
         .map(task => `
         <div class="taskCard ${task.done ? 'done' : ''}">
           <div class="check">${task.done ? '✓' : ''}</div>
@@ -5725,6 +5907,7 @@ function addDaysISO(baseISO, days){
             <strong>🧩 ${escapeHTML(task.title)}</strong>
             <div class="taskMeta">
               <span>${task.done ? `Atlikta ${escapeHTML(task.completedAt || '')}` : `Sukurta ${escapeHTML(task.createdAt || '')}`}</span>
+              ${task.dueDate ? taskDueMarkup(task.dueDate) : ''}
               <span class="statChip">+${task.xp} XP</span>
               <span class="statChip">+${task.coins} 🪙</span>
             </div>
@@ -5947,9 +6130,23 @@ function addDaysISO(baseISO, days){
     saveState();
   }
 
+  document.addEventListener('click',(e)=>{
+    const b=e.target.closest('[data-open-history]');
+    if(!b)return;
+    state.ui=state.ui||{};
+    state.ui.menuHistoryOpen=!state.ui.menuHistoryOpen;
+    saveState();render();
+    if(state.ui.menuHistoryOpen)requestAnimationFrame(()=>document.getElementById('menu-history')?.scrollIntoView({behavior:'smooth',block:'start'}));
+  });
+
   // events
   document.querySelectorAll('.navBtn').forEach(btn => btn.addEventListener('click', () => {
     state.selectedView = btn.dataset.view;
+    state.ui = state.ui || {};
+    state.ui.taskGroups = {Sveikata:false, Produktyvumas:false, Tobulėjimas:false};
+    state.ui.garageTaskGroups = {autos:false, custom:false};
+    state.ui.menuSections = {shop:false, stats:false};
+    state.ui.soldCarsOpen = false;
     saveState();
     render();
   }));
@@ -5961,7 +6158,9 @@ function addDaysISO(baseISO, days){
     if(section){
       state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}, menuSections:{shop:false, stats:false}};
       state.ui.menuSections = state.ui.menuSections || {shop:false, stats:false};
-      state.ui.menuSections[section] = !state.ui.menuSections[section];
+      const nextOpen = !state.ui.menuSections[section];
+      Object.keys(state.ui.menuSections).forEach(key => state.ui.menuSections[key] = false);
+      state.ui.menuSections[section] = nextOpen;
       saveState();
       render();
       if(state.ui.menuSections[section]){
@@ -5982,8 +6181,23 @@ function addDaysISO(baseISO, days){
 
   const historyApplyBtn=document.getElementById('historyApplyBtn');
   const historyTodayBtn=document.getElementById('historyTodayBtn');
-  if(historyApplyBtn) historyApplyBtn.onclick=()=>render();
-  if(historyTodayBtn) historyTodayBtn.onclick=()=>{const a=document.getElementById('historyFromDate'),b=document.getElementById('historyToDate');if(a)a.value=todayISO();if(b)b.value=todayISO();render();};
+  const history7Btn=document.getElementById('history7Btn');
+  const history30Btn=document.getElementById('history30Btn');
+  const historyAllBtn=document.getElementById('historyAllBtn');
+  const setHistoryRange=(days)=>{
+    const a=document.getElementById('historyFromDate'),b=document.getElementById('historyToDate');
+    if(!a||!b)return;
+    if(days===null){a.value='';b.value='';}
+    else if(days===0){a.value=todayISO();b.value=todayISO();}
+    else{const d=parseISODateLocal(todayISO());d.setDate(d.getDate()-days+1);a.value=toISODateLocal(d);b.value=todayISO();}
+    render();
+  };
+  if(historyApplyBtn)historyApplyBtn.onclick=()=>render();
+  if(historyTodayBtn)historyTodayBtn.onclick=()=>setHistoryRange(0);
+  if(history7Btn)history7Btn.onclick=()=>setHistoryRange(7);
+  if(history30Btn)history30Btn.onclick=()=>setHistoryRange(30);
+  if(historyAllBtn)historyAllBtn.onclick=()=>setHistoryRange(null);
+
   const claimDailyBtnEl2 = document.getElementById('claimDailyBtn');
   const rerollDailyBtnEl2 = document.getElementById('rerollDailyBtn');
   if(claimDailyBtnEl2) claimDailyBtnEl2.onclick = claimDailyQuest;
@@ -6003,6 +6217,10 @@ function addDaysISO(baseISO, days){
     const openViewBtn = e.target.closest('[data-open-view]');
     if(openViewBtn){
       state.selectedView = openViewBtn.dataset.openView;
+      state.ui = state.ui || {};
+      state.ui.menuSections = {shop:false, stats:false};
+      state.ui.taskGroups = {Sveikata:false, Produktyvumas:false, Tobulėjimas:false};
+      state.ui.garageTaskGroups = {autos:false, custom:false};
       saveState();
       render();
       return;
@@ -6020,6 +6238,17 @@ function addDaysISO(baseISO, days){
       const action = actionBtn.dataset.garageAction;
       if(action === 'tasks') return openGarageTasks();
       if(action === 'leads') return openGarageLeadsPage();
+      if(action === 'customtasks') {
+        state.ui=state.ui||{};
+        state.ui.garageTaskGroups=state.ui.garageTaskGroups||{autos:false,custom:false};
+        state.ui.garageTaskGroups.autos=false;
+        state.ui.garageTaskGroups.custom=true;
+        state.ui.soldCarsOpen=false;
+        saveState();
+        render();
+        setTimeout(()=>document.getElementById('garageCustomBody')?.scrollIntoView({behavior:'smooth',block:'start'}),60);
+        return;
+      }
       if(action === 'addcar') return openGarageAddCar();
       if(action === 'stats') return openGarageStats();
     }
@@ -6028,7 +6257,10 @@ function addDaysISO(baseISO, days){
       state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
       state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
       const key = toggleBtn.dataset.garageToggle;
-      state.ui.garageTaskGroups[key] = !state.ui.garageTaskGroups[key];
+      const nextOpen = !state.ui.garageTaskGroups[key];
+      state.ui.garageTaskGroups.autos = false;
+      state.ui.garageTaskGroups.custom = false;
+      state.ui.garageTaskGroups[key] = nextOpen;
       saveState();
       render();
     }
@@ -6069,14 +6301,16 @@ function addDaysISO(baseISO, days){
       const title = document.getElementById('garageTaskTitle').value.trim();
       const xp = Number(document.getElementById('garageTaskXp').value || 0);
       const coins = Number(document.getElementById('garageTaskCoins').value || 0);
+      const dueDate = document.getElementById('garageTaskDueDate')?.value || '';
       if(!title){
         toast('Įrašyk garažo užduotį', '✍️');
         return;
       }
-      addGarageTask(title, xp, coins);
+      addGarageTask(title, xp, coins, dueDate);
       document.getElementById('garageTaskTitle').value = '';
       document.getElementById('garageTaskXp').value = '10';
       document.getElementById('garageTaskCoins').value = '5';
+      const dueEl=document.getElementById('garageTaskDueDate'); if(dueEl) dueEl.value='';
     });
   }
 
@@ -6084,6 +6318,10 @@ function addDaysISO(baseISO, days){
   const cancelAddCarBtn=document.getElementById('cancelAddCarBtn');
   const addCarPanel=document.getElementById('addCarPanel');
   if(showAddCarFormBtn) showAddCarFormBtn.onclick=()=>{
+    state.ui=state.ui||{};
+    state.ui.garageTaskGroups={autos:false,custom:false};
+    state.ui.soldCarsOpen=false;
+    saveState();
     if(addCarPanel) addCarPanel.style.display='block';
     showAddCarFormBtn.style.display='none';
     document.getElementById('carName')?.focus();
