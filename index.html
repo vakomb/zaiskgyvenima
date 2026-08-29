@@ -5450,6 +5450,51 @@ body{font-size:16px!important;color:var(--text)!important}
   .navBtn .ico{font-size:23px!important}
 }
 </style>
+
+<style id="car-card-actions-smooth-layout">
+/* Automobilio kortelė: antraštė centre, veiksmai apačioje tvarkingi. */
+.carTasksSectionHead{
+  justify-content:center!important;
+  text-align:center!important;
+}
+.carTasksSectionHead .carTasksSectionTitle{
+  width:100%!important;
+  display:flex!important;
+  justify-content:center!important;
+}
+.carTasksSectionHead h4{
+  margin-left:auto!important;
+  margin-right:auto!important;
+  text-align:center!important;
+}
+
+/* Pardavimo veiksmas atskirai virš apatinių dviejų veiksmų. */
+.carSellAction{
+  width:100%!important;
+  margin-top:4px!important;
+  margin-bottom:8px!important;
+}
+.carSellAction #sellCarBtn,
+.carSellAction #sellCarForm{
+  width:100%!important;
+}
+
+/* Apačioje: Ištrinti kairėje, + Užduotis dešinėje. */
+.carDetailActions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  flex-wrap:nowrap!important;
+}
+.carDetailActions .carDeleteReal{
+  margin-right:auto!important;
+}
+.carDetailActions #addChecklistBtn{
+  width:auto!important;
+  flex:0 0 auto!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -8046,9 +8091,8 @@ function addDaysISO(baseISO, days){
 
           ${car.notes ? `<div class="premiumInfo"><span>Pastabos</span><p>${escapeHTML(car.notes)}</p></div>`:''}
 
-          <div class="premiumSectionHead">
-            <div><h4>Užduotys</h4></div>
-            <button class="btn secondary premiumSmallBtn" id="addChecklistBtn" type="button">+ Pridėti punktą</button>
+          <div class="premiumSectionHead carTasksSectionHead">
+            <div class="carTasksSectionTitle"><h4>Užduotys</h4></div>
           </div>
           <div class="premiumChecklist" id="carChecklist"></div>
 
@@ -8061,19 +8105,21 @@ function addDaysISO(baseISO, days){
                 <div><span>Grynas</span><strong class="${netProfit>=0?'positiveText':'negativeText'}">${netProfit>=0?'+':''}${moneyFmt(netProfit)}</strong></div>
               </div>
             </div>
-            <div class="premiumActionRow single">
+            <div class="premiumActionRow carDetailActions">
               <button class="carDeleteReal" id="deleteCarBtn" type="button">🗑️ Ištrinti automobilį</button>
+              <button class="btn secondary premiumSmallBtn" id="addChecklistBtn" type="button">+ Užduotis</button>
             </div>
           ` : `
-            <div class="premiumSellBox">
+            <div class="premiumSellBox carSellAction">
               <button class="btn premiumPrimaryBtn" id="sellCarBtn" type="button">Parduoti automobilį</button>
               <div id="sellCarForm" class="premiumSellForm" style="display:none">
                 <div class="field"><label>Pardavimo kaina</label><input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="0 €" inputmode="decimal"></div>
                 <button class="btn premiumPrimaryBtn" id="confirmSellCarBtn" type="button">Patvirtinti pardavimą</button>
               </div>
             </div>
-            <div class="premiumActionRow single">
+            <div class="premiumActionRow carDetailActions">
               <button class="carDeleteReal" id="deleteCarBtn" type="button">🗑️ Ištrinti automobilį</button>
+              <button class="btn secondary premiumSmallBtn" id="addChecklistBtn" type="button">+ Užduotis</button>
             </div>
           `}
 
