@@ -1632,7 +1632,18 @@
 
   .nowActionCard{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:22px;background:var(--surface);box-shadow:var(--shadow-soft)}.nowActionIcon{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;flex:0 0 auto;background:rgba(37,99,235,.09);font-size:21px}.nowActionBody{min-width:0;flex:1}.nowActionEyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900}.nowActionTitle{display:block;font-size:15px;font-weight:900;margin-top:3px;line-height:1.2}.nowActionMeta{display:block;font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.nowActionBtn{min-height:42px!important;padding:10px 12px!important;white-space:nowrap}.nowActionMore{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;margin-top:8px;border-radius:15px;background:var(--surface-2);border:1px solid var(--line);font-size:11px;font-weight:800;color:var(--muted)}.businessResult{margin-top:12px;padding:14px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%);box-shadow:var(--shadow-soft)}.businessResultHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.businessResultTitle{font-size:17px;font-weight:900;line-height:1.2}.businessResultSub{font-size:11px;color:var(--muted);margin-top:4px}.businessResultGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.businessMetric{padding:11px;border-radius:16px;background:rgba(148,163,184,.08);border:1px solid var(--line)}.businessMetric .k{font-size:10px;color:var(--muted);font-weight:800;line-height:1.25}.businessMetric .v{font-size:17px;font-weight:900;margin-top:5px;line-height:1.1}.businessMetric.profit .v{color:var(--success)}.bestDeal{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:11px 12px;border-radius:16px;background:#dcfce7;border:1px solid #bbf7d0}.bestDeal .label{font-size:10px;color:#166534;font-weight:800}.bestDeal strong{font-size:13px;color:#166534}
   </style>
-</head>
+<style id="v4-due-history">
+.dueChip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900;border:1px solid var(--line);background:var(--surface-2)}
+.dueChip.today{background:#fee2e2;color:#b91c1c;border-color:#fecaca}
+.dueChip.tomorrow{background:#ffedd5;color:#c2410c;border-color:#fed7aa}
+.dueChip.future{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
+.dueChip.overdue{background:#fecaca;color:#991b1b;border-color:#fca5a5}
+.historyFilters{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.historyFilterActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.historyDateTitle{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
+.historyDay{margin-top:14px}.historyDayHead{display:flex;justify-content:space-between;align-items:center;padding:9px 2px}
+.historyDayHead strong{font-size:13px}.historyDayHead span{font-size:11px;color:var(--muted)}
+</style></head>
 <body>
 <div class="app">
   <div class="topbar">
@@ -1968,6 +1979,7 @@
         <button class="menuLink" data-jump="menu-shop" data-menu-section="shop"><div class="ico">🛍️</div><strong>Atlygių parduotuvė</strong></button>
         <button class="menuLink" data-jump="menu-stats" data-menu-section="stats"><div class="ico">📊</div><strong>Statistika</strong></button>
         <button class="menuLink" data-open-view="finance"><div class="ico">💼</div><strong>Finansai</strong></button>
+        <button class="menuLink" data-jump="menu-history"><div class="ico">🕘</div><strong>Istorija</strong></button>
       </div>
     </div>
 
@@ -1979,6 +1991,21 @@
     <div class="section" id="menu-stats" style="display:none">
       <div class="sectionHead"><h2>Statistika</h2><span>Kasdienė eiga</span></div>
       <div class="grid2" id="statsGrid"></div>
+    </div>
+    <div class="section" id="menu-history">
+      <div class="sectionHead"><h2>Istorija</h2><span>Nuolatinis veiksmų žurnalas</span></div>
+      <div class="panel pad">
+        <div class="historyDateTitle">Pasirink laikotarpį</div>
+        <div class="historyFilters">
+          <div class="field" style="margin-bottom:0"><label>Nuo</label><input class="input" id="historyFromDate" type="date"></div>
+          <div class="field" style="margin-bottom:0"><label>Iki</label><input class="input" id="historyToDate" type="date"></div>
+        </div>
+        <div class="historyFilterActions">
+          <button class="btn" id="historyApplyBtn" type="button">Peržiūrėti</button>
+          <button class="btn secondary" id="historyTodayBtn" type="button">Šiandien</button>
+        </div>
+      </div>
+      <div class="section"><div class="historyList" id="permanentHistoryRoot"></div></div>
     </div>
   </div>
 
@@ -2214,6 +2241,21 @@ function renderPremiumHomeV3(){
  renderNowAction();
  root.querySelectorAll('[data-jump-premium]').forEach(function(b){b.onclick=function(){state.selectedView=b.dataset.jumpPremium;saveState();render()}});
 }
+
+  function taskDueInfo(iso){
+    if(!iso)return {label:'Be datos',cls:''};
+    const today=todayISO(), tomorrow=addDaysISO(today,1);
+    if(iso<today)return {label:`Vėlavo ${Math.abs(daysBetweenISO(iso,today))} d.`,cls:'overdue'};
+    if(iso===today)return {label:'Šiandien',cls:'today'};
+    if(iso===tomorrow)return {label:'Rytoj',cls:'tomorrow'};
+    const d=parseISODateLocal(iso);
+    return {label:d?d.toLocaleDateString('lt-LT',{year:'numeric',month:'2-digit',day:'2-digit'}):iso,cls:'future'};
+  }
+  function taskDueMarkup(iso){
+    if(!iso)return '<span class="dueChip">Be datos</span>';
+    const x=taskDueInfo(iso);
+    return `<span class="dueChip ${x.cls}">📅 ${escapeHTML(x.label)}</span>`;
+  }
 
 function addDaysISO(baseISO, days){
     const base = parseISODateLocal(baseISO || todayISO()) || new Date();
@@ -3192,6 +3234,7 @@ function addDaysISO(baseISO, days){
     shopPurchases:[],
     cars:[],
     history:[],
+    historyLog:[],
     garageTasks:[],
     garageTaskLastReset:todayISO(),
     leadVariants:[],
@@ -3230,6 +3273,7 @@ function addDaysISO(baseISO, days){
         shopPurchases: Array.isArray(parsed.shopPurchases) ? parsed.shopPurchases : [],
         cars: Array.isArray(parsed.cars) ? parsed.cars : [],
         history: Array.isArray(parsed.history) ? parsed.history : [],
+        historyLog: Array.isArray(parsed.historyLog) ? parsed.historyLog : [],
         completedToday: parsed.completedToday || {},
         importantTasks: Array.isArray(parsed.importantTasks) ? parsed.importantTasks : [],
         completionLog: Array.isArray(parsed.completionLog) ? parsed.completionLog : [],
@@ -3251,6 +3295,7 @@ function addDaysISO(baseISO, days){
 
   function saveState(){
     try{
+      ensurePermanentHistory();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       return true;
     }catch(err){
@@ -3273,8 +3318,21 @@ function addDaysISO(baseISO, days){
   }
 
   function addHistory(title, desc, icon='⚡'){
-    state.history.unshift({title, desc, icon, time: nowLabel()});
-    state.history = state.history.slice(0, 12);
+    const entry={id:uid(),title:String(title||''),desc:String(desc||''),icon:String(icon||'⚡'),time:nowLabel(),date:todayISO()};
+    state.history.unshift(entry);
+    state.history=state.history.slice(0,12);
+    if(!Array.isArray(state.historyLog)) state.historyLog=[];
+    state.historyLog.unshift({...entry});
+  }
+
+  function ensurePermanentHistory(){
+    if(!Array.isArray(state.historyLog)) state.historyLog=[];
+    if(state.historyLog.length===0 && Array.isArray(state.history) && state.history.length){
+      state.historyLog=state.history.map(h=>({
+        id:h.id||uid(), title:h.title||'', desc:h.desc||'', icon:h.icon||'⚡',
+        time:h.time||'', date:h.date||todayISO()
+      }));
+    }
   }
 
   function logTaskCompletion(label='užduotis', kind='task'){
@@ -3812,7 +3870,9 @@ function addDaysISO(baseISO, days){
     openCar(carId);
   }
 
-  function migrateGarageChecklists(){const ids=['wash','photo','ads','fix'];let changed=false;(state.cars||[]).forEach(car=>{if(Array.isArray(car.checklist)&&car.checklist.length===4&&car.checklist.every((x,i)=>x&&x.id===ids[i]&&!x.done&&!Number(x.expense||0))){car.checklist=[];changed=true}});if(changed)saveState()}
+  function migrateGarageChecklists(){
+    (state.cars||[]).forEach(car=>(car.checklist||[]).forEach(item=>{if(typeof item.dueDate!=='string')item.dueDate='';}));
+    const ids=['wash','photo','ads','fix'];let changed=false;(state.cars||[]).forEach(car=>{if(Array.isArray(car.checklist)&&car.checklist.length===4&&car.checklist.every((x,i)=>x&&x.id===ids[i]&&!x.done&&!Number(x.expense||0))){car.checklist=[];changed=true}});if(changed)saveState()}
 
   function addCar(name, imageSrc, buyPrice){
     const car = {
@@ -3981,6 +4041,7 @@ function addDaysISO(baseISO, days){
         <div class="field"><label>XP</label><input class="input" id="newCheckXp" type="number" value="12" /></div>
         <div class="field"><label>Monetos</label><input class="input" id="newCheckCoins" type="number" value="5" /></div>
       </div>
+      <div class="field"><label>Data, kada reikia atlikti <span class="subtle">(nebūtina)</span></label><input class="input" id="newCheckDueDate" type="date" /></div>
       <div class="btnRow">
         <button class="btn" id="saveNewCheck">Pridėti</button>
         <button class="btn secondary" id="backToCar">Atgal</button>
@@ -3992,11 +4053,12 @@ function addDaysISO(baseISO, days){
       const name = document.getElementById('newCheckName').value.trim();
       const xp = Number(document.getElementById('newCheckXp').value || 12);
       const coins = Number(document.getElementById('newCheckCoins').value || 5);
+      const dueDate = document.getElementById('newCheckDueDate')?.value || '';
       if(!name){
         toast('Įrašyk punktą', '✍️');
         return;
       }
-      car.checklist.push({id:'custom_' + Date.now(), name, xp, coins, done:false});
+      car.checklist.push({id:'custom_' + Date.now(), name, xp, coins, done:false, dueDate});
       addHistory('Garažo punktas', `Pridėtas: ${name}`, '➕');
       saveState();
       renderCarSheet(car);
@@ -4017,6 +4079,7 @@ function addDaysISO(baseISO, days){
           <div>
             <strong>${escapeHTML(item.name)}</strong>
             <div class="small">+${item.xp} XP • +${item.coins} 🪙</div>
+            <div style="margin-top:6px">${taskDueMarkup(item.dueDate || '')}</div>
           </div>
         </label>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
@@ -4358,6 +4421,31 @@ function addDaysISO(baseISO, days){
 
 
 
+
+    ensurePermanentHistory();
+    const hFrom=document.getElementById('historyFromDate'), hTo=document.getElementById('historyToDate');
+    if(hFrom && !hFrom.value) hFrom.value=todayISO();
+    if(hTo && !hTo.value) hTo.value=todayISO();
+    const ph=document.getElementById('permanentHistoryRoot');
+    if(ph){
+      const from=hFrom?.value||'', to=hTo?.value||'';
+      const entries=(state.historyLog||[]).filter(x=>{
+        const d=x.date||todayISO();
+        return (!from||d>=from)&&(!to||d<=to);
+      });
+      if(!entries.length) ph.innerHTML='<div class="emptyState">Šiuo laikotarpiu istorijos įrašų nėra.</div>';
+      else{
+        const groups={};
+        entries.forEach(x=>(groups[x.date||'Nežinoma data'] ||= []).push(x));
+        ph.innerHTML=Object.keys(groups).sort().reverse().map(d=>{
+          const dd=parseISODateLocal(d);
+          const label=dd?dd.toLocaleDateString('lt-LT',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):d;
+          return `<div class="historyDay"><div class="historyDayHead"><strong>${escapeHTML(label)}</strong><span>${groups[d].length} įraš.</span></div><div class="historyList">${groups[d].map(x=>`<div class="historyItem"><div class="histIcon">${escapeHTML(x.icon||'⚡')}</div><div><strong>${escapeHTML(x.title||'')}</strong><span>${escapeHTML(x.desc||'')}</span><span style="font-size:11px;opacity:.78">${escapeHTML(x.time||'')}</span></div></div>`).join('')}</div></div>`;
+        }).join('');
+      }
+    }
+
+
     // garažas
     ensureGarageDailyTasks();
     ensureMonthlyCycle();
@@ -4390,7 +4478,7 @@ function addDaysISO(baseISO, days){
             <button class="btn secondary" type="button" data-open-car="${car.id}" style="padding:10px 12px;border-radius:14px;font-size:12px">Atidaryti</button>
           </div>
           <div class="taskList">
-            ${car.checklist.map(item => {
+            ${(car.checklist || []).slice().sort((a,b)=>(a.dueDate||'9999-12-31').localeCompare(b.dueDate||'9999-12-31')).map(item => {
               const checked = !!item.done;
               return `
                 <div class="listItem" style="align-items:flex-start">
@@ -4661,6 +4749,10 @@ function addDaysISO(baseISO, days){
     }
   });
 
+  const historyApplyBtn=document.getElementById('historyApplyBtn');
+  const historyTodayBtn=document.getElementById('historyTodayBtn');
+  if(historyApplyBtn) historyApplyBtn.onclick=()=>render();
+  if(historyTodayBtn) historyTodayBtn.onclick=()=>{const a=document.getElementById('historyFromDate'),b=document.getElementById('historyToDate');if(a)a.value=todayISO();if(b)b.value=todayISO();render();};
   const claimDailyBtnEl2 = document.getElementById('claimDailyBtn');
   const rerollDailyBtnEl2 = document.getElementById('rerollDailyBtn');
   if(claimDailyBtnEl2) claimDailyBtnEl2.onclick = claimDailyQuest;
@@ -4915,7 +5007,8 @@ function addDaysISO(baseISO, days){
   if(!state.dailyQuest) state.dailyQuest = rand(dailyQuestPool);
   if(!state.dailyQuestDate) state.dailyQuestDate = todayISO();
   if(state.selectedView === 'skills') state.selectedView = 'menu';
-  if(!state.history.length) state.history.push({title:'Sveiki atvykę', desc:'Žaidimas paruoštas startui', icon:'🎮', time: nowLabel()});
+  if(!state.history.length) state.history.push({title:'Sveiki atvykę', desc:'Žaidimas paruoštas startui', icon:'🎮', time: nowLabel(), date: todayISO()});
+  ensurePermanentHistory();
   state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
   state.ui.garageTaskGroups = state.ui.garageTaskGroups || {autos:false, custom:false};
   state.ui.leadFilters = state.ui.leadFilters || {query:'', due:'all', sort:'due'};
