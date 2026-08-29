@@ -4851,56 +4851,6 @@ body{font-size:16px!important;color:var(--text)!important}
   #garageLeadRoot .leadListPhoto{width:86px!important;height:86px!important}
 }
 </style>
-
-<style id="car-card-main-photo-size-only">
-/* Tik automobilių kortelių pagrindinės nuotraukos — didesnės ir aiškesnės telefone. */
-#activeCarGrid .carListCard,
-#soldCarGrid .carListCard{
-  grid-template-columns:124px minmax(0,1fr)!important;
-  gap:12px!important;
-  padding:10px!important;
-}
-#activeCarGrid .carListPhoto,
-#soldCarGrid .carListPhoto{
-  width:124px!important;
-  height:124px!important;
-  border-radius:15px!important;
-}
-@media(max-width:380px){
-  #activeCarGrid .carListCard,
-  #soldCarGrid .carListCard{
-    grid-template-columns:108px minmax(0,1fr)!important;
-  }
-  #activeCarGrid .carListPhoto,
-  #soldCarGrid .carListPhoto{
-    width:108px!important;
-    height:108px!important;
-  }
-}
-</style>
-
-<style id="remove-duplicate-car-card-meta">
-/* The purchase/cost metadata is already shown in the card facts below. */
-#activeCarGrid .carListMeta,
-#soldCarGrid .carListMeta{
-  display:none!important;
-}
-</style>
-
-<style id="restore-active-points-only">
-#activeCarGrid .carListMeta{
-  display:flex!important;
-  gap:6px!important;
-  flex-wrap:wrap!important;
-  margin-top:1px!important;
-}
-#activeCarGrid .carListChip{
-  font-size:11px!important;
-  line-height:1.1!important;
-  padding:5px 8px!important;
-}
-#soldCarGrid .carListMeta{display:none!important}
-</style>
 </head>
 <body>
 <div class="app">
@@ -8362,6 +8312,7 @@ function addDaysISO(baseISO, days){
             </div>
             <div class="carListMeta">
               <span class="carListChip">✅ ${done}/${car.checklist.length} punktų</span>
+              <span class="carListChip">💸 ${moneyFmt(totalCost)}</span>
             </div>
             <div class="carListFacts">
               <div><small>Pirkta</small><strong>${moneyFmt(car.buyPrice)}</strong></div>
@@ -8390,6 +8341,10 @@ function addDaysISO(baseISO, days){
             <div class="carListTop">
               <div class="carListTitle">${escapeHTML(car.name)}</div>
               <span class="carListDate">${escapeHTML(car.soldDateISO || car.soldAt || '—')}</span>
+            </div>
+            <div class="carListMeta">
+              <span class="carListChip">💰 ${moneyFmt(soldPrice)}</span>
+              <span class="carListChip">📦 ${moneyFmt(totalCost)}</span>
             </div>
             <div class="carListFacts soldFacts">
               <div><small>Savikaina</small><strong>${moneyFmt(totalCost)}</strong></div>
