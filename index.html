@@ -6383,148 +6383,146 @@ button.smallBtn.danger:hover,
 }
 </style>
 
-<script id="photo-delete-capture-fallback">
+<script id="photo-actions-capture-final">
 (function(){
-  function bind(){
-    if(window.__photoDeleteFallbackBound) return;
-    window.__photoDeleteFallbackBound=true;
-    document.addEventListener('click',async function(e){
-      const btn=e.target?.closest?.('#sheet [data-car-photo-delete]');
-      if(!btn) return;
+  if(window.__photoActionsCaptureFinal) return;
+  window.__photoActionsCaptureFinal=true;
 
+  document.addEventListener('click', async function(e){
+    const download=e.target?.closest?.('#sheet #downloadCarPhotos');
+    if(download){
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
+      const id=window.__openCarId;
+      if(id && typeof downloadAllEntityPhotos==='function'){
+        try{await downloadAllEntityPhotos('car',id);}catch(err){console.error(err);}
+      }
+      return;
+    }
+
+    const del=e.target?.closest?.('#sheet [data-car-photo-delete]');
+    if(del){
+      e.preventDefault();
       e.stopImmediatePropagation();
 
-      const sheet=document.getElementById('sheet');
-      const photoIndex=Number(btn.dataset.carPhotoDelete);
-      const currentId=window.__openCarId;
-      const current=typeof state!=='undefined' ? state.cars.find(c=>c.id===currentId) : null;
-      if(!current || !Number.isInteger(photoIndex)) return;
+      const id=window.__openCarId;
+      const car=typeof state!=='undefined'?state.cars.find(c=>c.id===id):null;
+      const idx=Number(del.dataset.carPhotoDelete);
+      const refs=Array.isArray(car?.photos)?car.photos:[];
+      const ref=refs[idx];
 
-      const photos=Array.isArray(current.photos)?current.photos:[];
-      const ref=photos[photoIndex];
-      if(!ref || btn.dataset.busy==='1') return;
-      btn.dataset.busy='1';
+      if(!car || !ref || del.dataset.busy==='1') return;
+      del.dataset.busy='1';
 
       if(!window.confirm('Ištrinti šią nuotrauką?')){
-        btn.dataset.busy='0';
+        del.dataset.busy='0';
         return;
       }
 
-      current.photos=photos.filter((_,i)=>i!==photoIndex);
-      current.imageSrc=current.photos[0]||'';
-      try{ if(typeof photoDelete==='function') await photoDelete(ref); }catch(err){}
-      try{ if(typeof photoUrlCache!=='undefined') delete photoUrlCache[ref]; }catch(err){}
+      car.photos=refs.filter((_,i)=>i!==idx);
+      car.imageSrc=car.photos[0]||'';
+      try{await photoDelete(ref);}catch(err){console.warn(err);}
+      try{delete photoUrlCache[ref];}catch(err){}
       saveState();
       render();
-      setTimeout(()=>openCar(current.id),0);
-    },true);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true});
-  else bind();
+      setTimeout(()=>openCar(car.id),0);
+    }
+  },true);
 })();
 </script>
 
-<style id="photo-delete-clickable-final">
-#sheet .premiumThumb{
-  position:relative!important;
-  overflow:visible!important;
-}
-#sheet .premiumThumb > button[data-car-photo-delete],
-#sheet .premiumThumbDelete{
-  position:absolute!important;
-  right:5px!important;
-  top:5px!important;
-  z-index:999!important;
-  pointer-events:auto!important;
-  touch-action:manipulation!important;
-  cursor:pointer!important;
-}
-#sheet .premiumThumbDelete{
-  width:32px!important;
-  height:32px!important;
-  min-width:32px!important;
-  min-height:32px!important;
-  display:grid!important;
-  place-items:center!important;
-  padding:0!important;
-  border-radius:10px!important;
-}
-#sheet .premiumThumb > button[data-managed-photo-kind]{
-  position:relative!important;
-  z-index:1!important;
-  pointer-events:auto!important;
-}
-</style>
-
-<style id="car-cost-centered">
-#sheet .carBottomCostGrid{
-  width:100%!important;
-  align-items:stretch!important;
-}
-#sheet .carBottomCostGrid .premiumStat{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  text-align:center!important;
-}
-#sheet .carBottomCostGrid .premiumStat span,
-#sheet .carBottomCostGrid .premiumStat strong{
-  width:100%!important;
-  text-align:center!important;
-}
-#sheet .carBottomCostGrid .premiumStat strong{
-  margin-top:4px!important;
-}
-</style>
-
-<script id="car-photo-actions-capture">
-(function(){
-  function bind(){
-    if(window.__carPhotoActionsBound) return;
-    window.__carPhotoActionsBound=true;
-    document.addEventListener('click',function(e){
-      const target=e.target?.closest?.('#sheet');
-      if(!target) return;
-
-      const download=e.target?.closest?.('#downloadCarPhotos');
-      if(download){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        const id=window.__openCarId;
-        if(id && typeof downloadAllEntityPhotos==='function') downloadAllEntityPhotos('car',id);
-        return;
-      }
-
-      const del=e.target?.closest?.('#sheet [data-car-photo-delete]');
-      if(del){
-        // Direct handler above normally handles it. This is only a fallback if a
-        // parent listener intercepts it.
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        if(typeof del.click==='function') setTimeout(()=>del.click(),0);
-      }
-    },true);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true});
-  else bind();
-})();
-</script>
-
-<style id="car-photo-actions-zindex">
+<style id="photo-action-click-target-final">
 #sheet .premiumThumb{position:relative!important;overflow:visible!important}
 #sheet .premiumThumbDelete{
   position:absolute!important;
-  top:5px!important;
-  right:5px!important;
-  z-index:50!important;
+  top:5px!important;right:5px!important;
+  z-index:99999!important;
   pointer-events:auto!important;
   touch-action:manipulation!important;
 }
 #sheet #downloadCarPhotos{
+  position:relative!important;
+  z-index:9999!important;
   pointer-events:auto!important;
+  touch-action:manipulation!important;
+}
+</style>
+
+<style id="task-delete-x-clean-final">
+#sheet .premiumChecklist .smallBtn.danger,
+#sheet .premiumChecklist [data-delete-item]{
+  width:24px!important;
+  height:24px!important;
+  min-width:24px!important;
+  min-height:24px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  color:#dc2626!important;
+  box-shadow:none!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:17px!important;
+  font-weight:500!important;
+  line-height:1!important;
+}
+#sheet .premiumChecklist .smallBtn.danger:hover,
+#sheet .premiumChecklist .smallBtn.danger:active,
+#sheet .premiumChecklist [data-delete-item]:hover,
+#sheet .premiumChecklist [data-delete-item]:active{
+  background:rgba(220,38,38,.07)!important;
+  color:#b91c1c!important;
+}
+</style>
+
+<style id="car-task-size-black-number">
+#sheet .carTaskRow{
+  min-height:48px!important;
+}
+#sheet .carTaskRow > label{
+  gap:11px!important;
+}
+#sheet .carTaskRow > label > input[type="checkbox"]{
+  width:21px!important;
+  height:21px!important;
+  min-width:21px!important;
+  min-height:21px!important;
+  accent-color:#198a6f!important;
+  flex:0 0 auto!important;
+}
+#sheet .carTaskMain strong{
+  font-size:16px!important;
+  line-height:1.3!important;
+  display:flex!important;
+  align-items:center!important;
+}
+#sheet .carTaskMain .small{
+  font-size:12px!important;
+}
+#sheet .carTaskNumber{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+  width:26px!important;
+  height:26px!important;
+  min-width:26px!important;
+  min-height:26px!important;
+  margin:0 2px 0 0!important;
+  padding:0!important;
+  border-radius:7px!important;
+
+  /* Juodas numeris, visiškai be žalio fono */
+  background:transparent!important;
+  background-image:none!important;
+  color:#111!important;
+  border:0!important;
+  box-shadow:none!important;
+
+  font-size:15px!important;
+  font-weight:900!important;
+  line-height:1!important;
 }
 </style>
 </head>
@@ -8247,7 +8245,6 @@ function addDaysISO(baseISO, days){
         </div>
       </div>
     `;
-    window.__openCarId = car.id;
     openSheet(html);
     document.getElementById('closeLeadSheet').onclick = closeSheet;
     document.querySelectorAll('[data-managed-photo-kind]').forEach(img=>img.onclick=()=>openManagedPhotoGallery('lead', lead.id, Number(img.dataset.managedPhotoIndex||0)));
@@ -9258,7 +9255,6 @@ function addDaysISO(baseISO, days){
                   <button type="button" data-managed-photo-kind="car" data-managed-photo-index="${i}">
                     <img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}">
                   </button>
-                  <button type="button" class="premiumThumbDelete" data-car-photo-delete="${i}" aria-label="Ištrinti nuotrauką">×</button>
                 </div>`).join('') || `<div class="premiumEmptyMedia carPhotosEmpty">📷<span>Nuotraukų nėra</span></div>`}
             </div>
 
@@ -9286,6 +9282,7 @@ function addDaysISO(baseISO, days){
       </div>
     `;
 
+    window.__openCarId=car.id;
     openSheet(html);
 
     const close=document.getElementById('closeSheet');
@@ -9294,89 +9291,28 @@ function addDaysISO(baseISO, days){
     renderCarChecklist(car.id);
 
     const addBtn=document.getElementById('addChecklistBtn');
-    if(addBtn) addBtn.onclick=(e)=>{
-      e.preventDefault();e.stopPropagation();
-      openAddChecklistForm(car.id);
-    };
+    if(addBtn) addBtn.onclick=(e)=>{e.preventDefault();e.stopPropagation();openAddChecklistForm(car.id);};
 
     const deleteBtn=document.getElementById('deleteCarBtn');
-    if(deleteBtn) deleteBtn.onclick=(e)=>{
-      e.preventDefault();e.stopPropagation();
-      deleteCar(car.id);
-    };
+    if(deleteBtn) deleteBtn.onclick=(e)=>{e.preventDefault();e.stopPropagation();deleteCar(car.id);};
 
     const sellBtn=document.getElementById('sellCarBtn');
-    if(sellBtn) sellBtn.onclick=(e)=>{
-      e.preventDefault();e.stopPropagation();
-      if(typeof openSaleModal==='function') openSaleModal(car.id);
-    };
-
-    const mediaToggle=document.getElementById('carMediaToggle');
-    const mediaPanel=document.getElementById('carMediaPanel');
-    if(mediaToggle && mediaPanel){
-      mediaToggle.onclick=(e)=>{
-        e.preventDefault();e.stopPropagation();
-        const open=!mediaPanel.hidden;
-        mediaPanel.hidden=open;
-        mediaToggle.setAttribute('aria-expanded',String(!open));
-      };
-    }
+    if(sellBtn) sellBtn.onclick=(e)=>{e.preventDefault();e.stopPropagation();openSaleModal(car.id);};
 
     const download=document.getElementById('downloadCarPhotos');
-    if(download) download.onclick=(e)=>{
+    if(download) download.onclick=async(e)=>{
       e.preventDefault();e.stopPropagation();
-      downloadAllEntityPhotos('car',car.id);
+      await downloadAllEntityPhotos('car',car.id);
     };
 
     const edit=document.getElementById('editCarInfoBtn');
-    if(edit) edit.onclick=(e)=>{
-      e.preventDefault();e.stopPropagation();
-      openCarEditSheet(car.id);
-    };
+    if(edit) edit.onclick=(e)=>{e.preventDefault();e.stopPropagation();openCarEditSheet(car.id);};
 
-    // The delete X must be handled directly and stop the image/gallery click.
-    document.querySelectorAll('#sheet [data-car-photo-delete]').forEach(btn=>{
-      btn.onclick=async(e)=>{
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
 
-        const index=Number(btn.dataset.carPhotoDelete);
-        const current=state.cars.find(c=>c.id===car.id);
-        const photos=Array.isArray(current?.photos)?current.photos:[];
-        const ref=photos[index];
-        if(!ref || btn.dataset.busy==='1') return;
-
-        if(!window.confirm('Ištrinti šią nuotrauką?')) return;
-        btn.dataset.busy='1';
-
-        current.photos=photos.filter((_,i)=>i!==index);
-        current.imageSrc=current.photos[0] || '';
-
-        try{
-          if(typeof photoDelete==='function') await photoDelete(ref);
-        }catch(err){
-          console.warn('photoDelete failed',err);
-        }
-        try{
-          if(typeof photoUrlCache!=='undefined') delete photoUrlCache[ref];
-        }catch(err){}
-
-        saveState();
-        render();
-        setTimeout(()=>openCar(current.id),0);
-      };
-    });
-
-    // Clicking the thumbnail itself still opens the gallery.
     document.querySelectorAll('#sheet [data-managed-photo-kind]').forEach(img=>{
       img.onclick=(e)=>{
         e.preventDefault();e.stopPropagation();
-        openManagedPhotoGallery(
-          img.dataset.managedPhotoKind,
-          car.id,
-          Number(img.dataset.managedPhotoIndex||0)
-        );
+        openManagedPhotoGallery(img.dataset.managedPhotoKind,car.id,Number(img.dataset.managedPhotoIndex||0));
       };
     });
 
@@ -9387,20 +9323,13 @@ function addDaysISO(baseISO, days){
       for(const file of files){
         try{
           const key=await storeImageFile(file);
-          if(key){
-            added.push(key);
-            await photoGet(key);
-          }
-        }catch(err){
-          console.warn('photo upload failed',err);
-        }
+          if(key){added.push(key);await photoGet(key);}
+        }catch(err){console.warn(err);}
       }
       if(added.length){
         car.photos=[...(car.photos||[]),...added];
         car.imageSrc=car.photos[0]||'';
-        saveState();
-        render();
-        openCar(car.id);
+        saveState();render();openCar(car.id);
         toast(`Pridėta ${added.length} nuotraukų`,'🖼️');
       }
     };
