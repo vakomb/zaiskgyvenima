@@ -1603,6 +1603,33 @@
       border-color:var(--accent);
     }
 
+  
+    .leadListCard{
+      width:100%;display:grid;grid-template-columns:92px minmax(0,1fr);
+      gap:12px;padding:9px;border:1px solid rgba(148,163,184,.20);
+      border-radius:20px;background:var(--surface);color:var(--text);
+      text-align:left;box-shadow:0 10px 28px rgba(15,23,42,.07);
+      cursor:pointer;appearance:none;
+    }
+    .garageLeadGrid#garageLeadRoot{display:flex;flex-direction:column;gap:10px}
+    .leadListPhoto{width:92px;height:92px;border-radius:14px;overflow:hidden;background:var(--surface-2)}
+    .leadListPhoto img{width:100%;height:100%;display:block;object-fit:cover}
+    .leadNoPhoto{width:100%;height:100%;display:grid;place-items:center;align-content:center;color:var(--muted);font-size:20px}
+    .leadNoPhoto span{font-size:9px;font-weight:800}
+    .leadListInfo{min-width:0;display:flex;flex-direction:column;justify-content:center;gap:7px}
+    .leadListTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .leadListTitle{font-size:15px;font-weight:900;line-height:1.15;overflow-wrap:anywhere}
+    .leadListPrice{font-size:12px;font-weight:900;white-space:nowrap}
+    .leadListMeta{display:flex;flex-wrap:wrap;gap:5px}
+    .leadListChip{padding:4px 7px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);font-size:9px;font-weight:800;color:var(--muted)}
+    .leadListBottom{display:flex;justify-content:space-between;align-items:center;gap:7px;font-size:9px;color:var(--muted);font-weight:800}
+    .leadListBottom b{color:var(--accent);font-size:10px}
+    @media(max-width:430px){
+      .leadListCard{grid-template-columns:82px minmax(0,1fr);gap:10px;padding:8px}
+      .leadListPhoto{width:82px;height:82px}
+      .leadListTitle{font-size:14px}
+    }
+
   </style>
 </head>
 <body>
@@ -1793,7 +1820,10 @@
     </div>
 
     <div class="section">
-      <div class="panel pad">
+      <button class="btn" id="showAddGarageLeadBtn" type="button" style="width:100%;background:var(--success);color:#fff;border-color:var(--success)">
+        ➕ Dominantis variantas
+      </button>
+      <div class="panel pad" id="addGarageLeadPanel" style="display:none;margin-top:10px">
         <div class="garageMenuTitle">
           <div>
             <strong>Naujas dominantis variantas</strong>
@@ -1821,6 +1851,7 @@
         <div class="field"><label>Defektai ir pastabos</label><textarea class="input" id="leadNotes" rows="4" placeholder="Variklis, kėbulas, derybų stadija, ką sakė, kada skambinti..."></textarea></div>
         <div class="field"><label>Nuotraukos</label><input class="input" id="leadPhotos" type="file" accept="image/*" multiple /><div class="subtle" style="margin-top:6px">Gali pasirinkti kiek nori nuotraukų. Jos saugomos atskiroje įrenginio saugykloje.</div></div>
         <button class="btn" id="addGarageLeadBtn" type="button" style="width:100%">Įkelti variantą</button>
+        <button class="btn secondary" id="cancelAddGarageLeadBtn" type="button" style="width:100%;margin-top:8px">Uždaryti</button>
       </div>
     </div>
   </div>
@@ -2660,6 +2691,10 @@ function addDaysISO(baseISO, days){
     toast('Variantas įkeltas', '📋');
     saveState();
     render();
+    const savedLeadPanel = document.getElementById('addGarageLeadPanel');
+    const savedLeadOpen = document.getElementById('showAddGarageLeadBtn');
+    if(savedLeadPanel) savedLeadPanel.style.display = 'none';
+    if(savedLeadOpen) savedLeadOpen.style.display = 'block';
 
     const files = data.files.slice();
     ['leadMake','leadModel','leadYear','leadFuel','leadPhone','leadCity','leadInitialPrice','leadTargetPrice','leadFollowDays','leadNotes','leadPhotos'].forEach(id => {
@@ -4444,45 +4479,50 @@ function addDaysISO(baseISO, days){
     document.getElementById('activeCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
     document.getElementById('soldCarGrid').querySelectorAll('[data-open-car]').forEach(el => el.onclick = () => openCar(el.dataset.openCar));
 
-    const leadRoot = document.getElementById('garageLeadList');
+    const leadRoot = document.getElementById('garageLeadRoot');
     if(leadRoot){
-      const leads = state.leadVariants || [];
+      const leads = Array.isArray(state.leadVariants) ? state.leadVariants : [];
+      const countEl = document.getElementById('garageLeadCount');
+      if(countEl) countEl.textContent = `${leads.length} ${leads.length === 1 ? 'variantas' : 'variantai'}`;
+
       leadRoot.innerHTML = leads.length ? leads.map(lead => {
         const photos = Array.isArray(lead.photos) ? lead.photos.filter(Boolean) : [];
-        const mainPhoto = photos[0] || lead.imageSrc || '';
+        const raw = photos[0] || lead.imageSrc || '';
+        const mainPhoto = raw ? (photoUrlCache[raw] || raw) : '';
+        const title = `${lead.make || ''} ${lead.model || ''}`.trim() || 'Neįvardintas variantas';
         const price = Number(lead.targetPrice || lead.initialPrice || 0);
-        const notes = lead.notes || '';
+
         return `
           <button type="button" class="leadListCard" data-open-lead-card="${lead.id}">
             <div class="leadListPhoto">
               ${mainPhoto
-                ? `<img src="${photoUrlCache[mainPhoto] || mainPhoto}" alt="${escapeHTML(lead.make || '')} ${escapeHTML(lead.model || '')}">`
-                : `<div style="width:100%;height:100%;display:grid;place-items:center;color:var(--muted);font-size:11px;font-weight:800">Nėra foto</div>`}
+                ? `<img src="${mainPhoto}" alt="${escapeHTML(title)}" loading="lazy">`
+                : `<div class="leadNoPhoto">📷<span>Nėra foto</span></div>`}
             </div>
             <div class="leadListInfo">
               <div class="leadListTop">
-                <div class="leadListTitle">${escapeHTML(lead.make || '')} ${escapeHTML(lead.model || '')}</div>
+                <div class="leadListTitle">${escapeHTML(title)}</div>
                 ${price ? `<div class="leadListPrice">${moneyFmt(price)}</div>` : ''}
               </div>
               <div class="leadListMeta">
                 ${lead.year ? `<span class="leadListChip">${escapeHTML(String(lead.year))} m.</span>` : ''}
                 ${lead.fuel ? `<span class="leadListChip">${escapeHTML(lead.fuel)}</span>` : ''}
                 ${lead.city ? `<span class="leadListChip">${escapeHTML(lead.city)}</span>` : ''}
-                <span class="leadListChip">${photos.length} foto</span>
+                <span class="leadListChip">📷 ${photos.length}</span>
               </div>
-              ${notes ? `<div class="leadListNotes">${escapeHTML(notes)}</div>` : ''}
               <div class="leadListBottom">
-                <span class="leadListPhotoCount">${garageLeadDaysText(lead)}${lead.followUpDays ? ` • skambinti po ${Number(lead.followUpDays)} d.` : ''}</span>
-                <span class="leadListOpen">Atidaryti →</span>
+                <span>${garageLeadDaysText(lead)}${lead.followUpDays ? ` • po ${Number(lead.followUpDays)} d.` : ''}</span>
+                <b>Atidaryti →</b>
               </div>
             </div>
           </button>`;
-      }).join('') : `<div class="emptyState">${needle}.</div>`;
+      }).join('') : `<div class="emptyState">Kol kas nėra įkeltų variantų. Paspausk „➕ Dominantis variantas“ ir pridėk pirmą.</div>`;
 
       leadRoot.querySelectorAll('[data-open-lead-card]').forEach(btn => {
         btn.onclick = () => openGarageLeadSheet(btn.dataset.openLeadCard);
       });
     }
+
 
     // įgūdžiai
     const skillsRootEl = document.getElementById('skillsRoot');
@@ -4773,6 +4813,25 @@ function addDaysISO(baseISO, days){
   if(addGarageLeadBtn && !addGarageLeadBtn.dataset.bound){
     addGarageLeadBtn.dataset.bound = '1';
     addGarageLeadBtn.onclick = () => addGarageLead();
+  }
+  const showAddGarageLeadBtn = document.getElementById('showAddGarageLeadBtn');
+  const addGarageLeadPanel = document.getElementById('addGarageLeadPanel');
+  const cancelAddGarageLeadBtn = document.getElementById('cancelAddGarageLeadBtn');
+
+  if(showAddGarageLeadBtn && !showAddGarageLeadBtn.dataset.bound){
+    showAddGarageLeadBtn.dataset.bound = '1';
+    showAddGarageLeadBtn.onclick = () => {
+      if(addGarageLeadPanel) addGarageLeadPanel.style.display = 'block';
+      showAddGarageLeadBtn.style.display = 'none';
+      setTimeout(() => document.getElementById('leadMake')?.focus(), 40);
+    };
+  }
+  if(cancelAddGarageLeadBtn && !cancelAddGarageLeadBtn.dataset.bound){
+    cancelAddGarageLeadBtn.dataset.bound = '1';
+    cancelAddGarageLeadBtn.onclick = () => {
+      if(addGarageLeadPanel) addGarageLeadPanel.style.display = 'none';
+      if(showAddGarageLeadBtn) showAddGarageLeadBtn.style.display = 'block';
+    };
   }
   document.getElementById('backToGarageBtn').onclick = () => {
     state.selectedView = 'garage';
