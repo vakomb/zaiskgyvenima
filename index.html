@@ -1643,7 +1643,37 @@
 .historyDateTitle{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
 .historyDay{margin-top:14px}.historyDayHead{display:flex;justify-content:space-between;align-items:center;padding:9px 2px}
 .historyDayHead strong{font-size:13px}.historyDayHead span{font-size:11px;color:var(--muted)}
-</style></head>
+</style>
+<style id="v4-1-tasks">
+.todayPriorityBox{margin:12px 0 14px;padding:14px;border-radius:24px;border:1px solid #fecaca;background:linear-gradient(180deg,#fff7f7,#fff1f2);box-shadow:0 12px 26px rgba(185,28,28,.08)}
+html[data-theme="dark"] .todayPriorityBox{background:linear-gradient(180deg,rgba(69,10,10,.45),rgba(69,10,10,.28));border-color:rgba(248,113,113,.25)}
+.todayPriorityHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
+.todayPriorityHead strong{font-size:14px}.todayPriorityHead span{font-size:11px;color:#b91c1c;font-weight:900}
+.todayTaskItem{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid rgba(185,28,28,.12)}
+.todayTaskItem:first-child{border-top:0}
+.todayTaskMain{flex:1;min-width:0}.todayTaskMain strong{display:block;font-size:13px}
+.todayTaskMain small{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+.todayTaskKind{font-size:9px;font-weight:900;padding:5px 8px;border-radius:999px;background:#fee2e2;color:#b91c1c}
+.menuHistorySection{display:none}
+.menuHistorySection{display:none!important}.menuHistorySection.open{display:block!important}
+.topicTaskSection{margin-top:12px}
+.topicTaskHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.topicTaskHead strong{font-size:14px}
+.topicTaskHead span{font-size:10px;color:var(--muted)}
+.topicTaskList{display:grid;gap:9px}
+.topicTaskCard{display:flex;gap:10px;align-items:center;padding:12px 13px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.topicTaskCard.done{opacity:.62}
+.topicTaskMain{flex:1;min-width:0}
+.topicTaskMain strong{display:block;font-size:13px}
+.topicTaskMeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.topicTaskMeta .statChip{font-size:9px}
+.topicTaskActions{display:flex;gap:6px}
+.topicTaskForm{margin-top:10px;padding:12px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line)}
+.topicTaskForm .field{margin-bottom:9px}
+.topicTaskForm .grid2{gap:8px}
+.carDueLine{margin-top:7px}
+</style>
+</head>
 <body>
 <div class="app">
   <div class="topbar">
@@ -1686,7 +1716,8 @@
 
     <div class="section">
       <div class="sectionHead"><h2>Šiandienos užduotys</h2><span id="taskProgressLabel">0/0 atlikta</span></div>
-      <div id="tasksRoot"></div>
+      <div id="todayPriorityRoot"></div>
+    <div id="tasksRoot"></div>
     </div>
 
     <div class="section">
@@ -1979,7 +2010,7 @@
         <button class="menuLink" data-jump="menu-shop" data-menu-section="shop"><div class="ico">🛍️</div><strong>Atlygių parduotuvė</strong></button>
         <button class="menuLink" data-jump="menu-stats" data-menu-section="stats"><div class="ico">📊</div><strong>Statistika</strong></button>
         <button class="menuLink" data-open-view="finance"><div class="ico">💼</div><strong>Finansai</strong></button>
-        <button class="menuLink" data-jump="menu-history"><div class="ico">🕘</div><strong>Istorija</strong></button>
+        <button class="menuLink" data-open-history><div class="ico">🕘</div><strong>Istorija</strong></button>
       </div>
     </div>
 
@@ -1992,36 +2023,16 @@
       <div class="sectionHead"><h2>Statistika</h2><span>Kasdienė eiga</span></div>
       <div class="grid2" id="statsGrid"></div>
     </div>
-    <div class="section" id="menu-history">
-      <div class="sectionHead"><h2>Istorija</h2><span>Nuolatinis veiksmų žurnalas</span></div>
-      <div class="panel pad">
-        <div class="historyDateTitle">Pasirink laikotarpį</div>
-        <div class="historyFilters">
-          <div class="field" style="margin-bottom:0"><label>Nuo</label><input class="input" id="historyFromDate" type="date"></div>
-          <div class="field" style="margin-bottom:0"><label>Iki</label><input class="input" id="historyToDate" type="date"></div>
-        </div>
-        <div class="historyFilterActions">
-          <button class="btn" id="historyApplyBtn" type="button">Peržiūrėti</button>
-          <button class="btn secondary" id="historyTodayBtn" type="button">Šiandien</button>
-        </div>
-      </div>
-      <div class="section"><div class="historyList" id="permanentHistoryRoot"></div></div>
+    <div class="section menuHistorySection" id="menu-history">
+      
+    <div class="section"><div class="historyList" id="permanentHistoryRoot"></div></div>
     </div>
   </div>
 
   <div class="view" id="view-achievements">
     <div class="sectionHead"><h2>Užduotys</h2><span>Asmeniniai darbai</span></div>
-    <div class="panel pad">
-      <div class="field"><label>Užduoties pavadinimas</label><input class="input" id="importantTitle" placeholder="Sumokėti mokesčius" /></div>
-      <div class="grid2">
-        <div class="field"><label>XP</label><input class="input" id="importantXp" type="number" min="0" step="1" value="20" /></div>
-        <div class="field"><label>Monetos</label><input class="input" id="importantCoins" type="number" min="0" step="1" value="10" /></div>
-      </div>
-      <button class="btn" id="addImportantBtn" style="width:100%">Pridėti užduotį</button>
-    </div>
-    <div class="section">
-      <div class="taskList" id="importantTasksRoot"></div>
-    </div>
+    <div class="section"><div id="personalTasksRoot"></div></div>
+    <div id="importantTasksRoot" style="display:none"></div>
     <div id="achievementsRoot" style="display:none"></div>
     <div id="skillsRoot" style="display:none"></div>
   </div>
@@ -2242,6 +2253,120 @@ function renderPremiumHomeV3(){
  root.querySelectorAll('[data-jump-premium]').forEach(function(b){b.onclick=function(){state.selectedView=b.dataset.jumpPremium;saveState();render()}});
 }
 
+
+  const USER_TASK_TOPICS = ['Gyvenimas','Visureigiai, UAB','Labai svarbus'];
+
+  function getTodayPriorityTasks(){
+    const out=[];
+    (state.cars||[]).forEach(car=>(car.checklist||[]).forEach(item=>{
+      if(!item.done && item.dueDate===todayISO()){
+        out.push({kind:'Automobilis',label:`${car.name}: ${item.name}`,dueDate:item.dueDate,icon:'🚗',carId:car.id,itemId:item.id});
+      }
+    }));
+    (state.personalTasks||[]).forEach(task=>{
+      if(!task.done && task.dueDate===todayISO()){
+        out.push({kind:task.topic,label:task.title,dueDate:task.dueDate,icon:'📌',taskId:task.id});
+      }
+    });
+    return out;
+  }
+
+  function renderTodayPriority(){
+    const root=document.getElementById('todayPriorityRoot');
+    if(!root)return;
+    const list=getTodayPriorityTasks();
+    root.innerHTML=list.length ? `
+      <div class="todayPriorityBox">
+        <div class="todayPriorityHead">
+          <strong>🔴 ŠIANDIEN — SVARBIAUSIA</strong>
+          <span>${list.length} darb${list.length===1?'as':'ai'}</span>
+        </div>
+        ${list.map(x=>`
+          <div class="todayTaskItem">
+            <div class="todayTaskKind">${escapeHTML(x.kind)}</div>
+            <div class="todayTaskMain">
+              <strong>${x.icon} ${escapeHTML(x.label)}</strong>
+              <small>Reikia padaryti šiandien</small>
+            </div>
+          </div>`).join('')}
+      </div>` : '';
+  }
+
+  function addPersonalTask(topic,title,dueDate=''){
+    if(!Array.isArray(state.personalTasks)) state.personalTasks=[];
+    title=String(title||'').trim();
+    if(!title) return false;
+    state.personalTasks.unshift({
+      id:'pt_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),
+      topic,title,dueDate:dueDate||'',done:false,createdAt:nowLabel(),completedAt:''
+    });
+    addHistory('Užduotis pridėta',`${topic}: ${title}`,'➕');
+    saveState(); render(); return true;
+  }
+
+
+  function completePersonalTask(id){
+    const task=(state.personalTasks||[]).find(x=>x.id===id);
+    if(!task||task.done)return;
+    task.done=true; task.completedAt=nowLabel();
+    state.stats.tasksCompleted += 1;
+    markStreakOnFirstCompletion();
+    logTaskCompletion(task.title);
+    addXpAndCoins(10,5,'Užduotis atlikta',null,'✅');
+  }
+
+  function deletePersonalTask(id){
+    const idx=(state.personalTasks||[]).findIndex(x=>x.id===id);
+    if(idx<0)return;
+    const task=state.personalTasks[idx];
+    if(!confirm(`Ištrinti užduotį „${task.title}“?`))return;
+    state.personalTasks.splice(idx,1);
+    addHistory('Užduotis ištrinta', task.title, '🗑️');
+    saveState();render();
+  }
+
+  function renderPersonalTasks(){
+    const root=document.getElementById('personalTasksRoot');
+    if(!root)return;
+    if(!Array.isArray(state.personalTasks))state.personalTasks=[];
+    root.innerHTML=USER_TASK_TOPICS.map(topic=>{
+      const key=topic.replace(/[^a-zA-Z0-9]+/g,'_');
+      const tasks=state.personalTasks.filter(t=>t.topic===topic).slice().sort((a,b)=>{
+        const ad=a.done?'9999-12-31':(a.dueDate||'9999-12-30');
+        const bd=b.done?'9999-12-31':(b.dueDate||'9999-12-30');
+        return ad.localeCompare(bd);
+      });
+      return `<div class="topicTaskSection panel pad">
+        <div class="topicTaskHead"><strong>${escapeHTML(topic)}</strong><span>${tasks.filter(t=>!t.done).length} laukia</span></div>
+        <div class="topicTaskList">
+          ${tasks.length?tasks.map(t=>`<div class="topicTaskCard ${t.done?'done':''}">
+            <button type="button" class="smallBtn" data-personal-complete="${t.id}" ${t.done?'disabled':''}>${t.done?'✓':'○'}</button>
+            <div class="topicTaskMain"><strong>${escapeHTML(t.title)}</strong><div class="topicTaskMeta">${taskDueMarkup(t.dueDate||'')}${t.done?`<span class="statChip">Atlikta</span>`:''}</div></div>
+            <button type="button" class="smallBtn danger" data-personal-delete="${t.id}">✕</button>
+          </div>`).join(''):'<div class="emptyState">Kol kas nėra užduočių.</div>'}
+        </div>
+        <div class="topicTaskForm">
+          <div class="field"><label>Užduotis</label><input class="input" id="ptTitle_${key}" placeholder="Įrašyk, ką reikia padaryti"></div>
+          <div class="field"><label>Data <span class="subtle">(nebūtina)</span></label><input class="input" id="ptDate_${key}" type="date"></div>
+          <button class="btn" type="button" data-personal-add="${escapeHTML(topic)}">+ Pridėti užduotį</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    root.querySelectorAll('[data-personal-add]').forEach(btn=>btn.onclick=()=>{
+      const topic=btn.dataset.personalAdd,key=topic.replace(/[^a-zA-Z0-9]+/g,'_');
+      const title=document.getElementById('ptTitle_'+key)?.value.trim()||'';
+      const date=document.getElementById('ptDate_'+key)?.value||'';
+      if(!title){toast('Įrašyk užduotį','✍️');return;}
+      addPersonalTask(topic,title,date);
+    });
+    root.querySelectorAll('[data-personal-complete]').forEach(btn=>btn.onclick=()=>{
+      completePersonalTask(btn.dataset.personalComplete); saveState(); render();
+    });
+    root.querySelectorAll('[data-personal-delete]').forEach(btn=>btn.onclick=()=>deletePersonalTask(btn.dataset.personalDelete));
+  }
+
+
   function taskDueInfo(iso){
     if(!iso)return {label:'Be datos',cls:''};
     const today=todayISO(), tomorrow=addDaysISO(today,1);
@@ -2371,7 +2496,20 @@ function addDaysISO(baseISO, days){
     addHistory('Garažo užduotis', `Pridėta: ${task.title}`, '➕');
     toast('Garažo užduotis pridėta', '➕');
     saveState();
-    render();
+  
+  document.querySelectorAll('[data-open-history]').forEach(btn=>btn.onclick=()=>{
+    const el=document.getElementById('menu-history');
+    if(!el) return;
+    const open=!el.classList.contains('open');
+    el.classList.toggle('open',open);
+    if(open) el.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  document.querySelectorAll('[data-open-personal-tasks]').forEach(btn=>btn.onclick=()=>{
+    const el=document.getElementById('menu-personal-tasks');
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  render();
     return true;
   }
 
@@ -3236,6 +3374,7 @@ function addDaysISO(baseISO, days){
     history:[],
     historyLog:[],
     garageTasks:[],
+    personalTasks:[],
     garageTaskLastReset:todayISO(),
     leadVariants:[],
     ui:{
@@ -3278,6 +3417,7 @@ function addDaysISO(baseISO, days){
         importantTasks: Array.isArray(parsed.importantTasks) ? parsed.importantTasks : [],
         completionLog: Array.isArray(parsed.completionLog) ? parsed.completionLog : [],
         garageTasks: Array.isArray(parsed.garageTasks) ? parsed.garageTasks : [],
+        personalTasks: Array.isArray(parsed.personalTasks) ? parsed.personalTasks : [],
         garageTaskLastReset: parsed.garageTaskLastReset || todayISO(),
         leadVariants: Array.isArray(parsed.leadVariants) ? parsed.leadVariants : [],
         ui: {
@@ -4368,6 +4508,8 @@ function addDaysISO(baseISO, days){
       render();
     }));
 
+    renderTodayPriority();
+
     // stats grid
     const statCards = [
       {label:'Vanduo', value:`${stats.waterLiters} L`, icon:'💧'},
@@ -4445,6 +4587,8 @@ function addDaysISO(baseISO, days){
       }
     }
 
+
+    renderPersonalTasks();
 
     // garažas
     ensureGarageDailyTasks();
