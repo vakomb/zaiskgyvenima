@@ -9256,164 +9256,287 @@ function addDaysISO(baseISO, days){
   // garažą, variantus, finansus ir istoriją.
   // ─────────────────────────────────────────────────────────────
 
-  function aiContext(){
-    const today = todayISO();
-    const personal = (state.personalTasks || []).filter(t => !t.done);
-    const personalToday = personal.filter(t => t.dueDate === today);
-    const personalFuture = personal
-      .filter(t => t.dueDate && t.dueDate > today)
-      .sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
+  const AI_CONSULTANT_RULES = `
+Tu esi mano asmeninis AI verslo ir gyvenimo konsultantas. Tavo tikslas – padėti priimti geresnius sprendimus versle, automobilių perpardavimo veikloje, UAB valdyme, finansuose, darbuose ir kasdienybėje.
 
-    const carTasks = [];
-    (state.cars || [])
-      .filter(c => c.status !== 'parduotas')
-      .forEach(car => (car.checklist || []).filter(t => !t.done).forEach(task => {
-        carTasks.push({car, task});
-      }));
+Mąstyk kaip ilgalaikis strateginis partneris, analitikas, automobilių perpardavimo konsultantas, finansų planuotojas ir produktyvumo asistentas viename.
+Pirmiausia nustatyk: tikslą, turimus duomenis, apribojimus, riziką, didžiausią naudą ir konkretų kitą veiksmą.
+Jeigu informacijos pakanka – neklausinėk bereikalingai. Jeigu trūksta esminio skaičiaus – įvardink konkretų trūkstamą duomenį.
+Kai klausimas „ką daryti dabar?“ – duok tik 1–3 svarbiausius veiksmus.
+SVARBIAUSIA ≠ SKUBIAUSIA.
+Vertink terminą, finansinę naudą, riziką, poveikį kitiems darbams, laiką ir ar veiksmas atrakina kitą veiksmą.
 
-    const carToday = carTasks.filter(x => x.task.dueDate === today);
-    const carFuture = carTasks
-      .filter(x => x.task.dueDate && x.task.dueDate > today)
-      .sort((a,b)=>String(a.task.dueDate).localeCompare(String(b.task.dueDate)));
+Automobilius vertink kaip atskirus verslo projektus: pirkimas, savikaina, remontas, dalys, servisas, transportas, skelbimai, rezervas, laikymo laikas, kapitalo užšaldymas, pardavimo tikimybė, derybos, rizika, pelnas ir ROI.
+Niekada nesugalvok statistikos ar skaičių.
+Lietuvos mokesčių ir teisės klausimuose nesiimk apsimesti advokatu, buhalteriu ar VMI. Konkrečius tarifus, terminus ir procedūras reikia tikrinti pagal naujausią oficialią informaciją; jeigu jos čia nėra – aiškiai pasakyk, kad reikia patikrinti VMI / e-seimas / Sodra / Registrų centro šaltinį.
+Atskirk FAKTAS, VERTINIMAS ir REKOMENDACIJA, kai tai naudinga.
+Kalbėk lietuviškai, natūraliai, tiesiai ir praktiškai.`;
 
-    const variants = (state.leadVariants || []).slice();
-    const variantAttention = variants
-      .filter(v => typeof garageLeadDaysLeft === 'function' && garageLeadDaysLeft(v) <= 0)
-      .sort((a,b)=>garageLeadDaysLeft(a)-garageLeadDaysLeft(b));
+function aiTaskDateSort(list){
+  return [...list].sort((a,b)=>{
+    const ad=a.dueDate||'9999-12-31', bd=b.dueDate||'9999-12-31';
+    return String(ad).localeCompare(String(bd));
+  });
+}
 
-    const activeCars = (state.cars || []).filter(c => c.status !== 'parduotas');
-    const soldCars = (state.cars || []).filter(c => c.status === 'parduotas');
+function aiCarSnapshot(car){
+  const tasks=Array.isArray(car.checklist)?car.checklist:[];
+  const pending=tasks.filter(t=>!t.done);
+  const done=tasks.filter(t=>t.done);
+  const cost=typeof carTotalCost==='function' ? carTotalCost(car) : Number(car.buyPrice||0);
+  return {
+    id:car.id,
+    name:car.name||'Automobilis',
+    buyPrice:Number(car.buyPrice||0),
+    cost:Number(cost||0),
+    status:car.status||'aktyvus',
+    soldPrice:Number(car.soldPrice||0),
+    profit:car.status==='parduotas'
+      ? Number(car.netProfit ?? (Number(car.soldPrice||0)-Number(cost||0))):null,
+    pendingCount:pending.length,
+    doneCount:done.length,
+    tasks,
+    pendingTasks:pending,
+    notes:String(car.notes||''),
+    createdAt:car.createdAt||car.addedAt||'',
+    soldAt:car.soldAt||''
+  };
+}
 
-    const monthRevenue = Number(state.finances?.monthlyRevenue || 0);
-    const monthProfit = Number(state.finances?.monthlyNetProfit || 0);
-    const balance = Number(state.finances?.budgetBalance || 0);
+function aiContext(){
+  const today=todayISO();
+  const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowISO=toISODateLocal(tomorrow);
 
-    const priority = [];
-    personalToday.forEach(t => priority.push({
-      type:'Užduotis', title:t.title, meta:t.topic || 'Asmeninė', route:'achievements'
-    }));
-    carToday.forEach(x => priority.push({
-      type:'Automobilis', title:`${x.car.name}: ${x.task.name}`, meta:'Auto užduotis', route:'garage'
-    }));
-    variantAttention.slice(0,3).forEach(v => priority.push({
-      type:'Variantas', title:`${v.make||''} ${v.model||''}`.trim() || 'Variantas',
-      meta:'Reikia dėmesio', route:'garage-leads'
-    }));
+  const personal=(state.personalTasks||[]).filter(t=>!t.done);
+  const personalToday=personal.filter(t=>t.dueDate===today);
+  const personalTomorrow=personal.filter(t=>t.dueDate===tomorrowISO);
+  const personalFuture=aiTaskDateSort(personal.filter(t=>t.dueDate&&t.dueDate>today));
 
-    return {
-      today,
-      level:Number(state.level || 1),
-      xp:Number(state.xp || 0),
-      coins:Number(state.coins || 0),
-      streak:Number(state.streak || 0),
-      personalToday,
-      personalFuture,
-      carToday,
-      carFuture,
-      personalPending:personal,
-      carPending:carTasks,
-      variants,
-      variantAttention,
-      activeCars,
-      soldCars,
-      priority,
-      finances:{monthRevenue, monthProfit, balance},
-      history:Array.isArray(state.historyLog) ? state.historyLog.slice(-12).reverse() : []
-    };
+  const carSnapshots=(state.cars||[]).map(aiCarSnapshot);
+  const activeCars=carSnapshots.filter(c=>c.status!=='parduotas');
+  const soldCars=carSnapshots.filter(c=>c.status==='parduotas');
+
+  const carTasks=[];
+  activeCars.forEach(car=>car.pendingTasks.forEach(task=>carTasks.push({car,task})));
+  const carToday=carTasks.filter(x=>x.task.dueDate===today);
+  const carTomorrow=carTasks.filter(x=>x.task.dueDate===tomorrowISO);
+  const carFuture=carTasks
+    .filter(x=>x.task.dueDate&&x.task.dueDate>today)
+    .sort((a,b)=>String(a.task.dueDate).localeCompare(String(b.task.dueDate)));
+
+  const variants=(state.leadVariants||[]).slice();
+  const variantAttention=variants
+    .filter(v=>{
+      try{return typeof garageLeadDaysLeft==='function' && garageLeadDaysLeft(v)<=0}
+      catch(e){return false}
+    })
+    .sort((a,b)=>{
+      try{return garageLeadDaysLeft(a)-garageLeadDaysLeft(b)}
+      catch(e){return 0}
+    });
+
+  const monthRevenue=Number(state.finances?.monthlyRevenue||0);
+  const monthExpenses=Number(state.finances?.monthlyExpenses||0);
+  const monthProfit=Number(state.finances?.monthlyNetProfit||0);
+  const balance=Number(state.finances?.budgetBalance||0);
+  const lifetimeProfit=Number(state.finances?.lifetimeNetProfit||0);
+
+  const finishedCarTasks=carSnapshots.reduce((n,c)=>n+c.doneCount,0);
+  const pendingCarTasks=carSnapshots.reduce((n,c)=>n+c.pendingCount,0);
+  const activeCapital=activeCars.reduce((n,c)=>n+c.cost,0);
+  const soldRevenue=soldCars.reduce((n,c)=>n+c.soldPrice,0);
+  const soldProfit=soldCars.reduce((n,c)=>n+(Number(c.profit)||0),0);
+
+  const priority=[];
+  personalToday.forEach(t=>priority.push({
+    score:100, type:'Užduotis', title:t.title, meta:t.topic||'Asmeninė', route:'achievements'
+  }));
+  carToday.forEach(x=>priority.push({
+    score:115, type:'Automobilis', title:`${x.car.name}: ${x.task.name}`, meta:'Auto užduotis', route:'garage'
+  }));
+  variantAttention.slice(0,4).forEach(v=>priority.push({
+    score:90, type:'Variantas', title:`${(`${v.make||''} ${v.model||''}`).trim()||'Variantas'}`,
+    meta:v.phone?'Yra kontaktas':'Reikia kontakto', route:'garage-leads'
+  }));
+  activeCars.forEach(car=>{
+    if(car.pendingCount>0 && !priority.some(x=>x.title.startsWith(car.name+':'))){
+      priority.push({
+        score:50+(car.pendingCount>3?15:0),
+        type:'Automobilis',
+        title:car.name,
+        meta:`${car.pendingCount} nebaigti darbai`,
+        route:'garage'
+      });
+    }
+  });
+
+  priority.sort((a,b)=>b.score-a.score);
+
+  return {
+    rules:AI_CONSULTANT_RULES,
+    today,tomorrow:tomorrowISO,
+    selectedView:state.selectedView||'home',
+    level:Number(state.level||1),
+    xp:Number(state.xp||0),
+    coins:Number(state.coins||0),
+    streak:Number(state.streak||0),
+    personalToday,personalTomorrow,personalFuture,personalPending:personal,
+    carToday,carTomorrow,carFuture,carPending:carTasks,
+    cars:carSnapshots,activeCars,soldCars,
+    variants,variantAttention,
+    priority,
+    finances:{monthRevenue,monthExpenses,monthProfit,balance,lifetimeProfit,activeCapital,soldRevenue,soldProfit},
+    metrics:{
+      activeCars:activeCars.length,soldCars:soldCars.length,
+      pendingPersonal:personal.length,pendingCarTasks,
+      finishedCarTasks,pendingCarTasks
+    },
+    history:Array.isArray(state.historyLog)?state.historyLog.slice(-20).reverse():[]
+  };
+}
+
+function aiFmtMoney(value){ return moneyFmt(Number(value||0)); }
+
+function aiDateText(iso){
+  if(!iso)return '';
+  if(iso===todayISO())return 'šiandien';
+  const d=parseISODateLocal(iso);
+  if(!d)return iso;
+  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+  if(iso===toISODateLocal(tomorrow))return 'rytoj';
+  return iso;
+}
+
+function aiNormalizeText(t){
+  return String(t||'')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'');
+}
+
+function aiFindCar(q,c){
+  const nq=aiNormalizeText(q);
+  return c.cars.find(car=>{
+    const nn=aiNormalizeText(car.name);
+    return nn && nq.includes(nn);
+  }) || c.activeCars.find(car=>{
+    const parts=aiNormalizeText(car.name).split(/\s+/).filter(Boolean);
+    return parts.some(p=>p.length>=3 && nq.includes(p));
+  }) || null;
+}
+
+function aiCarEconomics(car, desiredSale=null){
+  const sale=desiredSale==null?null:Number(desiredSale);
+  const profit=sale==null?null:sale-car.cost;
+  const margin=(sale&&sale>0)?(profit/sale)*100:null;
+  const roi=(car.cost>0&&sale!=null)?(profit/car.cost)*100:null;
+  return {sale,profit,margin,roi};
+}
+
+function aiBuildPriority(c){
+  const items=[];
+  c.carToday.slice(0,4).forEach(x=>{
+    items.push({score:120,text:`**${x.car.name}** → ${x.task.name}`,reason:'terminas šiandien'});
+  });
+  c.personalToday.slice(0,3).forEach(t=>{
+    items.push({score:105,text:`**${t.title}**`,reason:'terminas šiandien'});
+  });
+  c.variantAttention.slice(0,3).forEach(v=>{
+    const name=(`${v.make||''} ${v.model||''}`).trim()||'Variantas';
+    items.push({score:90,text:`**${name}**`,reason:v.phone?'kontaktas jau yra':'reikia kontakto'});
+  });
+  c.activeCars
+    .filter(x=>x.pendingCount>0)
+    .sort((a,b)=>b.pendingCount-a.pendingCount)
+    .slice(0,3)
+    .forEach(car=>items.push({score:70,text:`**${car.name}**`,reason:`${car.pendingCount} nebaigti darbai`}));
+  return items.sort((a,b)=>b.score-a.score).slice(0,3);
+}
+
+function aiBuildAnswer(question){
+  const raw=String(question||'').trim();
+  const q=aiNormalizeText(raw);
+  const c=aiContext();
+
+  // Specific car analysis comes first.
+  const car=aiFindCar(raw,c);
+  if(car && /peln|savikain|pirkt|parduot|apsimok|remont|islaidu|islaid|rizik|kaina|kiek|vert/i.test(q)){
+    const econ=aiCarEconomics(car);
+    const pending=car.pendingTasks.slice(0,5).map((t,i)=>`${i+1}. **${t.name}**${t.dueDate?` — ${aiDateText(t.dueDate)}`:''}`).join('\\n');
+    return `**${car.name}**\\n\\n`+
+      `FAKTAS:\\n`+
+      `• Pirkimo kaina: **${aiFmtMoney(car.buyPrice)}**\\n`+
+      `• Dabartinė savikaina: **${aiFmtMoney(car.cost)}**\\n`+
+      `• Neužbaigta darbų: **${car.pendingCount}**\\n`+
+      `• Užbaigta darbų: **${car.doneCount}**\\n\\n`+
+      `VERTINIMAS:\\n`+
+      `${car.pendingCount?`Darbas dar neuždarytas. Didžiausias prioritetas – darbai, kurie tiesiogiai leidžia automobilį paruošti pardavimui.`:`Automobilis neturi nebaigtų darbų, todėl kitas sprendimas turėtų būti pardavimo kaina ir kapitalo atlaisvinimas.`}\\n\\n`+
+      `REKOMENDACIJA:\\n`+
+      `${pending?`Pirmiausia:\\n${pending}`:'Pirmiausia nustatyčiau realistinę pardavimo kainą ir derybų ribą.'}`;
   }
 
-  function aiFmtMoney(value){
-    return moneyFmt(Number(value || 0));
+  // "What to do now/today/remaining day"
+  if(/ka daryti dabar|ka daryt dabar|siandien|likusi diena|likusi diena|likusia diena|ka galeciau|ka dar galeciau|ka dar nuveikt|ka nuveikt|pasiulyk|veikti dabar|dabar ka/i.test(q)){
+    const top=aiBuildPriority(c);
+    if(!top.length){
+      return `DABAR:\\n1. **Pasirink vieną rezultatą, kurį šiandien gali visiškai užbaigti.**\\n\\nNEŠVAISTYK LAIKO:\\nNesiimk kelių naujų darbų vienu metu.\\n\\nKODĖL:\\nŠiuo metu app'e nematau aiškaus datos prioriteto, todėl didžiausia nauda – vieną konkretų darbą paversti užbaigtu rezultatu.`;
+    }
+    return `DABAR:\\n${top.map((x,i)=>`${i+1}. ${x.text} — ${x.reason}`).join('\\n')}\\n\\nTADA:\\nUžbaik pirmą veiksmą iki galo, tik tada pereik prie kito.`;
   }
 
-  function aiDateText(iso){
-    if(!iso) return '';
-    if(iso === todayISO()) return 'šiandien';
-    const d=parseISODateLocal(iso);
-    if(!d) return iso;
-    const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-    const tom=toISODateLocal(tomorrow);
-    if(iso===tom) return 'rytoj';
-    return iso;
+  // Priority/plan
+  if(/prioritet|planu|nuo ko|ka pirm|eile|tvarkar|kaip susideliot/i.test(q)){
+    const top=aiBuildPriority(c);
+    return top.length
+      ? `PRIORITETAI:\\n${top.map((x,i)=>`${i+1}. ${x.text} — ${x.reason}`).join('\\n')}\\n\\nLogika: pirmiausia terminas, tada piniginė nauda, rizika ir tai, kas atrakina kitą veiksmą.`
+      : `Šiuo metu nėra aiškaus aukšto prioriteto. Pasirink vieną darbą, kurio užbaigimas duoda konkretų rezultatą.`;
   }
 
-  function aiBuildAnswer(question){
-    const q=String(question||'').trim().toLowerCase();
-    const c=aiContext();
+  // Garage / variants
+  if(/garaz|automobil|auto\\b|variant|pardavim/i.test(q)){
+    const cars=c.activeCars
+      .sort((a,b)=>b.pendingCount-a.pendingCount)
+      .slice(0,6)
+      .map(car=>`• **${car.name}** — savikaina ${aiFmtMoney(car.cost)}, nebaigta ${car.pendingCount}`)
+      .join('\\n');
+    const vars=c.variantAttention.slice(0,5)
+      .map(v=>`• **${(`${v.make||''} ${v.model||''}`).trim()||'Variantas'}** — ${v.phone?'yra kontaktas':'kontakto duomenys neaiškūs'}`)
+      .join('\\n');
+    return `GARAŽAS:\\n\\nFAKTAS:\\n• Aktyvūs automobiliai: **${c.activeCars.length}**\\n• Parduoti: **${c.soldCars.length}**\\n• Aktyvaus kapitalo savikaina: **${aiFmtMoney(c.finances.activeCapital)}**\\n• Nebaigti auto darbai: **${c.metrics.pendingCarTasks}**\\n\\nVERTINIMAS:\\n${cars||'Aktyvių automobilių nėra.'}\\n\\n${vars?`VARIANTAI, KURIEMS REIKIA DĖMESIO:\\n${vars}`:''}\\n\\nREKOMENDACIJA:\\nPirmiausia judink automobilį, kurio užbaigimas greičiausiai leidžia parduoti arba atlaisvinti kapitalą.`;
+  }
 
-    const todayItems = [
-      ...c.personalToday.map(t=>({title:t.title, meta:t.topic || 'Užduotis'})),
-      ...c.carToday.map(x=>({title:`${x.car.name}: ${x.task.name}`, meta:'Automobilis'}))
-    ];
+  // Finance
+  if(/finans|peln|pinig|balans|invest|pajam|islaid|marz|roi|kapital/i.test(q)){
+    const sign=c.finances.monthProfit>=0?'+':'';
+    const best=[...c.soldCars].sort((a,b)=>(b.profit||0)-(a.profit||0))[0];
+    return `FINANSAI:\\n\\nFAKTAS:\\n• Balansas: **${aiFmtMoney(c.finances.balance)}**\\n• Mėnesio pajamos: **${aiFmtMoney(c.finances.monthRevenue)}**\\n• Mėnesio išlaidos: **${aiFmtMoney(c.finances.monthExpenses)}**\\n• Mėnesio grynas rezultatas: **${sign}${aiFmtMoney(c.finances.monthProfit)}**\\n• Aktyviame garaže užšaldyta savikaina: **${aiFmtMoney(c.finances.activeCapital)}**\\n\\nVERTINIMAS:\\n${best?`Geriausias iš matomų parduotų automobilių pagal pelną: **${best.name}** — **${best.profit>=0?'+':''}${aiFmtMoney(best.profit)}**.`:'Parduotų automobilių pelno palyginimui šiuo metu nėra pakankamai duomenų.'}\\n\\nREKOMENDACIJA:\\nVertink ne tik pajamas, bet kiek pelno ir kiek kapitalo sugeneruoja kiekvienas automobilis.`;
+  }
 
-    // TODAY / REMAINING DAY
-    if(/šiandien|sian|dabar|likus|likusi|nuveikt|padaryt/i.test(q) &&
-       !/finans|peln|pinig|garaž|automobil|variant/i.test(q)){
-      if(!todayItems.length){
-        return `Pagal tavo app'ą šiandien nėra datomis pažymėtų skubių darbų. Tai gera vieta pasirinkti vieną prasmingą veiksmą: sutvarkyti garažą, užbaigti vieną atidėtą užduotį arba skirti laiką asmeniniam tikslui.`;
-      }
-      const top=todayItems.slice(0,5).map((x,i)=>`${i+1}. **${x.title}** — ${x.meta}`).join('\n');
-      return `Šiandien eičiau tokia tvarka:\n${top}\n\nPirmiausia uždaryk #1, tada #2. Kai juos padarysi, imk kitą svarbiausią darbą.`;
-    }
+  // Personal tasks
+  if(/uzduot|darba|sveikat|produktyv|tobule/i.test(q)){
+    const rows=c.personalPending.slice(0,8).map((t,i)=>`${i+1}. **${t.title}** — ${t.topic||'Užduotis'}${t.dueDate?` — ${aiDateText(t.dueDate)}`:''}`).join('\\n');
+    return rows
+      ? `ASMENINĖS UŽDUOTYS:\\n\\n${rows}\\n\\nREKOMENDACIJA:\\nPirmiausia imk tą, kuri turi artimiausią terminą arba didžiausią poveikį tavo dienos rezultatui.`
+      : `Asmeninių neužbaigtų užduočių šiuo metu nėra.`;
+  }
 
-    // PRIORITIES / PLAN
-    if(/prioritet|planu|eilė|eile|nuosekl|tvarkara|ka nuo ko|ką pirm/i.test(q)){
-      const items=c.priority.slice(0,6);
-      if(!items.length){
-        const next=[
-          ...c.personalFuture.slice(0,3).map(t=>({title:t.title,date:t.dueDate})),
-          ...c.carFuture.slice(0,3).map(x=>({title:`${x.car.name}: ${x.task.name}`,date:x.task.dueDate}))
-        ];
-        return next.length
-          ? `Skubaus darbo šiandien nėra. Artimiausi dalykai:\n${next.map((x,i)=>`${i+1}. **${x.title}** — ${aiDateText(x.date)}`).join('\n')}`
-          : `Šiuo metu neturiu aiškaus datinio prioriteto. Siūlau šiandien sąmoningai pasirinkti vieną svarbiausią rezultatą ir jį uždaryti iki galo.`;
-      }
-      return `Tavo dabartinis prioritetų sąrašas:\n${items.map((x,i)=>`${i+1}. **${x.title}** — ${x.meta}`).join('\n')}\n\nLogika paprasta: pirmiausia tai, kas turi šiandienos terminą, tada tai, kas greičiausiai atneša rezultatą.`;
-    }
+  // Overview
+  if(/apzvalg|suvest|situacij|kaip einas|kas vyksta|mano app/i.test(q)){
+    return `DABARTINĖ SITUACIJA:\\n\\n• Aktyvūs automobiliai: **${c.activeCars.length}**\\n• Parduoti automobiliai: **${c.soldCars.length}**\\n• Nebaigti auto darbai: **${c.metrics.pendingCarTasks}**\\n• Asmeninės neužbaigtos užduotys: **${c.metrics.pendingPersonal}**\\n• Variantai: **${c.variants.length}**\\n• Balansas: **${aiFmtMoney(c.finances.balance)}**\\n• Mėnesio grynas rezultatas: **${c.finances.monthProfit>=0?'+':''}${aiFmtMoney(c.finances.monthProfit)}**\\n\\nVERTINIMAS:\\nDidžiausia vertė šiuo metu ateina iš veiksmų, kurie uždaro konkretų rezultatą: paruošia automobilį, leidžia jį parduoti, atlaisvina kapitalą arba uždaro svarbų terminą.`;
+  }
 
-    // GARAGE
-    if(/garaž|garage|automobil|auto\b|parduoti|pardavim|variant/i.test(q)){
-      const urgentVariants=c.variantAttention.slice(0,4)
-        .map(v=>`• **${(`${v.make||''} ${v.model||''}`).trim() || 'Variantas'}** — ${v.phone ? 'yra tel. nr.' : 'nėra tel. nr.'}`)
-        .join('\n');
-      const cars=c.activeCars.slice(0,6)
-        .map(car=>`• **${car.name}** — ${(car.checklist||[]).filter(t=>!t.done).length} neatliktų darbų`)
-        .join('\n');
+  // Tax/UAB safety branch — intentionally does not invent rates.
+  if(/vmi|mokest|pvm|gpm|psd|vsd|sodra|uab|registru cent|dividend|vadovo atlygin|saskait|apskait/i.test(q)){
+    return `Čia reikia atskirti du dalykus:\\n\\nFAKTAS:\\nTavo klausimas yra apie UAB / Lietuvos mokesčių ar teisinę aplinką.\\n\\nVERTINIMAS:\\nKonkretaus tarifo, termino ar procedūros iš šio app konteksto patikimai nustatyti negaliu nepatikrinęs aktualios oficialios taisyklės.\\n\\nREKOMENDACIJA:\\nPateik konkretų atvejį (pvz. „UAB perka auto iš fizinio asmens ir vėliau parduoda“) ir tada galima tiksliai suskaidyti, kokius duomenis reikia patikrinti bei kokia būtų sprendimo logika.`;
+  }
 
-      return `Garažo vaizdas:\n\nAktyvūs automobiliai: **${c.activeCars.length}**\nParduoti automobiliai: **${c.soldCars.length}**\nNeužbaigtų auto darbų: **${c.carPending.length}**\n\n${cars || 'Aktyvių automobilių kol kas nėra.'}\n\n${urgentVariants ? `Variantai, kuriems reikia dėmesio:\n${urgentVariants}` : 'Variantams šiuo metu nėra skubaus veiksmo pagal datą.'}`;
-    }
+  // Decision support for a potential car purchase.
+  if(/ar pirkti|pirk|nepirkti|pirkti masina|pirkti automobili/i.test(q)){
+    return `Kad duotų realų verdiktą, reikia bent šių skaičių:\\n\\n1. Pirkimo kaina\\n2. Realistinė pardavimo kaina\\n3. Remontas + dalys\\n4. Kitos išlaidos\\n5. Nenumatytų išlaidų rezervas\\n\\nTada skaičiuojama:\\n**Savikaina = pirkimas + remontas + kitos išlaidos + rezervas**\\n**Pelnas = realus pardavimas − savikaina**\\n**ROI = pelnas / savikaina**\\n\\nVerdiktas turi būti: 🟢 PIRKTI / 🟡 PIRKTI TIK JEIGU NUSIDERI IKI X € / 🔴 NEPIRKTI.`;
+  }
 
-    // FINANCE
-    if(/finans|peln|pinig|balans|invest|pajam/i.test(q)){
-      const profitSign=c.finances.monthProfit>=0?'+':'';
-      return `Finansų santrauka:\n\n• Balansas: **${aiFmtMoney(c.finances.balance)}**\n• Šio mėnesio pajamos: **${aiFmtMoney(c.finances.monthRevenue)}**\n• Šio mėnesio grynas rezultatas: **${profitSign}${aiFmtMoney(c.finances.monthProfit)}**\n\nIš tavo app duomenų svarbiausia būtų ne vaikytis kuo daugiau veiksmų, o uždaryti darbus, kurie greičiausiai pajudina automobilį link pardavimo arba sumažina nereikalingas išlaidas.`;
-    }
-
-    // PERSONAL TASKS
-    if(/užduot|darba|sveikat|produktyv|tobul/i.test(q)){
-      const rows=c.personalPending.slice(0,8).map(t=>`• **${t.title}** — ${t.topic || 'Užduotis'}${t.dueDate ? ` — ${aiDateText(t.dueDate)}` : ''}`).join('\n');
-      return rows
-        ? `Tavo neužbaigtos asmeninės užduotys:\n${rows}`
-        : `Asmeninių neužbaigtų užduočių šiuo metu nėra.`;
-    }
-
-    // "WHAT CAN I DO" — broad recommendation
-    if(/ką galėčiau|ka galeciau|ką dar|ka dar|idėj|idej|veikt|nuveikt|pasiūlyk|pasiulyk/i.test(q)){
-      const suggestions=[];
-      if(c.personalToday.length) suggestions.push(`uždaryti šiandienos užduotį „${c.personalToday[0].title}“`);
-      if(c.carToday.length) suggestions.push(`sutvarkyti „${c.carToday[0].car.name}“ darbą „${c.carToday[0].task.name}“`);
-      if(c.variantAttention.length) suggestions.push(`susisiekti dėl vieno iš ${c.variantAttention.length} dėmesio laukiančių variantų`);
-      if(c.carPending.length) suggestions.push(`užbaigti vieną automobilio paruošimo darbą`);
-      if(!suggestions.length) suggestions.push('išsirinkti vieną konkretų šiandienos tikslą ir jį uždaryti');
-      return `Štai ką rinkčiausi dabar:\n${suggestions.slice(0,4).map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\nNesiimk visko vienu metu — vienas užbaigtas dalykas yra geresnis už penkis pradėtus.`;
-    }
-
-    // APP OVERVIEW
-    if(/apžvalg|apzvalg|suvest|kas vyksta|mano situacij|kaip einasi/i.test(q)){
-      return `Dabartinė situacija:\n\n• Lygis: **${c.level}**\n• XP: **${c.xp}**\n• Monetos: **${c.coins} 🪙**\n• Serija: **${c.streak} d.**\n• Aktyvūs automobiliai: **${c.activeCars.length}**\n• Variantai: **${c.variants.length}**\n• Neužbaigtos asmeninės užduotys: **${c.personalPending.length}**\n• Neužbaigti auto darbai: **${c.carPending.length}**\n• Šio mėnesio grynas rezultatas: **${aiFmtMoney(c.finances.monthProfit)}**`;
-    }
-
-    return `Matau tavo dabartinę app būseną ir galiu padėti praktiškai. Paklausk, pavyzdžiui: „Ką šiandien daryti?“, „Ką dar nuveikti likusią dieną?“, „Ką dabar daryti garaže?“, „Kokie mano prioritetai?“ arba „Kaip atrodo finansinė situacija?“`;
+  return `Matau tavo programėlės kontekstą ir galiu analizuoti ne tik vieną klausimą, bet visą situaciją: garažą, automobilių savikainą, užduotis, variantus, finansus ir prioritetus.\\n\\nGali klausti konkrečiai: „Ką daryti dabar?“, „Kuris automobilis stringa?“, „Kurį auto pirmiausia ruošti pardavimui?“, „Kiek kapitalo užšaldyta garaže?“, „Ką daryti su šitais variantais?“ arba pateikti konkretų automobilio pirkimo pasiūlymą.`;
   }
 
   function aiAddMessage(role, text){
