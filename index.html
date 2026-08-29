@@ -5495,6 +5495,339 @@ body{font-size:16px!important;color:var(--text)!important}
   flex:0 0 auto!important;
 }
 </style>
+
+<style id="sell-inline-between-actions">
+/* Pardavimo mygtukas apačioje tarp „Ištrinti automobilį“ ir „+ Užduotis“. */
+.carDetailActions{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:100%!important;
+}
+.carDetailActions .carDeleteReal{
+  width:100%!important;
+  margin:0!important;
+}
+.carDetailActions #sellCarBtn{
+  width:auto!important;
+  min-width:82px!important;
+  padding:9px 13px!important;
+  flex:0 0 auto!important;
+}
+.carDetailActions #addChecklistBtn{
+  width:auto!important;
+  padding:9px 13px!important;
+  flex:0 0 auto!important;
+}
+.carSellInlineForm{
+  width:100%!important;
+  margin-top:8px!important;
+}
+.carSellInlineForm .field{
+  margin-bottom:8px!important;
+}
+@media(max-width:380px){
+  .carDetailActions{
+    grid-template-columns:minmax(0,1fr) auto auto!important;
+    gap:6px!important;
+  }
+  .carDetailActions #sellCarBtn,
+  .carDetailActions #addChecklistBtn{
+    padding:8px 10px!important;
+    min-width:0!important;
+  }
+}
+</style>
+
+<style id="car-detail-actions-final-v2">
+/* + Užduotis virš užduočių sąrašo */
+.carTasksSectionHead{
+  justify-content:center!important;
+  text-align:center!important;
+}
+.carTasksSectionHead .carTasksSectionTitle{
+  width:100%!important;
+  display:flex!important;
+  justify-content:center!important;
+}
+.carTasksAddTop{
+  width:auto!important;
+  margin:0 auto!important;
+}
+
+/* Aktyvaus automobilio apačioje: Ištrinti kairėje, Parduoti dešinėje. */
+.carDetailActions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  flex-wrap:nowrap!important;
+}
+.carDetailActions .carDeleteReal{
+  margin-right:auto!important;
+}
+.carDetailActions #sellCarBtn{
+  width:auto!important;
+  flex:0 0 auto!important;
+  padding:9px 12px!important;
+}
+@media(max-width:380px){
+  .carDetailActions #sellCarBtn{
+    padding:8px 10px!important;
+  }
+}
+</style>
+
+<style id="car-card-task-clean-and-cost-bottom">
+.carTaskRow{align-items:center!important;gap:9px!important;padding:9px 10px!important}
+.carTaskMain{min-width:0!important}
+.carTaskMain strong{display:block!important;font-size:14px!important;line-height:1.2!important}
+.carTaskNumber{color:var(--accent-2)!important;font-weight:950!important;margin-right:2px!important}
+.carTaskMain .small{margin-top:3px!important;font-size:10.5px!important;line-height:1.15!important}
+.carTaskActions{display:flex!important;align-items:center!important;gap:6px!important;flex:0 0 auto!important}
+.carTaskExpenseInput{width:62px!important;min-width:62px!important;min-height:36px!important;height:36px!important;padding:7px 8px!important;border-radius:10px!important;font-size:12px!important;text-align:right!important}
+.carTaskActions .smallBtn{width:34px!important;height:34px!important;min-height:34px!important}
+.carBottomCostGrid{margin-top:12px!important}
+</style>
+
+<style id="car-sheet-centered-final">
+/* Automobilio kortelė: pavadinimas centre */
+.premiumSheetTitle{
+  width:100%!important;
+  text-align:center!important;
+}
+.premiumSheetTitle h3{
+  width:100%!important;
+  text-align:center!important;
+  margin:0 auto!important;
+}
+
+/* Nuotraukų blokas ir jo antraštė/elementai centruoti */
+.premiumMedia{
+  text-align:center!important;
+}
+.premiumMedia .premiumSectionHead{
+  justify-content:center!important;
+  text-align:center!important;
+}
+.premiumMedia .premiumSectionHead > div{
+  width:auto!important;
+}
+.premiumMedia .premiumSectionHead h4{
+  text-align:center!important;
+}
+.premiumMedia .premiumCount{
+  margin-left:6px!important;
+}
+.premiumMedia .premiumUpload{
+  justify-content:center!important;
+  text-align:center!important;
+}
+.premiumMedia .premiumMediaActions{
+  justify-content:center!important;
+}
+.premiumMedia .premiumThumbGrid{
+  justify-items:center!important;
+}
+
+/* „Medija“ žodis pašalinamas */
+.premiumMedia .premiumEyebrow{
+  display:none!important;
+}
+
+/* Apatiniai veiksmų mygtukai vienodo aukščio ir vizualinio dydžio */
+.carDetailActions .carDeleteReal,
+.carDetailActions #sellCarBtn{
+  min-height:44px!important;
+  height:44px!important;
+  padding:10px 14px!important;
+  border-radius:14px!important;
+  font-size:13px!important;
+  line-height:1.1!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+/* „Parduoti automobilį“ — žalesnis, ne per tamsus tekstas */
+.carDetailActions #sellCarBtn{
+  color:#16705f!important;
+}
+.carDetailActions #sellCarBtn:hover{
+  color:#125b4e!important;
+}
+
+/* „Ištrinti automobilį“ ir „Parduoti automobilį“ lygūs */
+.carDetailActions{
+  align-items:stretch!important;
+}
+</style>
+
+<style id="swap-delete-sell-button-sizes">
+/* Apkeisti tik šių dviejų mygtukų dydžius. */
+.carDetailActions .carDeleteReal{
+  min-height:40px!important;
+  height:40px!important;
+  padding:8px 11px!important;
+  font-size:12px!important;
+}
+.carDetailActions #sellCarBtn{
+  min-height:48px!important;
+  height:48px!important;
+  padding:11px 15px!important;
+  font-size:14px!important;
+}
+</style>
+
+<style id="delete-sell-identical-size">
+/* Abu apatiniai automobilio veiksmai turi būti visiškai vienodo dydžio ir tipografijos.
+   Spalvos lieka skirtingos: Ištrinti = raudonas, Parduoti = žalias. */
+.carDetailActions .carDeleteReal,
+.carDetailActions #sellCarBtn{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  height:44px!important;
+  min-height:44px!important;
+  padding:10px 12px!important;
+  margin:0!important;
+  border-radius:14px!important;
+  font-size:13px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  white-space:nowrap!important;
+}
+
+/* Spalvos nekeistos, tik priverstinai atstatomos pagal paskutinį dizainą. */
+.carDetailActions .carDeleteReal{
+  background:#ef4444!important;
+  color:#fff!important;
+  border:1px solid #ef4444!important;
+}
+.carDetailActions #sellCarBtn{
+  background:var(--surface-2)!important;
+  color:#16705f!important;
+  border:1px solid var(--line)!important;
+}
+
+/* Vienodos kolonėlės, kad nė vienas mygtukas nebūtų platesnis. */
+.carDetailActions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  align-items:stretch!important;
+}
+@media(max-width:380px){
+  .carDetailActions .carDeleteReal,
+  .carDetailActions #sellCarBtn{
+    height:44px!important;
+    min-height:44px!important;
+    padding:10px 8px!important;
+    font-size:12.5px!important;
+  }
+}
+</style>
+
+<style id="variant-cards-match-car-ui">
+/* VARIANTAI: toks pats kortelės karkasas, tarpai ir patogumas kaip auto kortelėse. */
+#garageLeadRoot .garageLeadCard{
+  border-radius:28px!important;
+  overflow:hidden!important;
+}
+#garageLeadRoot .garageLeadHero{
+  min-height:176px!important;
+  border-radius:0!important;
+  padding:16px!important;
+}
+#garageLeadRoot .garageLeadBody{
+  padding:16px!important;
+}
+#garageLeadRoot .garageLeadBody h4{
+  font-size:18px!important;
+  line-height:1.15!important;
+  margin:0 0 7px!important;
+}
+#garageLeadRoot .garageLeadLine{
+  font-size:12.5px!important;
+  margin-top:7px!important;
+}
+#garageLeadRoot .garageLeadTags{
+  gap:8px!important;
+  margin-top:10px!important;
+}
+#garageLeadRoot .garageLeadTag{
+  font-size:11px!important;
+  padding:6px 9px!important;
+}
+#garageLeadRoot .garageLeadActions{
+  gap:8px!important;
+  margin-top:12px!important;
+}
+#garageLeadRoot .garageLeadActions .btn{
+  min-height:44px!important;
+  padding:10px 9px!important;
+  border-radius:14px!important;
+  font-size:12px!important;
+}
+#garageLeadRoot .leadGallery{
+  margin-top:12px!important;
+}
+#garageLeadRoot .leadGalleryMain{
+  border-radius:18px!important;
+}
+#garageLeadRoot .leadGalleryThumb{
+  border-radius:12px!important;
+}
+
+/* Atidarytas variantas — toks pats premium vidinio lapo ritmas kaip automobilio. */
+#view-garage-leads .premiumSheetTitle{
+  width:100%!important;
+  text-align:center!important;
+}
+#view-garage-leads .premiumSheetTitle h3{
+  text-align:center!important;
+  margin:0 auto!important;
+}
+#view-garage-leads .premiumHero{
+  border-radius:22px!important;
+}
+#view-garage-leads .premiumMedia{
+  text-align:center!important;
+}
+#view-garage-leads .premiumMedia .premiumSectionHead{
+  justify-content:center!important;
+  text-align:center!important;
+}
+#view-garage-leads .premiumMedia .premiumEyebrow{
+  display:none!important;
+}
+#view-garage-leads .premiumMedia .premiumUpload,
+#view-garage-leads .premiumMedia .premiumMediaActions{
+  justify-content:center!important;
+}
+#view-garage-leads .premiumEditSection{
+  margin-top:12px!important;
+}
+#view-garage-leads .premiumActionStack{
+  gap:8px!important;
+}
+#view-garage-leads .premiumActionStack .btn{
+  min-height:44px!important;
+  border-radius:14px!important;
+  font-size:13px!important;
+}
+
+/* Variantų kortelių foto geriau išnaudoja ekraną, be nereikalingų tuščių kraštų. */
+#garageLeadRoot .garageLeadHero,
+#garageLeadRoot .garageLeadHero::before{
+  background-size:cover!important;
+  background-position:center!important;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -8056,7 +8389,6 @@ function addDaysISO(baseISO, days){
 
   function renderCarSheet(car){
     const doneCount = carDoneCount(car);
-    const pct = carProgress(car);
     const currentCost = carTotalCost(car);
     const isSold = car.status === 'parduotas';
     const soldPrice = Number(car.soldPrice || 0);
@@ -8075,24 +8407,16 @@ function addDaysISO(baseISO, days){
             ? `<img src="${photoUrlCache[(car.photos||[])[0]] || (car.photos||[])[0] || car.imageSrc || ''}" alt="${escapeHTML(car.name)}">`
             : `<div class="premiumHeroEmpty">🚗<span>Nuotraukų nėra</span></div>`}
           <div class="premiumHeroShade"></div>
-          <div class="premiumHeroPills">
-            <span class="premiumStatus dark">${pct}%</span>
-          </div>
         </button>
 
         <div class="premiumDetailBody">
-          <div class="premiumStatGrid">
-            <div class="premiumStat"><span>Pirkimo kaina</span><strong>${moneyFmt(car.buyPrice)}</strong></div>
-            <div class="premiumStat"><span>Savikaina</span><strong>${moneyFmt(currentCost)}</strong></div>
-            ${isSold ? `
-            <div class="premiumStat"><span>Parduota už</span><strong>${moneyFmt(soldPrice)}</strong></div>
-            <div class="premiumStat profit"><span>Grynas pelnas</span><strong>${netProfit>=0?'+':''}${moneyFmt(netProfit)}</strong></div>`:''}
-          </div>
 
           ${car.notes ? `<div class="premiumInfo"><span>Pastabos</span><p>${escapeHTML(car.notes)}</p></div>`:''}
 
           <div class="premiumSectionHead carTasksSectionHead">
-            <div class="carTasksSectionTitle"><h4>Užduotys</h4></div>
+            <div class="carTasksSectionTitle">
+              <button class="btn secondary premiumSmallBtn carTasksAddTop" id="addChecklistBtn" type="button">+ Užduotis</button>
+            </div>
           </div>
           <div class="premiumChecklist" id="carChecklist"></div>
 
@@ -8110,16 +8434,13 @@ function addDaysISO(baseISO, days){
               <button class="btn secondary premiumSmallBtn" id="addChecklistBtn" type="button">+ Užduotis</button>
             </div>
           ` : `
-            <div class="premiumSellBox carSellAction">
-              <button class="btn premiumPrimaryBtn" id="sellCarBtn" type="button">Parduoti automobilį</button>
-              <div id="sellCarForm" class="premiumSellForm" style="display:none">
-                <div class="field"><label>Pardavimo kaina</label><input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="0 €" inputmode="decimal"></div>
-                <button class="btn premiumPrimaryBtn" id="confirmSellCarBtn" type="button">Patvirtinti pardavimą</button>
-              </div>
-            </div>
             <div class="premiumActionRow carDetailActions">
               <button class="carDeleteReal" id="deleteCarBtn" type="button">🗑️ Ištrinti automobilį</button>
-              <button class="btn secondary premiumSmallBtn" id="addChecklistBtn" type="button">+ Užduotis</button>
+              <button class="btn secondary premiumSmallBtn carSellInlineBtn" id="sellCarBtn" type="button">Parduoti automobilį</button>
+            </div>
+            <div id="sellCarForm" class="premiumSellForm carSellInlineForm" style="display:none">
+              <div class="field"><label>Pardavimo kaina</label><input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="0 €" inputmode="decimal"></div>
+              <button class="btn premiumPrimaryBtn" id="confirmSellCarBtn" type="button">Patvirtinti pardavimą</button>
             </div>
           `}
 
@@ -8145,6 +8466,12 @@ function addDaysISO(baseISO, days){
               <button class="btn secondary" type="button" id="editCarInfoBtn">✏️ Redaguoti informaciją</button>
             </div>
           </div>
+
+          <div class="premiumStatGrid carBottomCostGrid">
+            <div class="premiumStat"><span>Pirkimo kaina</span><strong>${moneyFmt(car.buyPrice)}</strong></div>
+            <div class="premiumStat"><span>Savikaina</span><strong>${moneyFmt(currentCost)}</strong></div>
+          </div>
+
         </div>
       </div>
     `;
@@ -8168,7 +8495,7 @@ function addDaysISO(baseISO, days){
     if(sellBtn) sellBtn.onclick = () => {
       if(sellCarForm){
         sellCarForm.style.display = 'block';
-        sellBtn.style.display = 'none';
+        sellBtn.disabled = true;
         setTimeout(()=>document.getElementById('sellPriceInput')?.focus(),60);
       }
     };
@@ -8296,22 +8623,18 @@ function addDaysISO(baseISO, days){
     const root = document.getElementById('carChecklist');
     if(!root || !car) return;
     const editable = car.status !== 'parduotas';
-    root.innerHTML = car.checklist.map(item => `
-      <div class="listItem">
+    root.innerHTML = car.checklist.map((item, index) => `
+      <div class="listItem carTaskRow">
         <label>
           <input type="checkbox" ${item.done ? 'checked' : ''} ${editable ? '' : 'disabled'} data-car="${car.id}" data-item="${item.id}" />
-          <div>
-            <strong>${escapeHTML(item.name)}</strong>
-            <div class="small">+${item.xp} XP • +${item.coins} 🪙</div>
-            <div style="margin-top:6px">${taskDueMarkup(item.dueDate || '')}</div>
+          <div class="carTaskMain">
+            <strong><span class="carTaskNumber">${index + 1}.</span> ${escapeHTML(item.name)}</strong>
+            <div class="small">${taskDueMarkup(item.dueDate || '')}</div>
           </div>
         </label>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <input class="input" style="width:110px;padding:9px 10px;border-radius:12px;font-size:12px" type="number" min="0" step="1" ${item.done || !editable ? 'disabled' : ''} value="${Number(item.expense || 0) || ''}" data-expense-for="${item.id}" placeholder="Išlaidos €" />
-          <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end">
-            <span class="badge ${item.done ? 'good' : 'info'}">${item.done ? 'Atlikta' : 'Laukiama'}</span>
-            <button class="smallBtn danger" type="button" data-delete-item="${item.id}" ${editable ? '' : 'disabled'}>✕</button>
-          </div>
+        <div class="carTaskActions">
+          <input class="input carTaskExpenseInput" type="number" min="0" step="1" ${item.done || !editable ? 'disabled' : ''} value="${Number(item.expense || 0) || ''}" data-expense-for="${item.id}" placeholder="€" aria-label="Išlaidos" />
+          <button class="smallBtn danger" type="button" data-delete-item="${item.id}" ${editable ? '' : 'disabled'} aria-label="Ištrinti užduotį">✕</button>
         </div>
       </div>
     `).join('');
