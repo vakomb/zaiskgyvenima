@@ -4975,6 +4975,146 @@ body{font-size:16px!important;color:var(--text)!important}
   height:27px!important;
 }
 </style>
+
+<style id="home-today-tasks-fonts-only">
+/* ONLY: slightly larger text in Today's Tasks categories on Home. */
+#view-home #todayTasksRoot .taskGroupHead h3,
+#view-home #todayTasksRoot .taskGroupHead strong{
+  font-size:1.06em!important;
+}
+#view-home #todayTasksRoot .taskCard .taskMain strong{
+  font-size:1.06em!important;
+}
+#view-home #todayTasksRoot .taskCard .taskMeta{
+  font-size:1.05em!important;
+}
+#view-home #todayTasksRoot .taskCard .rewardPills .xp,
+#view-home #todayTasksRoot .taskCard .rewardPills .coins{
+  font-size:1.05em!important;
+}
+</style>
+
+<style id="ai-assistant-professional-ui">
+#view-ai .sectionHead{margin-bottom:12px!important}
+#view-ai .sectionHead h2{font-size:21px!important}
+.aiPanel{
+  display:grid!important;
+  gap:12px!important;
+  width:100%!important;
+  padding:13px!important;
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  border-radius:21px!important;
+  box-shadow:0 12px 30px rgba(16,24,40,.06)!important;
+}
+.aiHero{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:12px!important;
+  border-radius:16px!important;
+  background:#eef7f4!important;
+  border:1px solid #d8ebe5!important;
+}
+.aiHeroIcon{
+  width:44px!important;height:44px!important;
+  display:grid!important;place-items:center!important;
+  border-radius:14px!important;
+  background:#dcefe9!important;
+  color:#126556!important;
+  font-size:22px!important;
+}
+.aiHeroCopy strong{
+  display:block!important;font-size:16px!important;line-height:1.15!important;
+  color:var(--text)!important;
+}
+.aiHeroCopy p{
+  margin:3px 0 0!important;font-size:12px!important;line-height:1.35!important;
+  color:#4f5d73!important;
+}
+.aiClearBtn{
+  width:36px!important;height:36px!important;border-radius:11px!important;
+  border:1px solid #cfe0db!important;background:#fff!important;
+  color:#126556!important;font-size:18px!important;font-weight:900!important;
+}
+.aiQuickGrid{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;
+}
+.aiQuickBtn{
+  min-height:56px!important;
+  display:grid!important;grid-template-columns:auto 1fr!important;
+  align-items:center!important;gap:8px!important;
+  padding:9px 10px!important;
+  border:1px solid var(--line)!important;
+  border-radius:14px!important;
+  background:#fff!important;color:var(--text)!important;
+  font:inherit!important;text-align:left!important;
+}
+.aiQuickBtn span{font-size:20px!important}
+.aiQuickBtn strong{font-size:12.5px!important;font-weight:900!important}
+.aiQuickBtn:active{transform:scale(.985)}
+.aiChat{
+  min-height:190px!important;
+  max-height:48vh!important;
+  overflow-y:auto!important;
+  display:grid!important;
+  gap:8px!important;
+  padding:2px!important;
+}
+.aiWelcomeState{
+  min-height:170px!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  text-align:center!important;gap:6px!important;
+  padding:20px!important;
+  border-radius:16px!important;
+  background:#f7faf9!important;
+}
+.aiWelcomeIcon{font-size:30px!important}
+.aiWelcomeState strong{font-size:16px!important;color:var(--text)!important}
+.aiWelcomeState span{max-width:290px!important;font-size:12px!important;line-height:1.45!important;color:#4f5d73!important}
+.aiMessage{display:flex!important}
+.aiUser{justify-content:flex-end!important}
+.aiAssistant{justify-content:flex-start!important}
+.aiMessageBubble{
+  max-width:90%!important;
+  padding:10px 12px!important;
+  border-radius:14px!important;
+  font-size:13px!important;
+  line-height:1.48!important;
+  color:var(--text)!important;
+  background:#f3f7f6!important;
+  border:1px solid #e1ebe8!important;
+}
+.aiUser .aiMessageBubble{
+  color:#fff!important;
+  background:#177b6d!important;
+  border-color:#177b6d!important;
+}
+.aiMessageBubble strong{font-weight:950!important}
+.aiComposer{display:grid!important;gap:7px!important}
+.aiComposer .input{
+  min-height:76px!important;
+  resize:none!important;
+  font-size:14px!important;
+}
+.aiComposer .btn{
+  min-height:46px!important;
+  background:linear-gradient(180deg,#177b6d 0%,#126556 100%)!important;
+  border-color:#177b6d!important;
+}
+.aiMenuLink .ico{
+  background:#e8f5f1!important;
+}
+@media(max-width:380px){
+  .aiPanel{padding:11px!important}
+  .aiHeroCopy strong{font-size:15px!important}
+  .aiQuickBtn{min-height:52px!important;padding:8px!important}
+  .aiQuickBtn strong{font-size:12px!important}
+  .aiMessageBubble{max-width:93%!important;font-size:12.5px!important}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -5318,6 +5458,7 @@ body{font-size:16px!important;color:var(--text)!important}
         <button class="menuLink" data-jump="menu-stats" data-menu-section="stats"><div class="ico">📊</div><strong>Statistika</strong></button>
         <button class="menuLink" data-open-view="finance"><div class="ico">💼</div><strong>Finansai</strong></button>
         <button class="menuLink" data-open-history><div class="ico">🕘</div><strong>Istorija</strong></button>
+        <button class="menuLink aiMenuLink" data-open-view="ai"><div class="ico">✨</div><strong>AI padėjėjas</strong></button>
       </div>
     </div>
 
@@ -5347,6 +5488,38 @@ body{font-size:16px!important;color:var(--text)!important}
       </div>
       <div class="section"><div class="historyProList" id="permanentHistoryRoot"></div></div>
     </div>
+  </div>
+
+  <div class="view" id="view-ai">
+    <div class="sectionHead">
+      <h2>AI padėjėjas</h2>
+      <span>Tavo kasdienis strategas</span>
+    </div>
+
+    <section class="aiPanel">
+      <div class="aiHero">
+        <div class="aiHeroIcon">✨</div>
+        <div class="aiHeroCopy">
+          <strong>Žinau tavo app kontekstą</strong>
+          <p>Užduotys, garažas, Variantai, finansai ir istorija vienoje vietoje.</p>
+        </div>
+        <button type="button" class="aiClearBtn" id="aiClearBtn" title="Išvalyti pokalbį">↻</button>
+      </div>
+
+      <div class="aiQuickGrid">
+        <button type="button" class="aiQuickBtn" data-ai-prompt="Ką šiandien man svarbiausia nuveikti?"><span>🎯</span><strong>Šiandien</strong></button>
+        <button type="button" class="aiQuickBtn" data-ai-prompt="Ką dar galėčiau nuveikti likusią dieną?"><span>⚡</span><strong>Likusi diena</strong></button>
+        <button type="button" class="aiQuickBtn" data-ai-prompt="Ką dabar geriausia daryti garaže?"><span>🚗</span><strong>Garažas</strong></button>
+        <button type="button" class="aiQuickBtn" data-ai-prompt="Kaip man susidėlioti artimiausius prioritetus?"><span>🧠</span><strong>Prioritetai</strong></button>
+      </div>
+
+      <div class="aiChat" id="aiChatRoot" aria-live="polite"></div>
+
+      <div class="aiComposer">
+        <textarea id="aiInput" class="input" rows="2" placeholder="Ko klausi? Pvz. „Ką man dabar daryti?“"></textarea>
+        <button type="button" class="btn" id="aiSendBtn">Paklausti AI</button>
+      </div>
+    </section>
   </div>
 
   <div class="view" id="view-achievements">
@@ -6825,6 +6998,8 @@ function addDaysISO(baseISO, days){
 
   let state = loadState();
   state.selectedView = 'garage';
+  state.ui = state.ui || {};
+  state.ui.aiChat = Array.isArray(state.ui.aiChat) ? state.ui.aiChat : [];
   saveState();
 
 
@@ -8100,7 +8275,212 @@ function addDaysISO(baseISO, days){
     if(debtDate && !debtDate.value) debtDate.value = todayISO();
   }
 
-  async function render(){
+  
+  // ─────────────────────────────────────────────────────────────
+  // AI PADĖJĖJAS — app-aware local copilot.
+  // Jis neapsimeta išoriniu LLM: atsakymai generuojami iš realios
+  // šio app'o būsenos, todėl padėjėjas mato vartotojo darbus,
+  // garažą, variantus, finansus ir istoriją.
+  // ─────────────────────────────────────────────────────────────
+
+  function aiContext(){
+    const today = todayISO();
+    const personal = (state.personalTasks || []).filter(t => !t.done);
+    const personalToday = personal.filter(t => t.dueDate === today);
+    const personalFuture = personal
+      .filter(t => t.dueDate && t.dueDate > today)
+      .sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
+
+    const carTasks = [];
+    (state.cars || [])
+      .filter(c => c.status !== 'parduotas')
+      .forEach(car => (car.checklist || []).filter(t => !t.done).forEach(task => {
+        carTasks.push({car, task});
+      }));
+
+    const carToday = carTasks.filter(x => x.task.dueDate === today);
+    const carFuture = carTasks
+      .filter(x => x.task.dueDate && x.task.dueDate > today)
+      .sort((a,b)=>String(a.task.dueDate).localeCompare(String(b.task.dueDate)));
+
+    const variants = (state.leadVariants || []).slice();
+    const variantAttention = variants
+      .filter(v => typeof garageLeadDaysLeft === 'function' && garageLeadDaysLeft(v) <= 0)
+      .sort((a,b)=>garageLeadDaysLeft(a)-garageLeadDaysLeft(b));
+
+    const activeCars = (state.cars || []).filter(c => c.status !== 'parduotas');
+    const soldCars = (state.cars || []).filter(c => c.status === 'parduotas');
+
+    const monthRevenue = Number(state.finances?.monthlyRevenue || 0);
+    const monthProfit = Number(state.finances?.monthlyNetProfit || 0);
+    const balance = Number(state.finances?.budgetBalance || 0);
+
+    const priority = [];
+    personalToday.forEach(t => priority.push({
+      type:'Užduotis', title:t.title, meta:t.topic || 'Asmeninė', route:'achievements'
+    }));
+    carToday.forEach(x => priority.push({
+      type:'Automobilis', title:`${x.car.name}: ${x.task.name}`, meta:'Auto užduotis', route:'garage'
+    }));
+    variantAttention.slice(0,3).forEach(v => priority.push({
+      type:'Variantas', title:`${v.make||''} ${v.model||''}`.trim() || 'Variantas',
+      meta:'Reikia dėmesio', route:'garage-leads'
+    }));
+
+    return {
+      today,
+      level:Number(state.level || 1),
+      xp:Number(state.xp || 0),
+      coins:Number(state.coins || 0),
+      streak:Number(state.streak || 0),
+      personalToday,
+      personalFuture,
+      carToday,
+      carFuture,
+      personalPending:personal,
+      carPending:carTasks,
+      variants,
+      variantAttention,
+      activeCars,
+      soldCars,
+      priority,
+      finances:{monthRevenue, monthProfit, balance},
+      history:Array.isArray(state.historyLog) ? state.historyLog.slice(-12).reverse() : []
+    };
+  }
+
+  function aiFmtMoney(value){
+    return moneyFmt(Number(value || 0));
+  }
+
+  function aiDateText(iso){
+    if(!iso) return '';
+    if(iso === todayISO()) return 'šiandien';
+    const d=parseISODateLocal(iso);
+    if(!d) return iso;
+    const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+    const tom=toISODateLocal(tomorrow);
+    if(iso===tom) return 'rytoj';
+    return iso;
+  }
+
+  function aiBuildAnswer(question){
+    const q=String(question||'').trim().toLowerCase();
+    const c=aiContext();
+
+    const todayItems = [
+      ...c.personalToday.map(t=>({title:t.title, meta:t.topic || 'Užduotis'})),
+      ...c.carToday.map(x=>({title:`${x.car.name}: ${x.task.name}`, meta:'Automobilis'}))
+    ];
+
+    // TODAY / REMAINING DAY
+    if(/šiandien|sian|dabar|likus|likusi|nuveikt|padaryt/i.test(q) &&
+       !/finans|peln|pinig|garaž|automobil|variant/i.test(q)){
+      if(!todayItems.length){
+        return `Pagal tavo app'ą šiandien nėra datomis pažymėtų skubių darbų. Tai gera vieta pasirinkti vieną prasmingą veiksmą: sutvarkyti garažą, užbaigti vieną atidėtą užduotį arba skirti laiką asmeniniam tikslui.`;
+      }
+      const top=todayItems.slice(0,5).map((x,i)=>`${i+1}. **${x.title}** — ${x.meta}`).join('\n');
+      return `Šiandien eičiau tokia tvarka:\n${top}\n\nPirmiausia uždaryk #1, tada #2. Kai juos padarysi, imk kitą svarbiausią darbą.`;
+    }
+
+    // PRIORITIES / PLAN
+    if(/prioritet|planu|eilė|eile|nuosekl|tvarkara|ka nuo ko|ką pirm/i.test(q)){
+      const items=c.priority.slice(0,6);
+      if(!items.length){
+        const next=[
+          ...c.personalFuture.slice(0,3).map(t=>({title:t.title,date:t.dueDate})),
+          ...c.carFuture.slice(0,3).map(x=>({title:`${x.car.name}: ${x.task.name}`,date:x.task.dueDate}))
+        ];
+        return next.length
+          ? `Skubaus darbo šiandien nėra. Artimiausi dalykai:\n${next.map((x,i)=>`${i+1}. **${x.title}** — ${aiDateText(x.date)}`).join('\n')}`
+          : `Šiuo metu neturiu aiškaus datinio prioriteto. Siūlau šiandien sąmoningai pasirinkti vieną svarbiausią rezultatą ir jį uždaryti iki galo.`;
+      }
+      return `Tavo dabartinis prioritetų sąrašas:\n${items.map((x,i)=>`${i+1}. **${x.title}** — ${x.meta}`).join('\n')}\n\nLogika paprasta: pirmiausia tai, kas turi šiandienos terminą, tada tai, kas greičiausiai atneša rezultatą.`;
+    }
+
+    // GARAGE
+    if(/garaž|garage|automobil|auto\b|parduoti|pardavim|variant/i.test(q)){
+      const urgentVariants=c.variantAttention.slice(0,4)
+        .map(v=>`• **${(`${v.make||''} ${v.model||''}`).trim() || 'Variantas'}** — ${v.phone ? 'yra tel. nr.' : 'nėra tel. nr.'}`)
+        .join('\n');
+      const cars=c.activeCars.slice(0,6)
+        .map(car=>`• **${car.name}** — ${(car.checklist||[]).filter(t=>!t.done).length} neatliktų darbų`)
+        .join('\n');
+
+      return `Garažo vaizdas:\n\nAktyvūs automobiliai: **${c.activeCars.length}**\nParduoti automobiliai: **${c.soldCars.length}**\nNeužbaigtų auto darbų: **${c.carPending.length}**\n\n${cars || 'Aktyvių automobilių kol kas nėra.'}\n\n${urgentVariants ? `Variantai, kuriems reikia dėmesio:\n${urgentVariants}` : 'Variantams šiuo metu nėra skubaus veiksmo pagal datą.'}`;
+    }
+
+    // FINANCE
+    if(/finans|peln|pinig|balans|invest|pajam/i.test(q)){
+      const profitSign=c.finances.monthProfit>=0?'+':'';
+      return `Finansų santrauka:\n\n• Balansas: **${aiFmtMoney(c.finances.balance)}**\n• Šio mėnesio pajamos: **${aiFmtMoney(c.finances.monthRevenue)}**\n• Šio mėnesio grynas rezultatas: **${profitSign}${aiFmtMoney(c.finances.monthProfit)}**\n\nIš tavo app duomenų svarbiausia būtų ne vaikytis kuo daugiau veiksmų, o uždaryti darbus, kurie greičiausiai pajudina automobilį link pardavimo arba sumažina nereikalingas išlaidas.`;
+    }
+
+    // PERSONAL TASKS
+    if(/užduot|darba|sveikat|produktyv|tobul/i.test(q)){
+      const rows=c.personalPending.slice(0,8).map(t=>`• **${t.title}** — ${t.topic || 'Užduotis'}${t.dueDate ? ` — ${aiDateText(t.dueDate)}` : ''}`).join('\n');
+      return rows
+        ? `Tavo neužbaigtos asmeninės užduotys:\n${rows}`
+        : `Asmeninių neužbaigtų užduočių šiuo metu nėra.`;
+    }
+
+    // "WHAT CAN I DO" — broad recommendation
+    if(/ką galėčiau|ka galeciau|ką dar|ka dar|idėj|idej|veikt|nuveikt|pasiūlyk|pasiulyk/i.test(q)){
+      const suggestions=[];
+      if(c.personalToday.length) suggestions.push(`uždaryti šiandienos užduotį „${c.personalToday[0].title}“`);
+      if(c.carToday.length) suggestions.push(`sutvarkyti „${c.carToday[0].car.name}“ darbą „${c.carToday[0].task.name}“`);
+      if(c.variantAttention.length) suggestions.push(`susisiekti dėl vieno iš ${c.variantAttention.length} dėmesio laukiančių variantų`);
+      if(c.carPending.length) suggestions.push(`užbaigti vieną automobilio paruošimo darbą`);
+      if(!suggestions.length) suggestions.push('išsirinkti vieną konkretų šiandienos tikslą ir jį uždaryti');
+      return `Štai ką rinkčiausi dabar:\n${suggestions.slice(0,4).map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\nNesiimk visko vienu metu — vienas užbaigtas dalykas yra geresnis už penkis pradėtus.`;
+    }
+
+    // APP OVERVIEW
+    if(/apžvalg|apzvalg|suvest|kas vyksta|mano situacij|kaip einasi/i.test(q)){
+      return `Dabartinė situacija:\n\n• Lygis: **${c.level}**\n• XP: **${c.xp}**\n• Monetos: **${c.coins} 🪙**\n• Serija: **${c.streak} d.**\n• Aktyvūs automobiliai: **${c.activeCars.length}**\n• Variantai: **${c.variants.length}**\n• Neužbaigtos asmeninės užduotys: **${c.personalPending.length}**\n• Neužbaigti auto darbai: **${c.carPending.length}**\n• Šio mėnesio grynas rezultatas: **${aiFmtMoney(c.finances.monthProfit)}**`;
+    }
+
+    return `Matau tavo dabartinę app būseną ir galiu padėti praktiškai. Paklausk, pavyzdžiui: „Ką šiandien daryti?“, „Ką dar nuveikti likusią dieną?“, „Ką dabar daryti garaže?“, „Kokie mano prioritetai?“ arba „Kaip atrodo finansinė situacija?“`;
+  }
+
+  function aiAddMessage(role, text){
+    state.ui=state.ui||{};
+    state.ui.aiChat=Array.isArray(state.ui.aiChat)?state.ui.aiChat:[];
+    state.ui.aiChat.push({role:String(role), text:String(text), at:Date.now()});
+    state.ui.aiChat=state.ui.aiChat.slice(-24);
+    saveState();
+  }
+
+  function aiRenderChat(){
+    const root=document.getElementById('aiChatRoot');
+    if(!root)return;
+    const list=Array.isArray(state.ui?.aiChat)?state.ui.aiChat:[];
+    if(!list.length){
+      root.innerHTML=`<div class="aiWelcomeState">
+        <div class="aiWelcomeIcon">✨</div>
+        <strong>Kuo galiu padėti?</strong>
+        <span>Galiu sudėlioti šiandienos planą pagal tavo realias užduotis, garažą, Variantus ir finansus.</span>
+      </div>`;
+      return;
+    }
+    root.innerHTML=list.map(m=>{
+      const safe=escapeHTML(m.text||'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+      return `<div class="aiMessage ${m.role==='user'?'aiUser':'aiAssistant'}">
+        <div class="aiMessageBubble">${safe}</div>
+      </div>`;
+    }).join('');
+    requestAnimationFrame(()=>{root.scrollTop=root.scrollHeight;});
+  }
+
+  function aiAsk(prompt){
+    const clean=String(prompt||'').trim();
+    if(!clean)return;
+    aiAddMessage('user',clean);
+    aiAddMessage('assistant',aiBuildAnswer(clean));
+    aiRenderChat();
+  }
+
+async function render(){
     checkDateReset();
     await hydrateLeadPhotos();
     await hydrateCarPhotos();
@@ -8624,7 +9004,7 @@ function addDaysISO(baseISO, days){
       `;
     }).join('');
 
-    const allowedViews = new Set(['home','garage','garage-leads','garage-stats','finance','menu','achievements','settings']);
+    const allowedViews = new Set(['home','garage','garage-leads','garage-stats','finance','menu','ai','achievements','settings']);
     if(!allowedViews.has(state.selectedView)) state.selectedView = 'home';
     const navActiveView = (state.selectedView === 'garage-leads' || state.selectedView === 'garage-stats') ? 'garage' : (state.selectedView === 'finance' ? 'menu' : state.selectedView);
     document.querySelectorAll('.navBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === navActiveView));
@@ -8712,6 +9092,32 @@ function addDaysISO(baseISO, days){
   if(history7Btn)history7Btn.onclick=()=>setHistoryRange(7);
   if(history30Btn)history30Btn.onclick=()=>setHistoryRange(30);
   if(historyAllBtn)historyAllBtn.onclick=()=>setHistoryRange(null);
+
+
+  aiRenderChat();
+  document.querySelectorAll('.aiQuickBtn').forEach(btn=>{
+    btn.onclick=()=>aiAsk(btn.dataset.aiPrompt || btn.textContent || '');
+  });
+  const aiInput=document.getElementById('aiInput');
+  const aiSend=document.getElementById('aiSendBtn');
+  const aiClear=document.getElementById('aiClearBtn');
+  if(aiSend) aiSend.onclick=()=>{
+    const text=aiInput?.value || '';
+    if(aiInput) aiInput.value='';
+    aiAsk(text);
+  };
+  if(aiInput) aiInput.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){
+      e.preventDefault();
+      aiSend?.click();
+    }
+  });
+  if(aiClear) aiClear.onclick=()=>{
+    state.ui=state.ui||{};
+    state.ui.aiChat=[];
+    saveState();
+    aiRenderChat();
+  };
 
   const claimDailyBtnEl2 = document.getElementById('claimDailyBtn');
   const rerollDailyBtnEl2 = document.getElementById('rerollDailyBtn');
