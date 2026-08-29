@@ -3116,6 +3116,593 @@ body{font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:
   .carListFacts strong{font-size:11px}
 }
 </style>
+
+<style id="car-detail-ux-polish">
+.carSheetHead{align-items:flex-start!important;padding-bottom:10px!important}
+.carSheetHeading{min-width:0!important}.carSheetEyebrow,.carSectionEyebrow{display:block!important;font-size:10px!important;font-weight:950!important;letter-spacing:.11em!important;color:var(--muted)!important;text-transform:uppercase!important;margin-bottom:4px!important}
+.carSheetHeading h3{margin:0!important;font-size:21px!important;line-height:1.12!important}
+.carDetailHero{overflow:hidden!important;border-radius:24px!important;background:var(--surface)!important;border:1px solid var(--line)!important}
+.carDetailImage{position:relative!important;display:block!important;width:100%!important;height:214px!important;border:0!important;padding:0!important;background:var(--surface-2)!important;overflow:hidden!important;cursor:pointer!important}
+.carDetailHeroPhoto{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important}
+.carDetailHeroOverlay{position:absolute!important;inset:0!important;background:linear-gradient(180deg,rgba(15,23,42,0) 42%,rgba(15,23,42,.72) 100%)!important;pointer-events:none!important}
+.carDetailHeroTop{position:absolute!important;top:11px!important;left:11px!important;right:11px!important;display:flex!important;justify-content:space-between!important;gap:8px!important}
+.carStatusPill,.carProgressPill{display:inline-flex!important;align-items:center!important;min-height:30px!important;padding:7px 9px!important;border-radius:10px!important;background:rgba(15,23,42,.74)!important;color:#fff!important;backdrop-filter:blur(8px)!important;font-size:10px!important;font-weight:900!important}
+.carStatusPill{background:rgba(15,118,110,.92)!important}
+.carPhotoHint{position:absolute!important;left:12px!important;bottom:11px!important;color:#fff!important;font-size:11px!important;font-weight:850!important}
+.carDetailNoPhoto{height:214px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;color:var(--muted)!important}.carDetailNoPhoto span{font-size:11px!important;font-weight:800!important}
+.carDetailBody{padding:14px!important}
+.carMetricGrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+.carMetricCard{padding:11px 12px!important;border-radius:15px!important;background:var(--surface-2)!important;border:1px solid var(--line)!important;min-width:0!important}
+.carMetricLabel{display:block!important;font-size:10px!important;color:var(--muted)!important;font-weight:800!important;margin-bottom:5px!important}
+.carMetricCard strong{display:block!important;font-size:16px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.carMetricProfit strong{color:#15803d!important}
+.carInfoBox{margin-top:9px!important;padding:11px 12px!important;border-radius:15px!important;background:var(--surface-2)!important;border:1px solid var(--line)!important}
+.carInfoLabel{font-size:10px!important;color:var(--muted)!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.08em!important}.carInfoBox p{margin:5px 0 0!important;font-size:12px!important;line-height:1.45!important;white-space:pre-wrap!important}
+.carProgressHeader{display:flex!important;align-items:end!important;justify-content:space-between!important;gap:10px!important;margin-top:17px!important}.carProgressHeader>div{display:grid!important;gap:2px!important}.carProgressHeader strong{font-size:15px!important}.carProgressPercent{font-size:13px!important;font-weight:950!important;color:var(--accent-2,#0f766e)!important}
+.carDetailProgress{height:8px!important;border-radius:999px!important;background:var(--surface-3)!important;overflow:hidden!important;margin-top:7px!important}.carDetailProgress span{display:block!important;height:100%!important;border-radius:inherit!important;background:var(--accent-2,#0f766e)!important}
+.carSectionTitle{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin-top:18px!important;margin-bottom:9px!important}.carSectionTitle h4{margin:0!important;font-size:17px!important}.carAddTaskBtn{min-height:40px!important;padding:9px 11px!important;font-size:11px!important;white-space:nowrap!important}
+.carChecklistWrap .list{gap:7px!important}.carChecklistWrap .listItem{padding:10px!important;border-radius:14px!important;gap:8px!important;background:var(--surface-2)!important}.carChecklistWrap .listItem label{align-items:flex-start!important}.carChecklistWrap .listItem label strong{font-size:13px!important;line-height:1.25!important}.carChecklistWrap .listItem .small{font-size:10px!important}.carChecklistWrap .listItem .badge{font-size:9px!important;padding:5px 7px!important}.carChecklistWrap .listItem input[type="number"]{width:88px!important;font-size:11px!important;min-height:38px!important}
+.carSellArea{margin-top:16px!important}.carSellBtn{width:100%!important;background:var(--accent-2,#0f766e)!important;border-color:var(--accent-2,#0f766e)!important}.carSellForm{padding:12px!important;margin-top:8px!important;border:1px solid var(--line)!important;border-radius:16px!important;background:var(--surface-2)!important}.carConfirmSellBtn{width:100%!important}.carPrimaryDanger{width:100%!important;margin-top:8px!important}.ghostDanger{background:#fff!important;color:var(--danger)!important;border-color:#fecdd3!important;box-shadow:none!important}
+.carSoldSummary{margin-top:16px!important;padding:13px!important;border-radius:17px!important;background:var(--surface-2)!important;border:1px solid var(--line)!important}.carSoldSummaryTitle{font-size:11px!important;font-weight:950!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:var(--muted)!important}.carSoldResult{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:7px!important;margin-top:9px!important}.carSoldResult>div{padding:9px!important;border-radius:12px!important;background:#fff!important;border:1px solid var(--line)!important}.carSoldResult span{display:block!important;font-size:9px!important;color:var(--muted)!important;font-weight:800!important}.carSoldResult strong{display:block!important;font-size:12px!important;margin-top:3px!important}.carSoldDate{margin-top:8px!important;font-size:10px!important;color:var(--muted)!important}
+.carPhotosSection{margin-top:16px!important;padding:13px!important;border-radius:18px!important;background:var(--surface-2)!important;border:1px solid var(--line)!important}.photoSectionTitle{margin-top:0!important}.photoCountBadge{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:28px!important;height:28px!important;padding:0 8px!important;border-radius:999px!important;background:var(--surface)!important;border:1px solid var(--line)!important;font-size:10px!important;font-weight:900!important}.carPhotoAddBtn{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;padding:10px 11px!important;border-radius:14px!important;border:1px dashed var(--line)!important;background:var(--surface)!important;cursor:pointer!important;color:var(--text)!important;position:relative!important}.carPhotoAddBtn>span:first-child{width:32px!important;height:32px!important;display:grid!important;place-items:center!important;border-radius:10px!important;background:rgba(15,118,110,.10)!important;color:var(--accent-2,#0f766e)!important;font-size:19px!important;font-weight:900!important}.carPhotoAddBtn strong{display:block!important;font-size:12px!important}.carPhotoAddBtn small{display:block!important;margin-top:2px!important;font-size:9px!important;color:var(--muted)!important}.carPhotoAddBtn input{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer!important}
+.carPhotoGrid{grid-template-columns:repeat(4,1fr)!important;gap:7px!important}.carPhotoItem{position:relative!important;min-width:0!important}.carPhotoPreviewBtn{display:block!important;width:100%!important;padding:0!important;border:0!important;background:transparent!important;cursor:pointer!important}.carPhotoItem img{display:block!important;width:100%!important;aspect-ratio:1/1!important;object-fit:cover!important;border-radius:11px!important}.carPhotoItem .photoMain{position:absolute!important;left:5px!important;bottom:5px!important;padding:4px 5px!important;border-radius:6px!important;background:rgba(15,23,42,.72)!important;color:#fff!important;font-size:7px!important;font-weight:950!important}.carPhotoItem .photoX{position:absolute!important;right:4px!important;top:4px!important;width:25px!important;height:25px!important;border:0!important;border-radius:8px!important;background:rgba(15,23,42,.75)!important;color:#fff!important;font-size:16px!important;line-height:25px!important;cursor:pointer!important}.carDownloadPhotos,.carEditInfo{width:100%!important;margin-top:8px!important;min-height:43px!important;font-size:11px!important}.carPhotoEmpty{min-height:84px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;color:var(--muted)!important}.carPhotoEmpty strong{font-size:11px!important}.carPhotoEmpty span{font-size:9px!important}
+.carEditPanel{display:grid!important;gap:12px!important}.carEditSection{padding:14px!important;border-radius:18px!important;background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:var(--shadow-soft)!important}.carReadonlyStatus{min-height:50px!important;padding:14px!important;border-radius:13px!important;background:var(--surface-2)!important;border:1px solid var(--line)!important;font-size:14px!important;font-weight:850!important}.editPhotoAdd{margin-top:9px!important}.carEditActions{display:grid!important;gap:8px!important;padding-bottom:4px!important}
+@media(max-width:370px){.carDetailImage,.carDetailNoPhoto{height:190px!important;min-height:190px!important}.carDetailBody{padding:11px!important}.carMetricCard{padding:9px!important}.carMetricCard strong{font-size:14px!important}.carSoldResult{grid-template-columns:1fr 1fr!important}.carSoldResult>div:last-child{grid-column:1/-1}.carPhotoGrid{grid-template-columns:repeat(3,1fr)!important}}
+</style>
+
+<style id="premium-color-system-v3">
+:root{
+  /* Premium neutral base */
+  --bg:#f5f7fb!important;
+  --surface:#ffffff!important;
+  --surface-2:#f8fafc!important;
+  --surface-3:#eef2f7!important;
+  --text:#182235!important;
+  --muted:#68768c!important;
+  --muted-2:#94a1b3!important;
+  --line:#dfe6ef!important;
+  --shadow:0 12px 32px rgba(23,34,53,.065)!important;
+  --shadow-soft:0 7px 18px rgba(23,34,53,.045)!important;
+
+  /* One coherent brand accent */
+  --accent:#5364d8!important;
+  --accent-2:#4254c7!important;
+  --accent-soft:#eef0ff!important;
+  --accent-line:#d9dcff!important;
+
+  /* Secondary accent — used sparingly */
+  --teal:#258f91!important;
+  --teal-soft:#e9f7f7!important;
+  --teal-line:#cceceb!important;
+
+  /* Semantic colors only */
+  --success:#2c8b5c!important;
+  --success-soft:#edf8f2!important;
+  --warn:#b78320!important;
+  --warn-soft:#fff7e7!important;
+  --danger:#c95661!important;
+  --danger-soft:#fff1f3!important;
+  --info:#5364d8!important;
+  --info-soft:#eef0ff!important;
+
+  --nav:#ffffff!important;
+  --navBorder:#dfe6ef!important;
+}
+
+/* Neutralize old loud blue/green visual treatments without changing functionality */
+html,body{
+  background:var(--bg)!important;
+  color:var(--text)!important;
+}
+body{
+  background-image:none!important;
+}
+
+/* Generic brand controls */
+.btn,
+.btn.primary,
+button[data-primary="true"]{
+  background:linear-gradient(180deg,var(--accent) 0%,var(--accent-2) 100%)!important;
+  border-color:var(--accent)!important;
+  color:#fff!important;
+  box-shadow:0 9px 20px rgba(83,100,216,.16)!important;
+}
+.btn:hover{filter:brightness(1.02)}
+.btn.secondary{
+  background:#fff!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  box-shadow:0 5px 14px rgba(23,34,53,.045)!important;
+}
+.btn.ghost{
+  background:transparent!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  box-shadow:none!important;
+}
+.btn.danger,.btn.danger:not(.ghost){
+  background:var(--danger)!important;
+  border-color:var(--danger)!important;
+  box-shadow:0 7px 16px rgba(201,86,97,.12)!important;
+}
+.ghostDanger{
+  background:#fff!important;
+  color:var(--danger)!important;
+  border-color:#f0c9cf!important;
+  box-shadow:none!important;
+}
+
+/* Inputs / selects */
+.input,.select,.textarea{
+  background:#fff!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+.input:focus,.select:focus,.textarea:focus{
+  border-color:var(--accent)!important;
+  box-shadow:0 0 0 3px rgba(83,100,216,.10)!important;
+}
+
+/* Chips, tags and badges */
+.badge.info,.statChip.info,.tag.info{
+  background:var(--accent-soft)!important;
+  color:var(--accent-2)!important;
+  border-color:var(--accent-line)!important;
+}
+.badge.good,.tag.good{
+  background:var(--success-soft)!important;
+  color:var(--success)!important;
+  border-color:#cfeadb!important;
+}
+.badge.warn,.tag.warn{
+  background:var(--warn-soft)!important;
+  color:var(--warn)!important;
+  border-color:#f3dfad!important;
+}
+.badge.danger,.tag.danger{
+  background:var(--danger-soft)!important;
+  color:var(--danger)!important;
+  border-color:#f0c9cf!important;
+}
+
+/* Icons / small accents: no more random blues */
+.rewardCard .ico,
+.achievement .ico,
+.histIcon,
+.menuLink .ico,
+.garageAction .ico{
+  background:var(--accent-soft)!important;
+  color:var(--accent-2)!important;
+}
+.garageAction .ico{
+  border-color:transparent!important;
+}
+.rewardCard .cost{
+  background:var(--warn-soft)!important;
+  border-color:#f3dfad!important;
+  color:#916b18!important;
+}
+
+/* Progress */
+.bar,.miniBar,.carDetailProgress,.carListProgressTrack{
+  background:var(--surface-3)!important;
+  border-color:var(--line)!important;
+}
+.bar .fill,.miniBar .fill,.carDetailProgress span,.carListProgressTrack span{
+  background:linear-gradient(90deg,var(--accent) 0%,#6878e1 100%)!important;
+}
+.xpLine strong,
+.rewardPills .xp,
+.carListProgress,
+.carProgressPercent{
+  color:var(--accent-2)!important;
+}
+
+/* Main cards: clean premium neutral */
+.panel,
+.heroCard,
+.dailyCard,
+.taskGroup,
+.taskCard,
+.carCard,
+.rewardCard,
+.achievement,
+.switch,
+.listItem,
+.financeRow,
+.smallStatBox,
+.garageAction,
+.menuLink,
+.garageCarTaskCard,
+.garageLeadCard,
+.garageMenuPanel,
+.carDetailHero,
+.carEditSection,
+.carPhotosSection,
+.photoManageBox{
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--shadow-soft)!important;
+}
+.taskCard,
+.listItem,
+.carMetricCard,
+.carInfoBox,
+.carSoldSummary,
+.garageLeadTag,
+.leadListChip{
+  background:var(--surface-2)!important;
+}
+.miniStat{
+  background:linear-gradient(180deg,#fbfcfe 0%,#f4f7fa 100%)!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--shadow-soft)!important;
+}
+
+/* Garage / lead cards: same palette */
+.leadListCard,.carListCard{
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+  box-shadow:0 9px 24px rgba(23,34,53,.055)!important;
+}
+.leadListPhoto,.carListPhoto{
+  background:var(--surface-3)!important;
+  border-color:var(--line)!important;
+}
+.leadListChip,.carListChip{
+  background:var(--surface-2)!important;
+  color:var(--muted)!important;
+  border-color:var(--line)!important;
+}
+.leadCallBtn{
+  background:var(--accent)!important;
+  border-color:var(--accent)!important;
+  color:#fff!important;
+}
+.garageLeadTag.warn{background:var(--warn-soft)!important;border-color:#f3dfad!important;color:var(--warn)!important}
+.garageLeadTag.good{background:var(--success-soft)!important;border-color:#cfeadb!important;color:var(--success)!important}
+.garageLeadTag.danger{background:var(--danger-soft)!important;border-color:#f0c9cf!important;color:var(--danger)!important}
+
+/* Car detail status: brand accent, not green/blue mix */
+.carStatusPill{
+  background:rgba(83,100,216,.94)!important;
+}
+.carProgressPill{
+  background:rgba(24,34,53,.76)!important;
+}
+.carMetricProfit strong,.positiveText{
+  color:var(--success)!important;
+}
+.negativeText{
+  color:var(--danger)!important;
+}
+.carSellBtn,.carConfirmSellBtn{
+  background:var(--accent)!important;
+  border-color:var(--accent)!important;
+}
+
+/* Today's priority remains semantic red, but softened and premium */
+.todayPriorityBox{
+  border-color:#efc5ca!important;
+  background:linear-gradient(180deg,#fffafb 0%,#fff4f5 100%)!important;
+  box-shadow:0 10px 24px rgba(201,86,97,.055)!important;
+}
+.todayPriorityTitle strong{color:#8f3d47!important}
+.todayPriorityHead>span,.todayTaskArrow{color:var(--danger)!important}
+.priorityDot{background:#d45a66!important;box-shadow:0 0 0 5px #fde6e9!important}
+.todayTaskKind{
+  background:#fdecee!important;
+  color:#9a4650!important;
+}
+
+/* Navigation: same brand accent */
+.navWrap{
+  background:rgba(245,247,251,.90)!important;
+  border-top:0!important;
+}
+.nav{
+  background:rgba(255,255,255,.98)!important;
+  border-color:var(--line)!important;
+  box-shadow:0 13px 34px rgba(23,34,53,.09)!important;
+}
+.navBtn{color:#738198!important}
+.navBtn.active{
+  background:var(--accent-soft)!important;
+  border-color:var(--accent-line)!important;
+  color:var(--accent-2)!important;
+}
+
+/* Toggles / switches */
+.toggle.on{background:var(--accent)!important}
+
+/* Links / open-state chevrons */
+.chev{
+  background:var(--surface-2)!important;
+  border-color:var(--line)!important;
+  color:var(--muted)!important;
+}
+
+/* Reduce excessive glass / blue wash */
+.heroCard,.dailyCard,.menuIntro,.sheet,.nav,.garageAction,.menuLink,.rewardCard,.taskCard,.carCard,.financeRow,.historyItem{
+  backdrop-filter:none!important;
+}
+
+/* Premium micro-interactions */
+.btn,.navBtn,.garageAction,.menuLink,.taskCard,.carCard,.rewardCard,.smallBtn,.closeBtn{
+  transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease,background .14s ease!important;
+}
+.btn:active,.navBtn:active,.garageAction:active,.menuLink:active,.taskCard:active,.carCard:active,.rewardCard:active,.smallBtn:active,.closeBtn:active{
+  transform:scale(.985)!important;
+}
+
+/* Dark mode stays coherent */
+html[data-theme="dark"]{
+  --bg:#0f1522!important;
+  --surface:#151d2b!important;
+  --surface-2:#1a2433!important;
+  --surface-3:#202b3c!important;
+  --text:#f3f6fb!important;
+  --muted:#aeb9c9!important;
+  --muted-2:#8290a5!important;
+  --line:#29364a!important;
+  --nav:#151d2b!important;
+  --navBorder:#29364a!important;
+  --accent:#7180ea!important;
+  --accent-2:#8794f0!important;
+  --accent-soft:#202947!important;
+  --accent-line:#33406a!important;
+}
+html[data-theme="dark"] .btn.secondary,
+html[data-theme="dark"] .btn.ghost{
+  background:var(--surface-2)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+html[data-theme="dark"] .navBtn.active{
+  background:var(--accent-soft)!important;
+  border-color:var(--accent-line)!important;
+  color:var(--accent-2)!important;
+}
+</style>
+
+<style id="green-theme-fonts-v4">
+:root{
+  --accent:#187968!important;
+  --accent-2:#126457!important;
+  --accent-soft:#e8f5f1!important;
+  --accent-line:#c3e3da!important;
+  --teal:#278f80!important;
+  --teal-soft:#e9f7f3!important;
+  --teal-line:#c9e8df!important;
+  --success:#2f8a62!important;
+  --success-soft:#edf8f3!important;
+  --info:#187968!important;
+  --info-soft:#e8f5f1!important;
+}
+.btn,.btn.primary,button[data-primary="true"]{
+  background:linear-gradient(180deg,var(--accent) 0%,var(--accent-2) 100%)!important;
+  border-color:var(--accent)!important;
+  box-shadow:0 9px 20px rgba(24,121,104,.17)!important;
+}
+.btn.secondary{
+  background:#fff!important;color:var(--text)!important;border-color:var(--line)!important;
+}
+.btn.danger,.btn.danger:not(.ghost){
+  background:var(--danger)!important;border-color:var(--danger)!important;
+  box-shadow:0 7px 16px rgba(201,86,97,.12)!important;
+}
+.btn.ghostDanger{background:#fff!important;color:var(--danger)!important;border-color:#f0c9cf!important}
+.input:focus,.select:focus,.textarea:focus{
+  border-color:var(--accent)!important;
+  box-shadow:0 0 0 3px rgba(24,121,104,.10)!important;
+}
+.badge.info,.statChip.info,.tag.info{
+  background:var(--accent-soft)!important;color:var(--accent-2)!important;border-color:var(--accent-line)!important;
+}
+.garageAction .ico,.rewardCard .ico,.achievement .ico,.histIcon,.menuLink .ico{
+  background:var(--accent-soft)!important;color:var(--accent-2)!important;
+}
+.bar .fill,.miniBar .fill,.carDetailProgress span,.carListProgressTrack span{
+  background:linear-gradient(90deg,var(--accent) 0%,#3b988a 100%)!important;
+}
+.xpLine strong,.rewardPills .xp,.carListProgress,.carProgressPercent{color:var(--accent-2)!important}
+.leadCallBtn,.carSellBtn,.carConfirmSellBtn{
+  background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important;
+}
+.navBtn.active{
+  background:var(--accent-soft)!important;border-color:var(--accent-line)!important;color:var(--accent-2)!important;
+}
+.toggle.on{background:var(--accent)!important}
+.chev{background:var(--surface-2)!important;border-color:var(--line)!important}
+.carStatusPill{background:rgba(24,121,104,.93)!important}
+.carProgressPill{background:rgba(24,34,53,.76)!important}
+
+/* The requested 15% typography increase applies everywhere EXCEPT Home. */
+#view-garage,#view-garage-leads,#view-garage-stats,#view-finance,#view-menu,#view-achievements,#view-settings{
+  font-size:115%!important;
+}
+#view-garage .sectionHead h2,#view-garage-leads .sectionHead h2,#view-garage-stats .sectionHead h2,#view-finance .sectionHead h2,#view-menu .sectionHead h2,#view-achievements .sectionHead h2,#view-settings .sectionHead h2{font-size:115%!important}
+#view-garage .btn,#view-garage-leads .btn,#view-garage-stats .btn,#view-finance .btn,#view-menu .btn,#view-achievements .btn,#view-settings .btn{font-size:115%!important}
+#view-garage .input,#view-garage-leads .input,#view-garage-stats .input,#view-finance .input,#view-menu .input,#view-achievements .input,#view-settings .input{font-size:115%!important}
+#view-garage .garageAction strong,#view-garage-leads .leadListTitle,#view-garage-stats .smallStatBox .value,#view-finance .financeRow strong,#view-menu .menuLink strong,#view-achievements .achievement strong,#view-settings .switch strong{font-size:115%!important}
+</style>
+
+<style id="only-car-lead-cards-fonts-15">
+/* ONLY CHANGE: +15% text sizing inside vehicle + lead cards */
+#activeCarGrid .carListCard,
+#soldCarGrid .carListCard,
+#garageLeadRoot .leadListCard{
+  font-size:115%!important;
+}
+
+/* Card titles / primary info */
+#activeCarGrid .carListTitle,
+#soldCarGrid .carListTitle,
+#garageLeadRoot .leadListTitle{
+  font-size:19.5px!important; /* 17px × 1.15 */
+}
+#activeCarGrid .carListProgress,
+#soldCarGrid .carListDate,
+#garageLeadRoot .leadListPrice{
+  font-size:11.5px!important;
+}
+
+/* Chips */
+#activeCarGrid .carListChip,
+#soldCarGrid .carListChip,
+#garageLeadRoot .leadListChip{
+  font-size:11.5px!important;
+}
+#garageLeadRoot .leadCallBtn{
+  font-size:13.8px!important;
+}
+
+/* Facts / secondary information */
+#activeCarGrid .carListFacts small,
+#soldCarGrid .carListFacts small{
+  font-size:10.35px!important;
+}
+#activeCarGrid .carListFacts strong,
+#soldCarGrid .carListFacts strong{
+  font-size:13.8px!important;
+}
+
+/* Status/profit pills */
+#activeCarGrid .carListStatus,
+#soldCarGrid .carListStatus,
+#soldCarGrid .carListProfit{
+  font-size:10.35px!important;
+}
+
+/* Dominantys variantų apatinė info */
+#garageLeadRoot .leadListNotes{
+  font-size:12.65px!important;
+}
+#garageLeadRoot .leadListBottom,
+#garageLeadRoot .leadNoPhone{
+  font-size:11.5px!important;
+}
+
+@media(max-width:370px){
+  #activeCarGrid .carListTitle,
+  #soldCarGrid .carListTitle,
+  #garageLeadRoot .leadListTitle{
+    font-size:17.25px!important;
+  }
+}
+</style>
+
+<style id="last-small-ui-fixes">
+/* Pagrindinis: lygio skaičiai juodi ir vienodo dydžio */
+#view-home #levelValue,
+#view-home #xpToNext{
+  color:#182235!important;
+  font-size:24px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:-.03em!important;
+}
+
+/* Garažo +: baltas ant akcentinio mygtuko */
+#view-garage .garageAction .ico,
+#view-garage [data-garage-action="addcar"] .ico,
+#view-garage .addCarBtn .ico{
+  color:#fff!important;
+}
+
+/* Jei + yra tekstinis/ikoninis elementas žaliame pagrindiniame mygtuke */
+#view-garage button[style*="background:var(--success)"]{
+  color:#fff!important;
+}
+#view-garage button[style*="background:var(--success)"] .ico,
+#view-garage button[style*="background:var(--success)"] .plus,
+#view-garage button[style*="background:var(--success)"]::first-letter{
+  color:#fff!important;
+}
+
+/* Užduočių page: visas turinys +10%, pagrindinio puslapio neliečia */
+#view-achievements{
+  font-size:110%!important;
+}
+#view-achievements .sectionHead h2{font-size:110%!important}
+#view-achievements .topicTaskSection,
+#view-achievements .taskGroup,
+#view-achievements .personalTaskComposer,
+#view-achievements .taskCard,
+#view-achievements .topicTaskCard{
+  font-size:110%!important;
+}
+#view-achievements .topicTaskHead strong,
+#view-achievements .taskGroupHead h3,
+#view-achievements .personalTaskComposerHead strong,
+#view-achievements .taskMain strong{
+  font-size:110%!important;
+}
+#view-achievements .input,
+#view-achievements .select,
+#view-achievements .textarea,
+#view-achievements .btn{
+  font-size:110%!important;
+}
+#view-achievements .badge,
+#view-achievements .rewardPills>div,
+#view-achievements .personalTopicChip,
+#view-achievements .topicTaskMeta,
+#view-achievements .taskMeta{
+  font-size:110%!important;
+}
+#view-achievements .check{
+  width:31px!important;height:31px!important;
+}
+</style>
+
+<style id="global-type-hierarchy-v2">
+/* Consistent app typography: larger, calmer, easier to scan on a phone. */
+body{font-size:17px!important}
+.sectionHead h2{font-size:21px!important}
+.sectionHead span,.subtle{font-size:13px!important}
+label,.field label{font-size:13px!important}
+.btn{font-size:15px!important;min-height:50px!important}
+.smallBtn{font-size:13px!important;min-width:40px!important;min-height:40px!important}
+.badge,.statChip{font-size:12px!important}
+.taskMain strong,.topicTaskMain strong{font-size:16px!important}
+.taskMeta,.topicTaskMeta{font-size:12px!important}
+.topicTaskHead strong{font-size:18px!important}
+.personalTaskComposerHead strong{font-size:18px!important}
+.personalTopicChip{font-size:13px!important}
+.input,.select,.textarea{font-size:16px!important;min-height:52px!important}
+.navBtn{font-size:12px!important;min-height:62px!important}
+.navBtn .ico{font-size:23px!important}
+
+/* History expanded content */
+.historyProHead h2{font-size:22px!important}
+.historyProHead p{display:none!important}
+.historyDateRow label span{font-size:12px!important}
+.historyDateRow .input{font-size:14px!important;min-height:48px!important}
+.historyQuickRow button{font-size:12px!important}
+.historyProList,.historyProList *{font-size:inherit}
+.historyDayHead strong{font-size:17px!important}
+.historyDayHead span{font-size:12px!important}
+.historyItem{min-height:70px!important;padding:13px!important}
+.historyItem strong{font-size:16px!important}
+.historyItem span{font-size:13px!important}
+.historyItem .histIcon{font-size:22px!important}
+.historyProMain strong{font-size:16px!important}
+.historyProMain p{font-size:13px!important}
+
+/* Garage/lead card info gets the same readable baseline everywhere */
+.carListTitle,.leadListTitle{font-size:19px!important}
+.carListChip,.leadListChip{font-size:12px!important}
+.carListFacts strong{font-size:14px!important}
+.carListFacts small{font-size:11px!important}
+.leadListPrice{font-size:14px!important}
+.leadListBottom,.leadNoPhone{font-size:12px!important}
+.garageAction strong{font-size:15px!important}
+.garageMenuTitle strong{font-size:19px!important}
+
+/* Empty state is intentionally quiet; no extra explanatory text. */
+.emptyState:empty{display:none!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3453,7 +4040,7 @@ body{font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:
     </div>
     <div class="section menuHistorySection" id="menu-history">
       <div class="historyProPanel">
-        <div class="historyProHead"><div><h2>Veiksmų istorija</h2><p>Visi svarbūs veiksmai saugomi pagal datą.</p></div></div>
+        <div class="historyProHead"><div><h2>Veiksmų istorija</h2><p></p></div></div>
         <div class="historyDateRow">
           <label><span>Nuo</span><input class="input" id="historyFromDate" type="date"></label>
           <label><span>Iki</span><input class="input" id="historyToDate" type="date"></label>
@@ -3800,9 +4387,7 @@ function renderPremiumHomeV3(){
         <div class="topicTaskHead">
           <div>
             <strong>${escapeHTML(topic)}</strong>
-            <span class="topicTaskCount">${tasks.filter(x=>!x.done).length} laukia</span>
           </div>
-          <button type="button" class="topicQuickAdd" data-topic-select="${escapeHTML(topic)}">+ Pridėti</button>
         </div>
 
         <div class="topicTaskList">
@@ -3820,7 +4405,7 @@ function renderPremiumHomeV3(){
               </div>
               <button type="button" class="taskDeleteButton" data-personal-delete="${task.id}" aria-label="Ištrinti">×</button>
             </div>`).join('')
-          : `<div class="emptyState topicEmpty">Kol kas nėra užduočių.</div>`}
+          : ``}
         </div>
       </section>`;
     }).join('');
@@ -5609,71 +6194,96 @@ function addDaysISO(baseISO, days){
     const soldPrice = Number(car.soldPrice || 0);
     const netProfit = isSold ? carNetProfit(car) : 0;
     const html = `
-      <div class="sheetHead">
-        <h3>${escapeHTML(car.name)}</h3>
-        <button class="closeBtn" id="closeSheet">✕</button>
+      <div class="sheetHead carSheetHead">
+        <div class="carSheetHeading">
+          <span class="carSheetEyebrow">${isSold ? 'PARDUOTAS' : 'MANO AUTOMOBILIS'}</span>
+          <h3>${escapeHTML(car.name)}</h3>
+        </div>
+        <button class="closeBtn" id="closeSheet" aria-label="Uždaryti">✕</button>
       </div>
-      <div class="carCard">
-        <button type="button" class="carHero heroImageBtn" data-managed-photo-kind="car" data-managed-photo-index="0">
+
+      <div class="carDetailHero">
+        <button type="button" class="carDetailImage" data-managed-photo-kind="car" data-managed-photo-index="0" aria-label="Peržiūrėti automobilio nuotraukas">
           ${((car.photos||[])[0] || car.imageSrc)
-            ? `<img class="carHeroPhoto" src="${photoUrlCache[(car.photos||[])[0]] || (car.photos||[])[0] || car.imageSrc || ''}" alt="${escapeHTML(car.name || 'Automobilis')}">`
-            : ''}
-          <div class="pill">${isSold ? 'Parduotas' : pct === 100 ? 'Paruoštas pardavimui' : pct >= 50 ? 'Beveik paruoštas' : 'Ruošiamas'}</div>
-          <div class="pill">${pct}%</div>
+            ? `<img class="carDetailHeroPhoto" src="${photoUrlCache[(car.photos||[])[0]] || (car.photos||[])[0] || car.imageSrc || ''}" alt="${escapeHTML(car.name || 'Automobilis')}">`
+            : `<div class="carDetailNoPhoto">🚗<span>Nuotraukų nėra</span></div>`}
+          <div class="carDetailHeroOverlay"></div>
+          <div class="carDetailHeroTop">
+            <span class="carStatusPill">${isSold ? 'Parduotas' : pct === 100 ? 'Paruoštas pardavimui' : pct >= 50 ? 'Beveik paruoštas' : 'Ruošiamas'}</span>
+            <span class="carProgressPill">${pct}%</span>
+          </div>
+          <span class="carPhotoHint">📷 Peržiūrėti nuotraukas</span>
         </button>
-        <div class="carBody">
-          <div class="grid2" style="margin-bottom:10px">
-            <div class="smallStatBox">
-              <div class="label">Pirkimo kaina</div>
-              <div class="value">${moneyFmt(car.buyPrice)}</div>
-              <div class="hint">Pradinė investicija</div>
-            </div>
-            <div class="smallStatBox">
-              <div class="label">Šiuo metu stovi</div>
-              <div class="value">${moneyFmt(currentCost)}</div>
-              <div class="hint">Pirkimas + išlaidos</div>
-            </div>
+
+        <div class="carDetailBody">
+          <div class="carMetricGrid">
+            <div class="carMetricCard"><span class="carMetricLabel">Pirkimo kaina</span><strong>${moneyFmt(car.buyPrice)}</strong></div>
+            <div class="carMetricCard"><span class="carMetricLabel">Savikaina</span><strong>${moneyFmt(currentCost)}</strong></div>
+            ${isSold ? `
+            <div class="carMetricCard carMetricProfit"><span class="carMetricLabel">Grynas pelnas</span><strong>${netProfit >= 0 ? '+' : ''}${moneyFmt(netProfit)}</strong></div>
+            <div class="carMetricCard"><span class="carMetricLabel">Parduota už</span><strong>${moneyFmt(soldPrice)}</strong></div>` : ''}
           </div>
-          ${car.notes ? `<div class="leadDetailBox" style="margin-top:10px"><strong style="color:var(--text)">Pastabos</strong><br>${escapeHTML(car.notes)}</div>` : ''}
-          <div class="carLine"><span>Progresas</span><span>${doneCount}/${car.checklist.length} punktų</span></div>
-          <div class="miniBar"><div class="fill" style="width:${pct}%"></div></div>
-          <div class="sectionHead" style="margin:14px 0 8px"><h2>Užduočių sąrašas</h2><span>XP + monetos + išlaidos</span></div>
-          <div class="list" id="carChecklist"></div>
-          ${isSold ? `
-          <div class="grid2" style="margin-top:12px">
-            <div class="smallStatBox">
-              <div class="label">Grynas pelnas</div>
-              <div class="value">${netProfit >= 0 ? '+' : ''}${moneyFmt(netProfit)}</div>
-            </div>
-            <div class="smallStatBox">
-              <div class="label">Pardavimo kaina</div>
-              <div class="value">${moneyFmt(soldPrice)}</div>
-            </div>
+
+          ${car.notes ? `<div class="carInfoBox"><span class="carInfoLabel">Pastabos</span><p>${escapeHTML(car.notes)}</p></div>` : ''}
+
+          <div class="carProgressHeader">
+            <div><span class="carSectionEyebrow">Darbų eiga</span><strong>${doneCount}/${car.checklist.length} atlikta</strong></div>
+            <span class="carProgressPercent">${pct}%</span>
           </div>
-          ` : ''}
+          <div class="carDetailProgress"><span style="width:${pct}%"></span></div>
+
+          <div class="carSectionTitle">
+            <div><span class="carSectionEyebrow">Automobilio darbai</span><h4>Užduotys</h4></div>
+            <button class="btn secondary carAddTaskBtn" id="addChecklistBtn" type="button">+ Pridėti punktą</button>
+          </div>
+          <div class="carChecklistWrap"><div class="list" id="carChecklist"></div></div>
+
           ${isSold ? `
-            <div class="cardNotice" style="margin-top:12px">Parduota ${escapeHTML(car.soldAt || '')}.</div>
-            <div class="btnRow">
-              <button class="btn danger" id="deleteCarBtn" type="button">Ištrinti automobilį</button>
-            </div>
-          ` : `
-            <div id="sellCarForm" style="display:none;margin-top:12px">
-              <div class="field">
-                <label>Pardavimo kaina</label>
-                <input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="Įrašyk pardavimo kainą" />
+            <div class="carSoldSummary">
+              <div class="carSoldSummaryTitle">Pardavimo rezultatas</div>
+              <div class="carSoldResult">
+                <div><span>Savikaina</span><strong>${moneyFmt(currentCost)}</strong></div>
+                <div><span>Parduota</span><strong>${moneyFmt(soldPrice)}</strong></div>
+                <div><span>Grynas pelnas</span><strong class="${netProfit >= 0 ? 'positiveText' : 'negativeText'}">${netProfit >= 0 ? '+' : ''}${moneyFmt(netProfit)}</strong></div>
               </div>
-              <button class="btn" id="confirmSellCarBtn" type="button" style="width:100%;background:var(--success);color:#fff;border-color:var(--success)">Patvirtinti pardavimą</button>
+              <div class="carSoldDate">Parduota ${escapeHTML(car.soldAt || '')}</div>
             </div>
-            <div class="btnRow">
-              <button class="btn secondary" id="addChecklistBtn" type="button">+ Pridėti punktą</button>
-              <button class="btn" id="sellCarBtn" type="button" style="background:var(--success);color:#fff;border-color:var(--success)">Parduoti automobilį</button>
-              <button class="btn danger" id="deleteCarBtn" type="button">Ištrinti automobilį</button>
+            <button class="btn danger carPrimaryDanger" id="deleteCarBtn" type="button">Ištrinti automobilį</button>
+          ` : `
+            <div class="carSellArea">
+              <button class="btn carSellBtn" id="sellCarBtn" type="button">Parduoti automobilį</button>
+              <div id="sellCarForm" class="carSellForm" style="display:none">
+                <div class="field"><label>Pardavimo kaina</label><input class="input" id="sellPriceInput" type="number" min="0" step="1" placeholder="Įrašyk sumą €" inputmode="decimal"></div>
+                <button class="btn carConfirmSellBtn" id="confirmSellCarBtn" type="button">Patvirtinti pardavimą</button>
+              </div>
             </div>
+            <button class="btn danger ghostDanger carPrimaryDanger" id="deleteCarBtn" type="button">Ištrinti automobilį</button>
           `}
-          <div class="photoManageBox"><div class="sectionHead" style="margin:14px 0 8px"><h2>Nuotraukos</h2><span>${(car.photos||[]).length} vnt.</span></div><div class="field"><label>Pridėti nuotraukų</label><input class="input" id="carAddPhotos" type="file" accept="image/*" multiple></div><div class="photoManageGrid">${(car.photos||[]).map((ref,i)=>`<div class="photoManageItem"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}" data-managed-photo-kind="car" data-managed-photo-index="${i}"><div class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</div><button type="button" class="photoX" data-car-photo-delete="${i}">×</button></div>`).join('')||'<div class="photoManageEmpty" style="grid-column:1/-1">Nuotraukų nėra.</div>'}</div><div class="btnRow"><button class="btn secondary" type="button" id="downloadCarPhotos">⬇️ Atsisiųsti visas</button><button class="btn secondary" type="button" id="editCarInfoBtn">✏️ Redaguoti automobilį</button></div></div>
+
+          <div class="photoManageBox carPhotosSection">
+            <div class="carSectionTitle photoSectionTitle">
+              <div><span class="carSectionEyebrow">Medija</span><h4>Nuotraukos</h4></div>
+              <span class="photoCountBadge">${(car.photos||[]).length}</span>
+            </div>
+            <label class="carPhotoAddBtn">
+              <span>＋</span><span><strong>Pridėti nuotraukų</strong><small>Gali pasirinkti kelias iš karto</small></span>
+              <input id="carAddPhotos" type="file" accept="image/*" multiple>
+            </label>
+            <div class="photoManageGrid carPhotoGrid">
+              ${(car.photos||[]).map((ref,i)=>`
+                <div class="photoManageItem carPhotoItem">
+                  <button type="button" class="carPhotoPreviewBtn" data-managed-photo-kind="car" data-managed-photo-index="${i}"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}"></button>
+                  <span class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</span>
+                  <button type="button" class="photoX" data-car-photo-delete="${i}" aria-label="Ištrinti nuotrauką">×</button>
+                </div>`).join('') || '<div class="photoManageEmpty carPhotoEmpty" style="grid-column:1/-1">📷<strong>Nuotraukų nėra</strong><span>Pridėk pirmą nuotrauką.</span></div>'}
+            </div>
+            <button class="btn secondary carDownloadPhotos" type="button" id="downloadCarPhotos">⬇️ Atsisiųsti visas nuotraukas</button>
+            <button class="btn secondary carEditInfo" type="button" id="editCarInfoBtn">✏️ Redaguoti informaciją</button>
+          </div>
         </div>
       </div>
     `;
+
     openSheet(html);
     renderCarChecklist(car.id);
     const close = document.getElementById('closeSheet');
@@ -5709,11 +6319,71 @@ function addDaysISO(baseISO, days){
   }
 
   function openCarEditSheet(carId){
-    const car=state.cars.find(c=>c.id===carId);if(!car)return;const refs=Array.isArray(car.photos)?car.photos:[];
-    openSheet(`<div class="sheetHead"><h3>Redaguoti automobilį</h3><button class="closeBtn" id="closeCarEdit">✕</button></div><div class="panel pad"><div class="field"><label>Pavadinimas</label><input class="input" id="editCarName" value="${escapeHTML(car.name||'')}"></div><div class="field"><label>Pirkimo kaina</label><input class="input" id="editCarBuyPrice" type="number" min="0" value="${Number(car.buyPrice||0)}"></div><div class="field"><label>Pastabos / papildoma informacija</label><textarea class="input" id="editCarNotes" rows="3">${escapeHTML(car.notes||'')}</textarea></div>${car.status==='parduotas' ? `<div class="field"><label>Pardavimo kaina</label><input class="input" id="editCarSoldPrice" type="number" min="0" value="${Number(car.soldPrice||0)}"></div>` : ''}<div class="field"><label>Pridėti nuotraukų</label><input class="input" id="editCarPhotos" type="file" accept="image/*" multiple></div><div class="subtle">Pirma nuotrauka yra pagrindinė. X pašalina nuotrauką.</div><div class="photoManageGrid">${refs.map((ref,i)=>`<div class="photoManageItem"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}" data-managed-photo-kind="car" data-managed-photo-index="${i}"><div class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</div><button type="button" class="photoX" data-edit-car-photo="${i}">×</button></div>`).join('')||'<div class="photoManageEmpty" style="grid-column:1/-1">Nuotraukų nėra.</div>'}</div><div class="btnRow"><button class="btn" id="saveCarEdit">Išsaugoti</button><button class="btn secondary" id="backCarEdit">Atgal</button></div></div>`);
-    document.getElementById('closeCarEdit').onclick=()=>renderCarSheet(car);document.getElementById('backCarEdit').onclick=()=>renderCarSheet(car);
-    document.querySelectorAll('[data-edit-car-photo]').forEach(btn=>btn.onclick=async()=>{const i=Number(btn.dataset.editCarPhoto),ref=(car.photos||[])[i];if(!ref||!confirm('Ištrinti šią nuotrauką?'))return;car.photos=car.photos.filter((_,x)=>x!==i);car.imageSrc=car.photos[0]||'';await photoDelete(ref);saveState();render();openCarEditSheet(car.id)});
-    document.getElementById('saveCarEdit').onclick=async()=>{const name=document.getElementById('editCarName').value.trim();if(!name){toast('Įrašyk pavadinimą','✍️');return}car.name=name;car.buyPrice=Math.max(0,Number(document.getElementById('editCarBuyPrice').value)||0);car.notes=document.getElementById('editCarNotes').value.trim();const soldEl=document.getElementById('editCarSoldPrice');if(soldEl){const sold=soldEl.value;car.soldPrice=sold===''?null:Math.max(0,Number(sold)||0);}const fs=Array.from(document.getElementById('editCarPhotos').files||[]).filter(f=>/^image\//i.test(f.type));for(const f of fs){try{const k=await storeImageFile(f);if(k){car.photos=car.photos||[];car.photos.push(k);await photoGet(k)}}catch(e){}}car.imageSrc=car.photos?.[0]||'';saveState();render();openCar(car.id);toast('Automobilis atnaujintas','✏️')};
+    const car=state.cars.find(c=>c.id===carId);if(!car)return;
+    const refs=Array.isArray(car.photos)?car.photos:[];
+
+    openSheet(`
+      <div class="sheetHead carSheetHead">
+        <div class="carSheetHeading"><span class="carSheetEyebrow">AUTOMOBILIO INFORMACIJA</span><h3>Redaguoti automobilį</h3></div>
+        <button class="closeBtn" id="closeCarEdit" aria-label="Uždaryti">✕</button>
+      </div>
+      <div class="carEditPanel">
+        <div class="carEditSection">
+          <span class="carSectionEyebrow">Pagrindinė informacija</span>
+          <div class="field"><label>Pavadinimas</label><input class="input" id="editCarName" value="${escapeHTML(car.name||'')}" autocomplete="off"></div>
+          <div class="grid2">
+            <div class="field"><label>Pirkimo kaina</label><input class="input" id="editCarBuyPrice" type="number" min="0" inputmode="decimal" value="${Number(car.buyPrice||0)}"></div>
+            ${car.status==='parduotas'
+              ? `<div class="field"><label>Pardavimo kaina</label><input class="input" id="editCarSoldPrice" type="number" min="0" inputmode="decimal" value="${Number(car.soldPrice||0)}"></div>`
+              : `<div class="field"><label>Statusas</label><div class="carReadonlyStatus">${car.status==='paruoštas'?'Paruoštas':'Aktyvus'}</div></div>`}
+          </div>
+          <div class="field"><label>Pastabos</label><textarea class="input" id="editCarNotes" rows="4" placeholder="Papildoma informacija apie automobilį...">${escapeHTML(car.notes||'')}</textarea></div>
+        </div>
+
+        <div class="carEditSection">
+          <div class="carSectionTitle"><div><span class="carSectionEyebrow">Nuotraukos</span><h4>Galerija</h4></div><span class="photoCountBadge">${refs.length}</span></div>
+          <label class="carPhotoAddBtn editPhotoAdd">
+            <span>＋</span><span><strong>Pridėti nuotraukų</strong><small>Pirma nuotrauka lieka pagrindinė</small></span>
+            <input id="editCarPhotos" type="file" accept="image/*" multiple>
+          </label>
+          <div class="photoManageGrid carPhotoGrid">
+            ${refs.map((ref,i)=>`
+              <div class="photoManageItem carPhotoItem">
+                <button type="button" class="carPhotoPreviewBtn" data-managed-photo-kind="car" data-managed-photo-index="${i}"><img src="${photoUrlCache[ref]||''}" alt="Nuotrauka ${i+1}"></button>
+                <span class="photoMain">${i===0?'PAGRINDINĖ':'#'+(i+1)}</span>
+                <button type="button" class="photoX" data-edit-car-photo="${i}" aria-label="Ištrinti nuotrauką">×</button>
+              </div>`).join('') || '<div class="photoManageEmpty carPhotoEmpty" style="grid-column:1/-1">📷<strong>Nuotraukų nėra</strong><span>Pridėk nuotraukų.</span></div>'}
+          </div>
+        </div>
+
+        <div class="carEditActions">
+          <button class="btn" id="saveCarEdit" type="button">Išsaugoti pakeitimus</button>
+          <button class="btn secondary" id="backCarEdit" type="button">Atgal į automobilį</button>
+        </div>
+      </div>
+    `);
+
+    document.getElementById('closeCarEdit').onclick=()=>renderCarSheet(car);
+    document.getElementById('backCarEdit').onclick=()=>renderCarSheet(car);
+    document.querySelectorAll('[data-managed-photo-kind]').forEach(img=>img.onclick=()=>openManagedPhotoGallery(img.dataset.managedPhotoKind,car.id,Number(img.dataset.managedPhotoIndex||0)));
+    document.querySelectorAll('[data-edit-car-photo]').forEach(btn=>btn.onclick=async()=>{
+      const i=Number(btn.dataset.editCarPhoto),ref=(car.photos||[])[i];
+      if(!ref||!confirm('Ištrinti šią nuotrauką?'))return;
+      car.photos=car.photos.filter((_,x)=>x!==i);car.imageSrc=car.photos[0]||'';
+      await photoDelete(ref);saveState();render();openCarEditSheet(car.id)
+    });
+    document.getElementById('saveCarEdit').onclick=async()=>{
+      const name=document.getElementById('editCarName').value.trim();
+      if(!name){toast('Įrašyk pavadinimą','✍️');return}
+      car.name=name;
+      car.buyPrice=Math.max(0,Number(document.getElementById('editCarBuyPrice').value)||0);
+      car.notes=document.getElementById('editCarNotes').value.trim();
+      const soldEl=document.getElementById('editCarSoldPrice');
+      if(soldEl){const sold=soldEl.value;car.soldPrice=sold===''?null:Math.max(0,Number(sold)||0)}
+      const fs=Array.from(document.getElementById('editCarPhotos').files||[]).filter(f=>/^image\//i.test(f.type));
+      for(const f of fs){try{const k=await storeImageFile(f);if(k){car.photos=car.photos||[];car.photos.push(k);await photoGet(k)}}catch(e){}}
+      car.imageSrc=car.photos?.[0]||'';saveState();render();openCar(car.id);toast('Automobilis atnaujintas','✏️')
+    };
   }
 
   function openAddChecklistForm(carId){
@@ -6641,7 +7311,7 @@ function addDaysISO(baseISO, days){
             <button class="smallBtn danger" data-important-delete="${task.id}">✕</button>
           </div>
         </div>
-      `).join('') : `<div class="emptyState">Kol kas nėra užduočių. Pridėk pirmą darbą, ir jis atsiras kaip aiškus sąrašas.</div>`;
+      `).join('') : ``;
       importantRoot.querySelectorAll('[data-important-complete]').forEach(btn => {
         btn.onclick = () => completeImportantTask(btn.dataset.importantComplete);
       });
