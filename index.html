@@ -683,6 +683,363 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
 .pulse{animation:pulse .45s ease}@keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.025)}100%{transform:scale(1)}}
 .mapGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.zoneCard{min-height:90px;padding:12px;border-radius:var(--r-md);box-shadow:none}.zoneCard.locked{opacity:.5}.zoneCard i{font-style:normal;font-size:19px}.zoneCard strong{display:block;margin-top:12px;font-size:13px}.zoneCard span{font-size:11px;color:var(--muted)}
 
+
+
+/* =========================================================
+   NATIVE iPHONE 15 PRO MAX — V4
+   Fixed-width mobile app shell, no horizontal page drift,
+   larger touch targets, calmer radii and consistent type.
+   ========================================================= */
+:root{
+  --tap:52px;
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:18px;
+  --r-xl:22px;
+  --shadow:0 8px 24px rgba(15,23,42,.055);
+  --shadow-lg:0 22px 58px rgba(15,23,42,.17);
+}
+html,body{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+  overscroll-behavior-x:none;
+}
+body{
+  font-size:16px;
+  line-height:1.4;
+  background:var(--bg);
+}
+.app{
+  width:100%!important;
+  max-width:430px!important;
+  min-width:0!important;
+  overflow-x:hidden!important;
+  padding:0 14px calc(92px + env(safe-area-inset-bottom))!important;
+}
+.view,.section,.hero,.panel,.taskGroup,.statsSection,.aiPanel,.menuIntro,.garageMenuPanel,
+.carGrid,.garageLeadGrid,.garageSalesGrid,.financeList,.historyList,.personalTaskTopics,
+.completedTasksSection,.personalTaskComposer,.sheet,.sheet>*{
+  min-width:0!important;
+  max-width:100%!important;
+}
+.view{overflow-x:hidden!important}
+img,video,canvas{max-width:100%;height:auto}
+button,input,textarea,select{max-width:100%;min-width:0}
+.grid2,.grid3,.financeGrid,.metricsGrid,.garageStatsGrid,.financeActions,.garageMenuGrid,.menuLinks,.aiQuickGrid{
+  width:100%;min-width:0;
+}
+.grid2>* ,.grid3>* ,.financeGrid>* ,.metricsGrid>* ,.garageStatsGrid>* ,.financeActions>* ,.garageMenuGrid>* ,.menuLinks>* ,.aiQuickGrid>*{
+  min-width:0;
+}
+
+/* Header */
+.topbar{
+  margin:0 -14px 16px!important;
+  padding:calc(env(safe-area-inset-top) + 15px) 16px 13px!important;
+  background:color-mix(in srgb,var(--bg) 94%,transparent)!important;
+  border-bottom:1px solid var(--line)!important;
+  box-shadow:none!important;
+}
+.topbar h1{
+  font-size:18px!important;
+  line-height:1.1!important;
+  letter-spacing:.08em!important;
+  font-weight:820!important;
+}
+.section{margin-top:20px!important}
+.sectionHead{min-height:32px;margin:0 1px 10px!important;gap:10px!important}
+.sectionHead h2{font-size:21px!important;line-height:1.16!important;font-weight:790!important;letter-spacing:-.025em!important}
+.sectionHead>span[id],.badge,.statChip,.dueChip,.premiumChip,.garageTaskCountBadge,.garageTaskTodayBadge,.photoCountBadge,.premiumCount{
+  min-height:28px!important;
+  padding:5px 9px!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+  font-weight:720!important;
+}
+.pageEyebrow,.premiumEyebrow,.carSectionEyebrow,.carSheetEyebrow,.saleModalEyebrow{display:none!important}
+
+/* Cards */
+.panel,.taskCard,.carCard,.rewardCard,.achievement,.smallStatBox,.zoneCard,.historyItem,.financeRow,.switch,.listItem,
+.garageAction,.menuLink,.garageCarTaskCard,.garageLeadCard,.topicTaskSection,.personalTaskComposer,.statsSection,.aiPanel,
+.nowActionCard,.businessResult,.soldCarCard,.leadListCard,.carListCard{
+  border-radius:var(--r-lg)!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--shadow)!important;
+}
+.panel.pad{padding:16px!important}
+.emptyState,.empty,.historyEmpty,.premiumEmptyMedia,.photoManageEmpty,.carPhotoEmpty,.carPhotosEmpty,.garageSalesEmpty{
+  padding:18px 14px!important;border-radius:14px!important;font-size:14px!important;line-height:1.4!important;
+}
+
+/* Home */
+.heroCard{padding:16px!important;gap:16px!important;border-radius:var(--r-xl)!important}
+.xpLine{font-size:12px!important}.xpLine strong{font-size:22px!important}.bar{height:8px!important}
+.topStats{grid-template-columns:1fr 1fr!important;gap:10px!important}
+.miniStat{padding:13px!important;border-radius:14px!important}
+.miniStat .label{font-size:12px!important;margin-bottom:7px!important}.miniStat .value{font-size:25px!important}
+.homeNowSection{margin-top:14px!important}
+.nowActionCard{
+  min-height:76px!important;padding:12px 12px!important;border-radius:17px!important;
+  grid-template-columns:44px minmax(0,1fr) auto!important;gap:11px!important;
+}
+.nowActionIcon{width:44px!important;height:44px!important;border-radius:13px!important;font-size:20px!important}
+.nowActionTitle{font-size:15.5px!important;line-height:1.25!important;font-weight:760!important;white-space:normal!important}
+.nowActionBtn{min-height:46px!important;padding:0 13px!important;font-size:13.5px!important}
+
+/* Buttons: native rectangular controls, never tiny */
+.btn{
+  min-height:52px!important;
+  padding:0 16px!important;
+  border-radius:12px!important;
+  font-size:15px!important;
+  font-weight:760!important;
+}
+.smallBtn,.closeBtn,.premiumClose,.aiClearBtn,.garagePagerBtn{
+  min-width:44px!important;min-height:44px!important;
+  padding:0 12px!important;border-radius:11px!important;font-size:13px!important;
+}
+.taskDeleteButton,[data-delete-item],.premiumChecklist .smallBtn.danger{
+  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+  border-radius:11px!important;font-size:20px!important;
+}
+.btn:active,.navBtn:active,.garageAction:active,.menuLink:active,.taskCard:active,.carListCard:active,.leadListCard:active,.aiQuickBtn:active{
+  transform:scale(.98)!important;
+}
+
+/* Inputs */
+.field{margin-bottom:14px!important}.field label{font-size:13px!important;margin-bottom:7px!important;font-weight:680!important}
+.input,select.input,textarea.input{
+  width:100%!important;min-height:52px!important;padding:12px 13px!important;
+  border-radius:12px!important;font-size:16px!important;line-height:1.3!important;
+  background:var(--surface-2)!important;
+}
+textarea.input{min-height:104px!important}
+
+/* Garage hub */
+.garageMenuPanel{padding:14px!important;border-radius:20px!important}
+.garageMenuTitle strong{font-size:18px!important}
+.garageMenuGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin-top:12px!important}
+.garageAction{
+  min-height:78px!important;padding:11px!important;border-radius:14px!important;
+  background:var(--surface)!important;box-shadow:none!important;
+}
+.garageAction .left{gap:10px!important}.garageAction strong{font-size:15px!important;line-height:1.2!important}
+.garageAction .ico,.menuLink .ico{
+  width:40px!important;height:40px!important;border-radius:11px!important;background:var(--brand-soft)!important;
+}
+.garageAction .ico svg,.menuLink .ico svg{
+  width:22px!important;height:22px!important;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+.garageTaskCountBadge,.garageTaskTodayBadge{font-size:11.5px!important;min-width:28px!important}
+#garageTaskForm{margin:0!important;width:100%!important}
+.garageCustomTaskFormRow{grid-template-columns:1fr 1fr!important;gap:10px!important}
+.garageRewardCompact{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%!important}
+.garageRewardCompact>span{min-width:0!important;white-space:normal!important;font-size:13px!important}
+.garageRewardCompact .input{width:62px!important;min-height:44px!important}
+
+/* Compact car / lead list, readable but still dense */
+.carListCard,.leadListCard{
+  min-height:100px!important;
+  grid-template-columns:104px minmax(0,1fr)!important;
+  border-radius:15px!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+.carListPhoto,.leadListPhoto{width:104px!important;min-height:100px!important;height:100%!important}
+.carListNoPhoto,.leadNoPhoto{min-height:100px!important;font-size:24px!important}
+.carListInfo,.leadListInfo{padding:10px 11px!important}
+.carListTitle,.leadListTitle{font-size:16px!important;line-height:1.18!important;font-weight:800!important}
+.carListMeta,.leadListMeta,.leadListBottom{font-size:11.5px!important;line-height:1.2!important;gap:5px!important;margin-top:6px!important}
+.carListFacts{gap:10px!important;margin-top:7px!important}.carListFacts small{font-size:10.5px!important}.carListFacts strong{font-size:13.5px!important}
+.carListChip,.leadListChip{min-height:24px!important;padding:3px 6px!important;border-radius:8px!important;font-size:11px!important}
+.carListProfit,.leadListPrice{font-size:13.5px!important}
+.leadListBottom{flex-wrap:wrap!important;align-items:center!important}
+.leadListBottom>span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;flex:1 1 120px!important}
+.leadCallBtn{min-height:44px!important;padding:0 11px!important;border-radius:10px!important;font-size:12.5px!important}
+.soldCarHero{height:138px!important}.soldCarBody{padding:13px!important}.soldCarTitleRow strong{font-size:17px!important}
+
+/* Personal tasks */
+.personalTaskTopics{gap:10px!important}.topicTaskSection{padding:13px!important;border-radius:17px!important}
+.topicTaskHead{margin-bottom:9px!important}.topicTaskHead strong{font-size:16px!important}.topicTaskCount{font-size:12px!important}
+.topicTaskList{gap:7px!important}
+.topicTaskCard{min-height:62px!important;padding:8px 7px 8px 9px!important;border-radius:12px!important;gap:9px!important}
+.taskCheckButton{width:38px!important;height:38px!important;min-width:38px!important;border-radius:11px!important;font-size:16px!important}
+.topicTaskMain strong{font-size:15.5px!important;line-height:1.25!important}.topicTaskMeta{font-size:12px!important;margin-top:4px!important}
+.personalTaskAddToggle{min-height:54px!important;margin-top:12px!important;border-radius:13px!important;font-size:15px!important;padding:0 14px!important}
+.personalTaskComposer{padding:13px!important;border-radius:0 0 17px 17px!important}
+.personalTopicPicker{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;overflow:visible!important;margin:2px 0 12px!important;
+}
+.personalTopicChip{
+  width:100%!important;min-height:44px!important;padding:0 7px!important;border-radius:11px!important;
+  justify-content:center!important;font-size:11.5px!important;white-space:normal!important;text-align:center!important;
+}
+.completedTasksSection{margin-top:14px!important;border-radius:17px!important}
+.completedTasksHead{min-height:54px!important;padding:0 14px!important}.completedTasksHead strong{font-size:16px!important}.completedTasksHead span{font-size:12px!important}
+.completedTaskRow{min-height:66px!important;padding:9px 7px 9px 11px!important;gap:9px!important}
+.completedTaskCheck{width:32px!important;height:32px!important;min-width:32px!important;border-radius:10px!important;font-size:15px!important}
+.completedTaskMain strong{font-size:15px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+.completedTaskMeta,.completedTaskNote{font-size:12px!important;line-height:1.3!important}
+.completedTaskArrow{font-size:22px!important}
+
+/* Menu */
+.menuIntro{padding:14px!important;border-radius:20px!important}.menuLinks{gap:9px!important}
+.menuLink{min-height:92px!important;padding:13px!important;border-radius:14px!important;gap:9px!important}
+.menuLink strong{font-size:15.5px!important}.menuLink.aiMenuLink{min-height:68px!important}
+.historyQuickRow{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;overflow:visible!important}
+.historyQuickRow .smallBtn{width:100%!important;padding:0 5px!important;font-size:12px!important}
+.historyDateRow{gap:9px!important}.historyProEntry,.historyItem{padding:12px!important}.historyProMain strong,.historyItem strong{font-size:14.5px!important}.historyProMain span,.historyItem span,.historyProTime{font-size:12px!important}
+
+/* AI */
+.aiPanel{padding:14px!important;border-radius:20px!important}.aiHero{gap:10px!important}.aiHeroCopy strong{font-size:16px!important}.aiHeroIcon{width:42px!important;height:42px!important;border-radius:12px!important}
+.aiQuickGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+.aiQuickBtn{min-height:60px!important;padding:10px!important;border-radius:13px!important;font-size:14px!important}
+.aiQuickBtn strong{font-size:14px!important}.aiComposer{gap:8px!important}
+.aiMessage,.aiBubble{font-size:14px!important;line-height:1.45!important}
+
+/* Settings and stats */
+.switch{min-height:68px!important;padding:12px 13px!important;border-radius:14px!important;margin-bottom:9px!important}.switch strong{font-size:15.5px!important}
+.toggle{width:52px!important;height:32px!important}.toggle::after{width:24px!important;height:24px!important}.toggle.on::after{transform:translateX(20px)!important}
+.smallStatBox{padding:14px!important;border-radius:14px!important}.smallStatBox .label{font-size:12px!important}.smallStatBox .value{font-size:21px!important}
+.statsSection{padding:14px!important;border-radius:17px!important}.statsSectionHead h3{font-size:18px!important}.statsSectionHead>span{font-size:12px!important}
+.financeRow{padding:13px!important;border-radius:14px!important}.financeRow strong{font-size:15px!important}.financeRow span{font-size:12px!important}
+
+/* Car detail controls */
+.carTaskRow{min-height:62px!important;gap:9px!important}.carTaskRow input[type="checkbox"]{width:24px!important;height:24px!important}.carTaskMain strong{font-size:15px!important}.carTaskMain .small{font-size:12px!important}.carTaskNumber{width:28px!important;height:28px!important;font-size:12px!important}
+.carTaskExpenseInput{width:78px!important;min-height:44px!important;font-size:15px!important}
+.premiumCallBtn{min-width:104px!important;min-height:48px!important}
+.garageLeadTag{font-size:12px!important;border-radius:8px!important;min-height:26px!important}
+
+/* Modal sheets behave like a real iOS bottom sheet and never widen the page */
+.modalBackdrop{width:100%!important;max-width:100%!important;overflow:hidden!important}
+.sheet{
+  width:100%!important;max-width:430px!important;min-width:0!important;
+  max-height:91dvh!important;overflow-y:auto!important;overflow-x:hidden!important;
+  padding:14px 14px calc(18px + env(safe-area-inset-bottom))!important;
+  border-radius:24px 24px 0 0!important;
+}
+.sheetHead,.premiumSheetHead,.carSheetHead,.saleModalHead{min-height:48px!important;gap:10px!important}
+.sheetHead h3,.premiumSheetTitle h3,.carSheetHeading h3{font-size:21px!important;line-height:1.18!important}
+.galleryMain,.leadGalleryMain{max-width:100%!important;border-radius:15px!important}
+.galleryThumbs,.leadGallery{max-width:100%!important;min-width:0!important}
+
+/* Native tab bar: edge anchored instead of a floating web-style pill */
+.navWrap{
+  padding:0!important;
+  background:color-mix(in srgb,var(--surface) 94%,transparent)!important;
+  border-top:1px solid var(--line)!important;
+  backdrop-filter:blur(22px) saturate(170%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(170%)!important;
+}
+.nav{
+  width:100%!important;max-width:430px!important;
+  padding:6px 7px calc(5px + env(safe-area-inset-bottom))!important;
+  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;gap:2px!important;
+}
+.navBtn{
+  min-height:58px!important;padding:5px 1px!important;border:0!important;border-radius:11px!important;
+  gap:3px!important;font-size:10.5px!important;font-weight:680!important;background:transparent!important;
+}
+.navBtn .ico{width:34px!important;height:30px!important;border-radius:10px!important}
+.navBtn .ico svg{width:24px!important;height:24px!important;stroke-width:1.85!important}
+.navBtn.active{background:transparent!important;color:var(--brand)!important}
+.navBtn.active .ico{background:var(--brand-soft)!important}
+.toastWrap{bottom:calc(78px + env(safe-area-inset-bottom))!important}
+
+/* No horizontal-scrolling UI strips. */
+.personalTopicPicker,.historyQuickRow{scrollbar-width:none!important}
+
+@media(max-width:390px){
+  .app{padding-left:12px!important;padding-right:12px!important}
+  .topbar{margin-left:-12px!important;margin-right:-12px!important;padding-left:14px!important;padding-right:14px!important}
+  .garageCustomTaskFormRow,.historyDateRow{grid-template-columns:1fr!important}
+  .personalTopicPicker{grid-template-columns:1fr!important}
+  .carListCard,.leadListCard{grid-template-columns:96px minmax(0,1fr)!important}
+  .carListPhoto,.leadListPhoto{width:96px!important}
+  .navBtn{font-size:10px!important}
+}
+
+
+
+/* V4.1 polish */
+.topicTaskSection .emptyState{
+  padding:9px 2px!important;
+  border:0!important;
+  background:transparent!important;
+  text-align:left!important;
+  font-size:13px!important;
+}
+.completedTasksSection .emptyState{
+  margin:0 12px 12px!important;
+  padding:12px 2px!important;
+  border:0!important;
+  background:transparent!important;
+  text-align:left!important;
+  font-size:13px!important;
+}
+input[type="file"].input{padding:7px!important;font-size:13px!important;color:var(--muted)!important;overflow:hidden!important}
+input[type="file"].input::file-selector-button{
+  min-height:38px;margin-right:8px;padding:0 11px;border:1px solid var(--line-strong);
+  border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-weight:700;cursor:pointer;
+}
+#garageTasksSection .taskGroup{box-shadow:none!important}
+#garageTasksSection .taskGroupBody{padding-left:0!important;padding-right:0!important}
+
+
+.carListNoPhoto svg,.leadNoPhoto svg{width:34px!important;height:34px!important;stroke:var(--muted)!important;fill:none!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#toggleSoldCarsBtn{background:var(--surface)!important;color:var(--text)!important;border-color:var(--line)!important;box-shadow:var(--shadow)!important}
+
+
+/* V4.2 — restored home task system + premium colorful garage icons */
+.homeDailyTasksSection{margin-top:16px!important}
+.homeTaskGroup{overflow:hidden!important;border-radius:18px!important;margin-bottom:8px!important}
+.homeTaskGroup .taskGroupHead{min-height:62px!important;padding:0 13px!important}
+.homeTaskGroupTitle{display:flex;align-items:center;gap:11px;min-width:0}
+.homeTaskCatIcon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;font-weight:850;flex:0 0 auto}
+.homeTaskGroup-sveikata .homeTaskCatIcon{background:#eaf8f0;color:#138a4b}
+.homeTaskGroup-produktyvumas .homeTaskCatIcon{background:#fff3df;color:#c46a08}
+.homeTaskGroup-tobulėjimas .homeTaskCatIcon{background:#eeeafe;color:#6750c8}
+html[data-theme="dark"] .homeTaskGroup-sveikata .homeTaskCatIcon{background:rgba(34,197,94,.15);color:#6ee7a0}
+html[data-theme="dark"] .homeTaskGroup-produktyvumas .homeTaskCatIcon{background:rgba(245,158,11,.16);color:#fbbf24}
+html[data-theme="dark"] .homeTaskGroup-tobulėjimas .homeTaskCatIcon{background:rgba(139,92,246,.18);color:#c4b5fd}
+.homeTaskGroupTitle h3{font-size:16px!important;font-weight:820!important}
+.homeTaskProgress{display:block;margin-top:2px;font-size:12px;color:var(--muted);font-weight:700}
+.homeTaskGroup .taskGroupBody{padding:0 8px 8px!important}
+.homeTaskGroup .taskList{gap:6px!important}
+.homeTaskGroup .taskCard{width:100%;min-height:60px!important;padding:10px 10px!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;text-align:left!important;background:transparent!important;color:var(--text)!important}
+.homeTaskGroup .taskCard:first-child{border-top:0!important}
+.homeTaskGroup .taskCard.done{opacity:.58!important}
+.homeTaskGroup .taskMain strong{display:flex!important;align-items:center!important;gap:8px!important;font-size:15px!important;line-height:1.25!important}
+.homeTaskGroup .taskEmoji{font-size:18px;line-height:1;flex:0 0 auto}
+.homeTaskGroup .check{width:29px!important;height:29px!important;border-radius:9px!important;flex:0 0 29px!important}
+.homeTaskGroup .rewardPills{gap:2px!important}
+.homeTaskGroup .rewardPills .xp,.homeTaskGroup .rewardPills .coins{font-size:11px!important}
+#view-garage .garageAction{position:relative;overflow:hidden!important;border:1px solid var(--line)!important;background:var(--surface)!important}
+#view-garage .garageAction .ico{width:46px!important;height:46px!important;border-radius:14px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);transition:transform .2s ease}
+#view-garage .garageAction:active .ico{transform:scale(.95)}
+#view-garage .garageAction:nth-child(1) .ico{background:linear-gradient(145deg,#dff4ff,#c9e9ff)!important;color:#0878b9!important}
+#view-garage .garageAction:nth-child(2) .ico{background:linear-gradient(145deg,#fff0df,#ffe0bd)!important;color:#c6650a!important}
+#view-garage .garageAction:nth-child(3) .ico{background:linear-gradient(145deg,#e7f8ee,#ccefd9)!important;color:#16834b!important}
+#view-garage .garageAction:nth-child(4) .ico{background:linear-gradient(145deg,#eee9ff,#ddd3ff)!important;color:#6547c7!important}
+#view-garage .garageAction .ico svg{width:25px!important;height:25px!important;stroke:currentColor!important;stroke-width:2!important}
+html[data-theme="dark"] #view-garage .garageAction:nth-child(1) .ico{background:rgba(14,165,233,.18)!important;color:#7dd3fc!important}
+html[data-theme="dark"] #view-garage .garageAction:nth-child(2) .ico{background:rgba(245,158,11,.18)!important;color:#fbbf24!important}
+html[data-theme="dark"] #view-garage .garageAction:nth-child(3) .ico{background:rgba(34,197,94,.18)!important;color:#86efac!important}
+html[data-theme="dark"] #view-garage .garageAction:nth-child(4) .ico{background:rgba(139,92,246,.20)!important;color:#c4b5fd!important}
+</style>
+
+<style id="today-important-home-v6">
+.homeImportantSection .sectionHead{margin-bottom:8px}
+.homeImportantSection .sectionHead>span{font-size:12px;font-weight:750;color:var(--muted);background:transparent;border:0;padding:0}
+.homeImportantSection .todayPriorityBox{background:var(--surface);border:1px solid color-mix(in srgb,var(--brand) 22%,var(--line));border-radius:18px}
+.homeImportantSection .todayPriorityHead{padding:11px 14px 9px}
+.homeImportantSection .todayPriorityTitle strong{font-size:14px;letter-spacing:-.01em}
+.homeImportantSection .todayPriorityList{border-top:1px solid var(--line)}
+.homeImportantSection .todayTaskItem{min-height:60px;padding:10px 14px}
+.homeImportantSection .todayTaskMain strong{font-size:15px;line-height:1.25}
+@media(max-width:430px){.homeImportantSection,.homeImportantSection *{max-width:100%;min-width:0}.homeImportantSection .todayTaskMain strong{overflow-wrap:anywhere}}
 </style>
 </head>
 <body>
@@ -712,9 +1069,9 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
         </div>
         <div class="topStats">
           <div class="miniStat">
-            <div class="label">✅ Veiksmai šiandien</div>
-            <div class="value" id="dailyActionsValue">0/10</div>
-            <div class="hint" id="dailyActionsHint">Bent 10 per dieną</div>
+            <div class="label">Aktyvios užduotys</div>
+            <div class="value" id="dailyActionsValue">0</div>
+            <div class="hint" id="dailyActionsHint"></div>
           </div>
           <div class="miniStat">
             <div class="label">🪙 Monetos</div>
@@ -724,9 +1081,9 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
         </div>
       </div>
     </div>
-
-    <div class="homePrioritySection">
-      <div id="todayPriorityRoot" class="homePriorityMount"></div>
+<div class="section homeImportantSection">
+      <div class="sectionHead"><h2>Svarbios užduotys</h2><span>Šiandien</span></div>
+      <div id="todayPriorityRoot"></div>
     </div>
 
     <div class="section homeNowSection">
@@ -734,11 +1091,10 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
       <div id="nowActionRoot"></div>
     </div>
 
-    <div class="section">
-      <div class="sectionHead"><h2>Šiandienos užduotys</h2><span id="taskProgressLabel">0/0 atlikta</span></div>
-    <div id="tasksRoot"></div>
+    <div class="section homeDailyTasksSection">
+      <div class="sectionHead"><h2>Kasdienės užduotys</h2></div>
+      <div id="tasksRoot"></div>
     </div>
-
 </div>
 
   <div class="view" id="view-garage">
@@ -759,7 +1115,7 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
       <div class="garageMenuGrid garageMenuGridPro">
         <button class="garageAction garageActionPro" type="button" data-garage-action="tasks">
           <div class="left">
-            <div class="ico">✅</div>
+            <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.2 17 19 7"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg></div>
             <div class="garageActionText"><strong>Auto užduotys</strong></div>
           </div>
           <div class="garageTaskBadges">
@@ -769,13 +1125,13 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
         </button>
         <button class="garageAction garageActionPro" type="button" data-garage-action="leads">
           <div class="left">
-            <div class="ico">📋</div>
+            <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h6M8 3h8v4H8z"/><path d="M6 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1"/><path d="M7 12h10M7 16h7"/></svg></div>
             <div class="garageActionText"><strong>Variantai</strong></div>
           </div>
         </button>
         <button class="garageAction garageActionPro" type="button" data-garage-action="customtasks">
           <div class="left">
-            <div class="ico">📝</div>
+            <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4M4 8V4h8"/></svg></div>
             <div class="garageActionText"><strong>Kitos užduotys</strong></div>
           </div>
           <div class="garageTaskBadges">
@@ -785,7 +1141,7 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
         </button>
         <button class="garageAction garageActionPro" type="button" data-garage-action="stats">
           <div class="left">
-            <div class="ico">📊</div>
+            <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7"/></svg></div>
             <div class="garageActionText"><strong>Statistika</strong></div>
           </div>
         </button>
@@ -839,7 +1195,7 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
     </div>
 
     <div class="section" id="soldCarsSection">
-      <button class="btn danger" id="toggleSoldCarsBtn" type="button" style="width:100%">🚗 Parduoti automobiliai (<span id="soldCarCount">0</span>)</button>
+      <button class="btn secondary" id="toggleSoldCarsBtn" type="button" style="width:100%">🚗 Parduoti automobiliai (<span id="soldCarCount">0</span>)</button>
       <div id="soldCarsPanel" style="display:none;margin-top:10px">
         <div class="sectionHead"><h2>Parduoti automobiliai</h2><span id="soldCarCountLabel">0 auto</span></div>
         <div class="carGrid" id="soldCarGrid"></div>
@@ -1028,11 +1384,11 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
         <div><strong>Greita navigacija</strong></div>
       </div>
       <div class="menuLinks">
-        <button class="menuLink" data-jump="menu-shop" data-menu-section="shop"><div class="ico">🛍️</div><strong>Atlygių parduotuvė</strong></button>
-        <button class="menuLink" data-jump="menu-stats" data-menu-section="stats"><div class="ico">📊</div><strong>Statistika</strong></button>
-        <button class="menuLink" data-open-view="finance"><div class="ico">💼</div><strong>Finansai</strong></button>
-        <button class="menuLink" data-open-history><div class="ico">🕘</div><strong>Istorija</strong></button>
-        <button class="menuLink aiMenuLink" data-open-view="ai"><div class="ico">✨</div><strong>AI padėjėjas</strong></button>
+        <button class="menuLink" data-jump="menu-shop" data-menu-section="shop"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></div><strong>Atlygių parduotuvė</strong></button>
+        <button class="menuLink" data-jump="menu-stats" data-menu-section="stats"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7"/></svg></div><strong>Statistika</strong></button>
+        <button class="menuLink" data-open-view="finance"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/></svg></div><strong>Finansai</strong></button>
+        <button class="menuLink" data-open-history><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><strong>Istorija</strong></button>
+        <button class="menuLink aiMenuLink" data-open-view="ai"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3Z"/><path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></svg></div><strong>AI padėjėjas</strong></button>
       </div>
     </div>
 
@@ -1223,8 +1579,6 @@ html[data-theme="dark"] .rewardCard .cost{background:rgba(169,103,18,.13);border
 
 
   const achievementDefs = [
-    {id:'daily10', icon:'🥇', title:'10 užduočių per dieną', desc:'Per vieną dieną atlik 10 užduočių', need:s => stateDailyTaskCount(s) >= 10, atlygis:{xp:60, coins:40}},
-    {id:'weekly100', icon:'📅', title:'100 užduočių per savaitę', desc:'Per 7 dienas atlik 100 užduočių', need:s => stateWeeklyTaskCount(s) >= 100, atlygis:{xp:120, coins:80}},
     {id:'streak3', icon:'🔥', title:'3 dienų serija', desc:'Išlaikyk 3 dienas iš eilės', need:s => s.streak >= 3, atlygis:{xp:40, coins:30}},
     {id:'streak7', icon:'🔥', title:'7 dienų serija', desc:'Išlaikyk 7 dienas iš eilės', need:s => s.streak >= 7, atlygis:{xp:70, coins:50}},
     {id:'streak15', icon:'🔥', title:'15 dienų serija', desc:'Išlaikyk 15 dienų iš eilės', need:s => s.streak >= 15, atlygis:{xp:120, coins:90}},
@@ -1313,7 +1667,36 @@ function polishEconomyLabels(){
  const title=document.querySelector('.topbar h1'); if(title)title.textContent='Motyvacija';
  document.querySelectorAll('.rewardCard .buy').forEach(function(b){if(!b.textContent.includes('Pirkti'))b.textContent='Pirkti'});
 }
-function buildNowAction(){const leads=Array.isArray(state.leadVariants)?state.leadVariants:[];const dueLeads=leads.filter(l=>garageLeadDaysLeft(l)<=0).sort((a,b)=>garageLeadDaysLeft(a)-garageLeadDaysLeft(b));const garageTasks=(state.garageTasks||[]).filter(t=>!t.done);const carTasks=[];(state.cars||[]).filter(c=>c.status!=='parduotas').forEach(car=>(car.checklist||[]).filter(t=>!t.done).forEach(t=>carTasks.push({car,t})));const dailyPending=taskTemplates.filter(t=>!state.completedToday?.[t.id]);if(dueLeads.length){const l=dueLeads[0];return{icon:dueLeads.length>1?'⚠️':'📞',eyebrow:dueLeads.length>1?`${dueLeads.length} skambučiai laukia`:'Kitas veiksmas',title:`Paskambinti dėl ${l.make||''} ${l.model||''}`.trim(),meta:`${garageLeadDaysText(l)}${l.targetPrice?` • Tavo pasiūlymas: ${moneyFmt(l.targetPrice)}`:''}`,button:'Paskambinti',action:()=>callGarageLead(l.id),more:dueLeads.length>1?`${dueLeads.length-1} kiti variantai laukia`:''}}if(garageTasks.length){const t=garageTasks[0];return{icon:'⚠️',eyebrow:`${garageTasks.length} garažo užduotys`,title:t.title||'Atlik garažo užduotį',meta:'Verta atlikti dabar, kad automobiliai judėtų pirmyn.',button:'Atidaryti garažą',action:()=>{state.selectedView='garage';saveState();render();setTimeout(()=>document.getElementById('garageTasksSection')?.scrollIntoView({behavior:'smooth'}),80)},more:''}}if(carTasks.length){const x=carTasks[0];return{icon:'🚗',eyebrow:`${carTasks.length} auto užduotys`,title:x.t.title||`Užduotis: ${x.car.name||'automobilis'}`,meta:`${x.car.name||'Automobilis'} • Paruošimo darbas`,button:'Atidaryti',action:()=>openCar(x.car.id),more:''}}if(dailyPending.length){const t=dailyPending[0];return{icon:'🎯',eyebrow:`${dailyPending.length} užduotys šiandien`,title:t.title||'Atlikti šiandienos užduotį',meta:`${t.cat||'Diena'} • +${t.xp||0} XP · +${t.coins||0} 🪙`,button:'Eiti į užduotis',action:()=>{state.selectedView='achievements';saveState();render()},more:''}}return{icon:'✨',eyebrow:'Viskas padaryta',title:'Dabar gali judėti pirmyn',meta:'Šiandien nėra skubių veiksmų.',button:'Garažas',action:()=>{state.selectedView='garage';saveState();render()},more:''}}function renderNowAction(){const root=document.getElementById('nowActionRoot');if(!root)return;const a=buildNowAction();root.innerHTML=`<div class="nowActionCard"><div class="nowActionIcon">${a.icon}</div><div class="nowActionBody"><span class="nowActionEyebrow">${escapeHTML(a.eyebrow)}</span><strong class="nowActionTitle">${escapeHTML(a.title)}</strong><span class="nowActionMeta">${escapeHTML(a.meta)}</span></div><button class="btn nowActionBtn" id="nowActionBtn" type="button">${escapeHTML(a.button)}</button></div>${a.more?`<div class="nowActionMore"><span>${escapeHTML(a.more)}</span><span>→</span></div>`:''}`;document.getElementById('nowActionBtn').onclick=a.action}
+function buildNowAction(){
+    const leads=Array.isArray(state.leadVariants)?state.leadVariants:[];
+    const dueLeads=leads.filter(l=>garageLeadDaysLeft(l)<=0).sort((a,b)=>garageLeadDaysLeft(a)-garageLeadDaysLeft(b));
+    const garageTasks=(state.garageTasks||[]).filter(t=>!t.done);
+    const carTasks=[];
+    (state.cars||[]).filter(c=>c.status!=='parduotas').forEach(car=>(car.checklist||[]).filter(t=>!t.done).forEach(t=>carTasks.push({car,t})));
+    const personal=(state.personalTasks||[]).filter(t=>!t.done).slice().sort((a,b)=>{
+      const ad=a.dueDate||'9999-12-31', bd=b.dueDate||'9999-12-31';
+      return ad.localeCompare(bd);
+    });
+
+    if(dueLeads.length){
+      const l=dueLeads[0];
+      return {icon:'☎️',eyebrow:'Variantas',title:`Paskambinti dėl ${l.make||''} ${l.model||''}`.trim(),meta:garageLeadDaysText(l),button:'Skambinti',action:()=>callGarageLead(l.id),more:''};
+    }
+    if(garageTasks.length){
+      const t=garageTasks[0];
+      return {icon:'🔧',eyebrow:'Garažas',title:t.title||'Atlik garažo užduotį',meta:'',button:'Atidaryti',action:()=>{state.selectedView='garage';saveState();render();setTimeout(()=>document.getElementById('garageTasksSection')?.scrollIntoView({behavior:'smooth'}),80)},more:''};
+    }
+    if(carTasks.length){
+      const x=carTasks[0];
+      return {icon:'🚗',eyebrow:'Automobilis',title:x.t.title||`Užduotis: ${x.car.name||'automobilis'}`,meta:x.car.name||'',button:'Atidaryti',action:()=>openCar(x.car.id),more:''};
+    }
+    if(personal.length){
+      const t=personal[0];
+      return {icon:'✓',eyebrow:'Užduotis',title:t.title||'Atlikti užduotį',meta:t.dueDate||t.topic||'',button:'Užduotys',action:()=>{state.selectedView='achievements';saveState();render()},more:''};
+    }
+    return {icon:'→',eyebrow:'Paruošta',title:'Pasirink kitą veiksmą',meta:'',button:'Garažas',action:()=>{state.selectedView='garage';saveState();render()},more:''};
+  }
+  function renderNowAction(){const root=document.getElementById('nowActionRoot');if(!root)return;const a=buildNowAction();root.innerHTML=`<div class="nowActionCard"><div class="nowActionIcon">${a.icon}</div><div class="nowActionBody"><span class="nowActionEyebrow">${escapeHTML(a.eyebrow)}</span><strong class="nowActionTitle">${escapeHTML(a.title)}</strong><span class="nowActionMeta">${escapeHTML(a.meta)}</span></div><button class="btn nowActionBtn" id="nowActionBtn" type="button">${escapeHTML(a.button)}</button></div>${a.more?`<div class="nowActionMore"><span>${escapeHTML(a.more)}</span><span>→</span></div>`:''}`;document.getElementById('nowActionBtn').onclick=a.action}
 
 
 
@@ -1345,7 +1728,7 @@ function buildNowAction(){const leads=Array.isArray(state.leadVariants)?state.le
       <section class="todayPriorityBox">
         <div class="todayPriorityHead">
           <div class="todayPriorityTitle">
-            <span class="priorityDot"></span><strong>ŠIANDIEN — SVARBIAUSIA</strong>
+            <span class="priorityDot"></span><strong>Reikia padaryti šiandien</strong>
           </div>
           <span>${list.length} ${list.length===1?'darbas':'darbai'}</span>
         </div>
@@ -1524,8 +1907,6 @@ function buildNowAction(){const leads=Array.isArray(state.leadVariants)?state.le
         <button type="button" class="taskDeleteButton" data-personal-delete="${task.id}" aria-label="Ištrinti">×</button>
       </div>`).join('') : `<div class="emptyState">Atliktos užduotys čia atsiras automatiškai.</div>`;
 
-    const q=state.dailyQuest;
-    const qReward=q?generateQuestReward(q):{xp:0,coins:0};
 
     root.innerHTML = `
       <div class="personalTaskTopics">${topicCards}</div>
@@ -1557,18 +1938,6 @@ function buildNowAction(){const leads=Array.isArray(state.leadVariants)?state.le
         </div>
         <div class="personalTaskComposerBottom">
           <button class="btn personalTaskAddButton" id="personalTaskAddButton" type="button">Pridėti</button>
-        </div>
-      </section>
-
-      <section class="dailyCard panel" aria-label="Dienos bonusas" style="margin-top:13px">
-        <div class="dailyCardTop">
-          <strong>Dienos bonusas</strong>
-          <span class="badge ${state.dailyQuestClaimed?'good':'info'}">${state.dailyQuestClaimed?'Atlikta':`+${qReward.xp} XP · ${qReward.coins} 🪙`}</span>
-        </div>
-        <h3>${escapeHTML(q?.title||'Dienos užduotis')}</h3>
-        <div class="dailyCardActions">
-          <button class="btn" id="tasksDailyClaim" type="button" ${state.dailyQuestClaimed?'disabled':''}>${state.dailyQuestClaimed?'Atlikta':'Atlikti'}</button>
-          <button class="smallBtn" id="tasksDailyReroll" type="button" aria-label="Pakeisti dienos užduotį">↻</button>
         </div>
       </section>
 
@@ -1625,8 +1994,6 @@ function buildNowAction(){const leads=Array.isArray(state.leadVariants)?state.le
         if(e.key==='Enter'||e.key===' '){e.preventDefault();openPersonalTaskCompleteSheet(row.dataset.personalEditCompletion);}
       };
     });
-    document.getElementById('tasksDailyClaim')?.addEventListener('click',claimDailyQuest);
-    document.getElementById('tasksDailyReroll')?.addEventListener('click',rerollDailyQuest);
   }
 
   function taskDueInfo(iso){
@@ -4323,70 +4690,68 @@ async function render(){
     document.getElementById('xpFill').style.width = xpPct + '%';
     document.getElementById('levelValue').textContent = state.level;
     document.getElementById('xpToNext').textContent = `${Math.max(0, xpNeeded - state.xp)} XP iki lygio`;
-    const dailyActionsCount = stateDailyTaskCount(state);
-    const dailyActionsValueEl = document.getElementById('dailyActionsValue');
-    const dailyActionsHintEl = document.getElementById('dailyActionsHint');
-    if(dailyActionsValueEl) dailyActionsValueEl.textContent = `${Math.min(dailyActionsCount,10)}/10`;
-    if(dailyActionsHintEl) dailyActionsHintEl.textContent = dailyActionsCount >= 10 ? 'Tikslas pasiektas' : 'Bent 10 per dieną';
+
+    const personalOpenCount=(state.personalTasks||[]).filter(t=>!t.done).length;
+    const dailyActionsValueEl=document.getElementById('dailyActionsValue');
+    const dailyActionsHintEl=document.getElementById('dailyActionsHint');
+    if(dailyActionsValueEl) dailyActionsValueEl.textContent=String(personalOpenCount);
+    if(dailyActionsHintEl) dailyActionsHintEl.textContent='';
     document.getElementById('coinsValue').textContent = state.coins;
 
-
-
-    document.getElementById('taskProgressLabel').textContent = `${completedCount}/${allCount} atlikta`;
-
-
-    // tasks
-    const categories = ['Sveikata','Produktyvumas','Tobulėjimas'];
-    const tasksHtml = categories.map(cat => {
-      const tasks = taskTemplates.filter(t => t.cat === cat);
-      const open = !!(state.ui?.taskGroups?.[cat]);
-      return `
-        <div class="panel taskGroup">
-          <button class="taskGroupHead" type="button" data-toggle-cat="${cat}">
-            <div>
-              <h3>${cat}</h3>
-            </div>
-          </button>
-          <div class="taskGroupBody ${open ? 'open' : ''}">
-            <div class="taskList">
-              ${tasks.map(t => {
-                const done = !!state.completedToday[t.id];
-                return `
-                  <div class="taskCard ${done ? 'done' : ''}" data-task="${t.id}">
-                    <div class="check">${done ? '✓' : ''}</div>
-                    <div class="taskMain">
-                      <strong>${t.icon} ${escapeHTML(t.title)}</strong>
-                      <div class="taskMeta">
-                        <span>${done ? 'Atlikta šiandien' : ''}</span>
-                      </div>
-                    </div>
-                    <div class="rewardPills">
-                      <div class="xp">+${t.xp} XP</div>
-                      <div class="coins">+${t.coins} 🪙</div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-    document.getElementById('tasksRoot').innerHTML = tasksHtml;
-    document.querySelectorAll('[data-task]').forEach(el => el.addEventListener('click', () => completeTask(el.dataset.task)));
-    document.querySelectorAll('[data-toggle-cat]').forEach(btn => btn.addEventListener('click', () => {
-      const cat = btn.dataset.toggleCat;
-      state.ui = state.ui || {taskGroups:{Sveikata:false, Produktyvumas:false, Tobulėjimas:false}, historyOpen:false, garageTaskGroups:{autos:false, custom:false}, leadFilters:{query:'', due:'all', sort:'due'}};
-      state.ui.taskGroups = state.ui.taskGroups || {Sveikata:false, Produktyvumas:false, Tobulėjimas:false};
-      const nextOpen = !state.ui.taskGroups[cat];
-      Object.keys(state.ui.taskGroups).forEach(key => state.ui.taskGroups[key] = false);
-      state.ui.taskGroups[cat] = nextOpen;
-      saveState();
-      render();
-    }));
-
-    renderTodayPriority();
     renderNowAction();
+    renderTodayPriority();
+
+    // original home daily task groups — Sveikata / Produktyvumas / Tobulėjimas
+    const homeTaskRoot = document.getElementById('tasksRoot');
+    if(homeTaskRoot){
+      const categories = ['Sveikata','Produktyvumas','Tobulėjimas'];
+      const catIcons = {Sveikata:'♥', Produktyvumas:'⚡', Tobulėjimas:'↗'};
+      const tasksHtml = categories.map(cat => {
+        const tasks = taskTemplates.filter(t => t.cat === cat);
+        const open = !!(state.ui?.taskGroups?.[cat]);
+        const doneCount = tasks.filter(t => !!state.completedToday[t.id]).length;
+        return `
+          <div class="panel taskGroup homeTaskGroup homeTaskGroup-${cat.toLowerCase()}">
+            <button class="taskGroupHead" type="button" data-toggle-cat="${cat}">
+              <div class="homeTaskGroupTitle">
+                <span class="homeTaskCatIcon">${catIcons[cat]}</span>
+                <div><h3>${cat}</h3><span class="homeTaskProgress">${doneCount}/${tasks.length}</span></div>
+              </div>
+            </button>
+            <div class="taskGroupBody ${open ? 'open' : ''}">
+              <div class="taskList">
+                ${tasks.map(t => {
+                  const done = !!state.completedToday[t.id];
+                  return `
+                    <button type="button" class="taskCard ${done ? 'done' : ''}" data-task="${t.id}">
+                      <div class="check">${done ? '✓' : ''}</div>
+                      <div class="taskMain">
+                        <strong><span class="taskEmoji">${t.icon}</span>${escapeHTML(t.title)}</strong>
+                        <div class="taskMeta">${done ? '<span>Atlikta</span>' : ''}</div>
+                      </div>
+                      <div class="rewardPills">
+                        <div class="xp">+${t.xp} XP</div>
+                        <div class="coins">+${t.coins} 🪙</div>
+                      </div>
+                    </button>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+      homeTaskRoot.innerHTML = tasksHtml;
+      homeTaskRoot.querySelectorAll('[data-task]').forEach(el => el.onclick = () => completeTask(el.dataset.task));
+      homeTaskRoot.querySelectorAll('[data-toggle-cat]').forEach(btn => btn.onclick = () => {
+        const cat = btn.dataset.toggleCat;
+        state.ui = state.ui || {};
+        state.ui.taskGroups = state.ui.taskGroups || {Sveikata:false, Produktyvumas:false, Tobulėjimas:false};
+        const nextOpen = !state.ui.taskGroups[cat];
+        Object.keys(state.ui.taskGroups).forEach(key => state.ui.taskGroups[key] = false);
+        state.ui.taskGroups[cat] = nextOpen;
+        saveState();
+        render();
+      });
+    }
 
     // stats grid
     const statCards = [
@@ -4498,6 +4863,8 @@ async function render(){
     const garageTaskGroups = state.ui?.garageTaskGroups || {autos:false, custom:false};
     document.getElementById('garageAutosBody')?.classList.toggle('open', !!garageTaskGroups.autos);
     document.getElementById('garageCustomBody')?.classList.toggle('open', !!garageTaskGroups.custom);
+    const garageTasksSectionEl=document.getElementById('garageTasksSection');
+    if(garageTasksSectionEl) garageTasksSectionEl.style.display=(garageTaskGroups.autos||garageTaskGroups.custom)?'block':'none';
 
     const garageCustomActive = state.garageTasks || [];
     const autoTaskCount = activeCars.reduce((sum,car)=>sum+(car.checklist||[]).filter(item=>!item.done).length,0);
@@ -4607,7 +4974,7 @@ async function render(){
               const src = photoUrlCache[car.imageSrc] || car.imageSrc || '';
               return src
                 ? `<img src="${src}" alt="${escapeHTML(car.name)}" loading="lazy">`
-                : `<div class="carListNoPhoto">🚗<span>Nėra foto</span></div>`;
+                : `<div class="carListNoPhoto"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 29h30l-3-11a4 4 0 0 0-4-3H16a4 4 0 0 0-4 3L9 29Z"/><path d="M12 29v6M36 29v6M14 22h20"/><circle cx="15" cy="30" r="3"/><circle cx="33" cy="30" r="3"/></svg><span>Nėra foto</span></div>`;
             })()}
           </div>
           <div class="carListInfo">
@@ -4636,7 +5003,7 @@ async function render(){
               const src = photoUrlCache[car.imageSrc] || car.imageSrc || '';
               return src
                 ? `<img src="${src}" alt="${escapeHTML(car.name)}" loading="lazy">`
-                : `<div class="carListNoPhoto">🚗<span>Nėra foto</span></div>`;
+                : `<div class="carListNoPhoto"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 29h30l-3-11a4 4 0 0 0-4-3H16a4 4 0 0 0-4 3L9 29Z"/><path d="M12 29v6M36 29v6M14 22h20"/><circle cx="15" cy="30" r="3"/><circle cx="33" cy="30" r="3"/></svg><span>Nėra foto</span></div>`;
             })()}
             <span class="carListProfit ${profit >= 0 ? 'positive' : 'negative'}">${profit >= 0 ? '+' : ''}${moneyFmt(profit)}</span>
           </div>
@@ -4684,7 +5051,7 @@ async function render(){
             <div class="leadListPhoto">
               ${mainPhoto
                 ? `<img src="${mainPhoto}" alt="${escapeHTML(title)}" loading="lazy">`
-                : `<div class="leadNoPhoto">📷<span>Nėra foto</span></div>`}
+                : `<div class="leadNoPhoto"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="10" width="34" height="28" rx="5"/><circle cx="18" cy="21" r="4"/><path d="m10 34 9-8 6 5 5-4 8 7"/></svg><span>Nėra foto</span></div>`}
             </div>
             <div class="leadListInfo">
               <div class="leadListTop">
@@ -5075,6 +5442,9 @@ async function render(){
     // even if the selected image is very large.
     addCar(name, '', buyPrice);
 
+    if(addCarPanel) addCarPanel.style.display='none';
+    if(showAddCarFormBtn) showAddCarFormBtn.style.display='block';
+
     const car = state.cars[0];
     if(car){
       car.photos = [];
@@ -5086,7 +5456,6 @@ async function render(){
     document.getElementById('carPhoto').value = '';
 
     if(!files.length){
-      toast('Automobilis pridėtas. Nuotraukas galėsi pridėti vėliau.', '🚗');
       return;
     }
 
